@@ -26,6 +26,7 @@ services:
       - ConnectionStrings__DefaultConnection=server=db;database=backlog_db;user=root;password=root
       - ASPNETCORE_ENVIRONMENT=Development
       - BACKUP_PATH=/backups
+      - ASPNETCORE_URLS=http://+:80
     volumes:
       - backups:/backups
     depends_on:
