@@ -66,7 +66,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder => builder
-            .WithOrigins("http://localhost:5173", "http://localhost:3000")
+            .WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:12404")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -83,6 +83,30 @@ using (var scope = app.Services.CreateScope())
         if (context.Database.GetPendingMigrations().Any())
         {
             context.Database.Migrate();
+        }
+
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
+        var adminUser = await userManager.FindByNameAsync("admin");
+        if (adminUser == null)
+        {
+            adminUser = new ApplicationUser { UserName = "admin", Email = "admin@taskmaster.si" };
+            var result = await userManager.CreateAsync(adminUser, "Admin123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
+        else
+        {
+            // Ensure role
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
     catch (Exception ex)
