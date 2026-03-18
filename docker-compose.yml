@@ -10,6 +10,13 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
 
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping localhost --silent || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   backend:
     build:
       context: ./Backend/BacklogApi
@@ -22,7 +29,8 @@ services:
     volumes:
       - backups:/backups
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
     build:
