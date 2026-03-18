@@ -8,7 +8,7 @@ RUN dotnet restore "BacklogApi.csproj"
 
 # Copy everything else and build
 COPY . .
-RUN dotnet publish "BacklogApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BacklogApi.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore
 
 # Final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0

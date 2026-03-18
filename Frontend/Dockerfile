@@ -3,9 +3,9 @@
 FROM node:20-alpine AS build-stage
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 # Step 2: Serve the application with Nginx
 FROM nginx:stable-alpine AS production-stage

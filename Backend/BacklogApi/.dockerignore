@@ -1,0 +1,17 @@
+**/bin
+**/obj
+**/packages
+**/*.user
+**/[Dd]ockerfile*
+**/[Dd]ocker-compose*
+**/.git
+**/.vscode
+**/.idea
+**/.vs
+**/*.md
+**/*.sln
+**/*.csproj.user
+**/[Nn]uget.*
+**/*.nupkg
+logs
+[Dd]ockerfile*
