@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: backlog_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./Backend/BacklogApi
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "12002:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=server=db;database=backlog_db;user=root;password=root
+      - ASPNETCORE_ENVIRONMENT=Development
+      - BACKUP_PATH=/backups
+    volumes:
+      - backups:/backups
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "12004:80"
+    depends_on:
+      - backend
+
+volumes:
+  mariadb_data:
+  backups:

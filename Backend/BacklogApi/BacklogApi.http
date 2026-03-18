@@ -1,0 +1,6 @@
+@BacklogApi_HostAddress = http://localhost:5277
+
+GET {{BacklogApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
