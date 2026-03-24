@@ -148,9 +148,12 @@ const handleDelete = async () => {
           <span v-if="backlogStore.selectedBoardId === -1" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm" :title="$t('common.boards')">
             <LayoutGrid :size="14" class="md:w-3 md:h-3" /> {{ backlogStore.boards.find(b => b.id === item.boardId)?.name || '' }}
           </span>
-          <span v-if="item.assignedTo" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
-            <UserCheck :size="14" class="md:w-3 md:h-3" /> {{ item.assignedTo }}
-          </span>
+          <div v-if="item.assignedTo" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
+            <div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold uppercase tracking-tighter">
+              {{ item.assignedTo.substring(0, 2) }}
+            </div>
+            <span class="text-xs font-semibold">{{ item.assignedTo }}</span>
+          </div>
           <span class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" :title="$t('common.author')">
             <User :size="14" class="md:w-3 md:h-3" /> <span class="font-bold mr-1">{{ $t('common.author') }}:</span> {{ item.createdBy || $t('common.unknown') }}
           </span>
@@ -202,9 +205,12 @@ const handleDelete = async () => {
                 <span class="badge bg-slate-50 dark:bg-slate-800 px-2 py-0.5 md:px-1.5 md:py-0.5 border border-slate-100 dark:border-slate-700">
                   <User :size="12" class="md:w-2.5 md:h-2.5" /> <span class="font-bold">{{ $t('common.author') }}:</span> {{ sub.createdBy || $t('common.unknown') }}
                 </span>
-                <span v-if="sub.assignedTo" class="badge text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800">
-                  <UserCheck :size="12" class="md:w-2.5 md:h-2.5" /> {{ sub.assignedTo }}
-                </span>
+                <div v-if="sub.assignedTo" class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
+                  <div class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-bold uppercase tracking-tighter">
+                    {{ sub.assignedTo.substring(0, 2) }}
+                  </div>
+                  <span class="text-[10px] font-semibold">{{ sub.assignedTo }}</span>
+                </div>
               </div>
             </div>
           </div>

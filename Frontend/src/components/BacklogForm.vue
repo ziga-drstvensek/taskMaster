@@ -314,12 +314,26 @@ const handleSubmit = async () => {
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <BaseSelect 
-                v-model="assignedTo"
-                :label="$t('common.assignee')"
-                :placeholder="$t('common.none')"
-                :options="users.map(user => ({ value: user, label: user }))"
-              />
+              <div class="space-y-1.5">
+                <label class="label-caps">{{ $t('common.assignee') }}</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                    <UserCheck :size="18" />
+                  </div>
+                  <select 
+                    v-model="assignedTo"
+                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 dark:focus:border-indigo-500 transition-all outline-none appearance-none"
+                  >
+                    <option value="">{{ $t('common.none') }}</option>
+                    <option v-for="user in users" :key="user" :value="user">
+                      {{ user }}
+                    </option>
+                  </select>
+                  <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                    <ChevronDown :size="16" />
+                  </div>
+                </div>
+              </div>
               <BaseDatePicker 
                 v-model="dueDate"
                 :label="$t('common.due_date')"
