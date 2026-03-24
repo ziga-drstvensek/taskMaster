@@ -16,7 +16,9 @@ const fontFamilies = [
   { id: 'sans', name: t('common.fonts.sans'), class: 'font-sans' },
   { id: 'serif', name: t('common.fonts.serif'), class: 'font-serif' },
   { id: 'mono', name: t('common.fonts.mono'), class: 'font-mono' },
-  { id: 'display', name: t('common.fonts.display'), class: 'font-display' }
+  { id: 'display', name: t('common.fonts.display'), class: 'font-display' },
+  { id: 'comic', name: t('common.fonts.comic'), class: 'font-comic' },
+  { id: 'retro', name: t('common.fonts.retro'), class: 'font-retro' }
 ] as const;
 
 const setFontSize = (size: 'small' | 'medium' | 'large') => {

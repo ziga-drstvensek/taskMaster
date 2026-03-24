@@ -99,7 +99,9 @@ const messages = {
         sans: 'Sans Serif (Inter)',
         serif: 'Serif (Lora)',
         mono: 'Monospace (JetBrains Mono)',
-        display: 'Display (Lexend)'
+        display: 'Display (Lexend)',
+        comic: 'Comic (Comic Neue)',
+        retro: 'Retro (Press Start 2P)'
       }
     },
     auth: {
@@ -248,7 +250,9 @@ const messages = {
         sans: 'Brezserifna (Inter)',
         serif: 'Serifna (Lora)',
         mono: 'Široka (JetBrains Mono)',
-        display: 'Naslovna (Lexend)'
+        display: 'Naslovna (Lexend)',
+        comic: 'Stripovska (Comic Neue)',
+        retro: 'Retro (Press Start 2P)'
       }
     },
     auth: {
