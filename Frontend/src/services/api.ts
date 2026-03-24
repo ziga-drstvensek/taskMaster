@@ -25,9 +25,12 @@ api.interceptors.response.use(
     response => response,
     error => {
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem('user');
-            localStorage.setItem('session_expired', 'true');
-            window.location.href = '/';
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/' && currentPath !== '/login') {
+                localStorage.removeItem('user');
+                localStorage.setItem('session_expired', 'true');
+                window.location.href = '/';
+            }
         }
         return Promise.reject(error);
     }
