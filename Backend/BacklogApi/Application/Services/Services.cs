@@ -5,6 +5,7 @@ using BacklogApi.Infrastructure.Hubs;
 using BacklogApi.Infrastructure.Data;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BacklogApi.Application.Services;
 
