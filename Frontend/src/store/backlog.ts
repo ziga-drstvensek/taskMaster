@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import api from '../services/api';
-import type { BacklogItem, Board } from '../types';
+import type { BacklogItem, Board, Sprint } from '../types';
 import { signalRService } from '../services/signalr';
 
 export const useBacklogStore = defineStore('backlog', {

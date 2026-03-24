@@ -330,8 +330,8 @@ onMounted(() => {
                 <span class="text-slate-700 dark:text-slate-200 font-medium truncate">
                   {{ backlogStore.selectedSprintId === null 
                     ? $t('common.allSprints') 
-                    : (backlogStore.sprints.find(s => s.id === backlogStore.selectedSprintId)?.name || $t('common.allSprints')) 
-                      + (backlogStore.sprints.find(s => s.id === backlogStore.selectedSprintId)?.isActive ? ` (${$t('common.active')})` : '')
+                    : (backlogStore.sprints.find((s: any) => s.id === backlogStore.selectedSprintId)?.name || $t('common.allSprints')) 
+                      + (backlogStore.sprints.find((s: any) => s.id === backlogStore.selectedSprintId)?.isActive ? ` (${$t('common.active')})` : '')
                   }}
                 </span>
                 <ChevronDown 

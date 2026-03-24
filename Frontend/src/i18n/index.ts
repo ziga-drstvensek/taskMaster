@@ -69,7 +69,7 @@ const messages = {
         created: 'Created successfully.',
         deleted: 'Deleted successfully.',
         uploaded: 'File uploaded successfully.',
-        admin_seeded: 'Admin (admin/Admin123!) created successfully.'
+        admin_seeded: "Admin (admin/Admin123!) created successfully."
       },
       error: {
         save: 'Error while saving.',
@@ -94,9 +94,11 @@ const messages = {
       mailing: 'Mailing',
       font_size: 'Font Size',
       font_family: 'Font Family',
+      very_small: 'Very Small',
       small: 'Small',
-      medium: 'Medium',
+      medium_size: 'Medium',
       large: 'Large',
+      very_large: 'Very Large',
       fonts: {
         sans: 'Sans Serif (Inter)',
         serif: 'Serif (Lora)',
@@ -156,6 +158,7 @@ const messages = {
         port: 'Port',
         userName: 'Username',
         password: 'Password',
+        passwordPlaceholder: '••••••••',
         passwordHelp: 'Leave empty to keep existing password.',
         fromEmail: 'From Email',
         fromName: 'From Name',
@@ -163,7 +166,7 @@ const messages = {
         saveSuccess: 'SMTP settings saved successfully.',
         saveError: 'Failed to save SMTP settings.',
         testTitle: 'Test Connection',
-        testPlaceholder: 'recipient@example.com',
+        testPlaceholder: "recipient{'@'}example.com",
         testButton: 'Send Test Email',
         testSuccess: 'Test email sent successfully!',
         testError: 'Failed to send test email. Check your settings.'
@@ -243,7 +246,7 @@ const messages = {
         created: 'Ustvarjeno uspešno.',
         deleted: 'Izbrisano uspešno.',
         uploaded: 'Datoteka naložena.',
-        admin_seeded: 'Admin (admin/Admin123!) je bil uspešno ustvarjen.'
+        admin_seeded: "Admin (admin/Admin123!) je bil uspešno ustvarjen."
       },
       error: {
         save: 'Napaka pri shranjevanju.',
@@ -268,9 +271,11 @@ const messages = {
       mailing: 'E-pošta',
       font_size: 'Velikost pisave',
       font_family: 'Vrsta pisave',
+      very_small: 'Zelo majhna',
       small: 'Majhna',
-      medium: 'Srednja',
+      medium_size: 'Srednja',
       large: 'Velika',
+      very_large: 'Zelo velika',
       fonts: {
         sans: 'Brezserifna (Inter)',
         serif: 'Serifna (Lora)',
@@ -330,6 +335,7 @@ const messages = {
         port: 'Vrata (Port)',
         userName: 'Uporabniško ime',
         password: 'Geslo',
+        passwordPlaceholder: '••••••••',
         passwordHelp: 'Pustite prazno, če želite ohraniti obstoječe geslo.',
         fromEmail: 'E-pošta pošiljatelja',
         fromName: 'Ime pošiljatelja',
@@ -337,7 +343,7 @@ const messages = {
         saveSuccess: 'SMTP nastavitve so bile uspešno shranjene.',
         saveError: 'Napaka pri shranjevanju SMTP nastavitev.',
         testTitle: 'Preizkus povezave',
-        testPlaceholder: 'prejemnik@primer.si',
+        testPlaceholder: "prejemnik{'@'}primer.si",
         testButton: 'Pošlji testno e-pošto',
         testSuccess: 'Testna e-pošta je bila uspešno poslana!',
         testError: 'Pošiljanje testne e-pošte ni uspelo. Preverite nastavitve.'

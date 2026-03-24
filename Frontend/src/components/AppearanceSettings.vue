@@ -45,7 +45,7 @@ const toggleDarkMode = () => {
       
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button
-          @click="uiStore.isDarkMode = false; uiStore.applyTheme(); localStorage.setItem('dark-mode', 'false')"
+          @click="uiStore.isDarkMode = false; uiStore.applyTheme(); uiStore.saveTheme('false')"
           class="flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left"
           :class="!uiStore.isDarkMode
             ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
@@ -63,7 +63,7 @@ const toggleDarkMode = () => {
         </button>
 
         <button
-          @click="uiStore.isDarkMode = true; uiStore.applyTheme(); localStorage.setItem('dark-mode', 'true')"
+          @click="uiStore.isDarkMode = true; uiStore.applyTheme(); uiStore.saveTheme('true')"
           class="flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left"
           :class="uiStore.isDarkMode
             ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'

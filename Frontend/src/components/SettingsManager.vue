@@ -37,7 +37,7 @@ const tabs = computed(() => {
       <button
         v-for="tab in tabs"
         :key="tab.id"
-        @click="activeTab = tab.id"
+        @click="activeTab = tab.id as any"
         class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all group"
         :class="activeTab === tab.id
           ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none'

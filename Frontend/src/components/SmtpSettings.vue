@@ -25,7 +25,15 @@ const fetchSettings = async () => {
   loading.value = true;
   try {
     const response = await api.get('/settings/smtp');
-    settings.value = response.data;
+    settings.value = {
+      host: response.data.host || '',
+      port: response.data.port || 587,
+      userName: response.data.userName || '',
+      password: '', // Don't use null for password field
+      enableSsl: response.data.enableSsl !== undefined ? response.data.enableSsl : true,
+      fromEmail: response.data.fromEmail || '',
+      fromName: response.data.fromName || ''
+    };
   } catch (error) {
     console.error('Failed to fetch SMTP settings', error);
   } finally {
@@ -37,7 +45,10 @@ const saveSettings = async () => {
   saving.value = true;
   message.value = { text: '', type: '' };
   try {
-    await api.post('/settings/smtp', settings.value);
+    const payload = { ...settings.value };
+    if (!payload.password) delete (payload as any).password;
+    
+    await api.post('/settings/smtp', payload);
     message.value = { text: t('settings.smtp.saveSuccess'), type: 'success' };
     setTimeout(() => { message.value = { text: '', type: '' }; }, 3000);
   } catch (error) {
@@ -52,6 +63,11 @@ const testSettings = async () => {
   testing.value = true;
   message.value = { text: '', type: '' };
   try {
+    // First save the current settings so the backend can use them for testing
+    const payload = { ...settings.value };
+    if (!payload.password) delete (payload as any).password;
+    await api.post('/settings/smtp', payload);
+    
     await api.post('/settings/smtp/test', JSON.stringify(testEmail.value), {
         headers: { 'Content-Type': 'application/json' }
     });
@@ -133,8 +149,9 @@ onMounted(fetchSettings);
           <input 
             v-model="settings.password" 
             type="password" 
+            autocomplete="new-password"
             class="input-field w-full"
-            placeholder="••••••••"
+            :placeholder="t('settings.smtp.passwordPlaceholder')"
           />
           <p class="text-xs text-slate-500">{{ t('settings.smtp.passwordHelp') }}</p>
         </div>

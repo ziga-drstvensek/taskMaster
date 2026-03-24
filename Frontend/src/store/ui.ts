@@ -45,6 +45,9 @@ export const useUIStore = defineStore('ui', {
             this.viewMode = mode;
             localStorage.setItem('view-mode', mode);
         },
+        saveTheme(mode: string) {
+            localStorage.setItem('dark-mode', mode);
+        },
         toggleDarkMode() {
             this.isDarkMode = !this.isDarkMode;
             localStorage.setItem('dark-mode', this.isDarkMode.toString());

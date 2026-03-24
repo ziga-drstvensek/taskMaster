@@ -157,7 +157,7 @@ const deleteItem = async (id: number) => {
         <button 
           @click="uiStore.setViewMode('kanban')"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+          :class="uiStore.viewMode === ('kanban' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
         >
           <Columns :size="14" />
           {{ t('common.kanban_view') }}
@@ -165,7 +165,7 @@ const deleteItem = async (id: number) => {
         <button 
           @click="uiStore.setViewMode('table')"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+          :class="uiStore.viewMode === ('table' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
         >
           <List :size="14" />
           {{ t('common.table_view') }}
@@ -315,7 +315,7 @@ const deleteItem = async (id: number) => {
         <button 
           @click="uiStore.setViewMode('kanban')"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+          :class="uiStore.viewMode === ('kanban' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
         >
           <Columns :size="14" />
           {{ t('common.kanban_view') }}
@@ -323,7 +323,7 @@ const deleteItem = async (id: number) => {
         <button 
           @click="uiStore.setViewMode('table')"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+          :class="uiStore.viewMode === ('table' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
         >
           <List :size="14" />
           {{ t('common.table_view') }}
