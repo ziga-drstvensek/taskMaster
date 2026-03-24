@@ -56,21 +56,6 @@ const triggerToast = (msg: string, type: 'info' | 'error' | 'success' = 'info') 
 
 (window as any).triggerToast = triggerToast;
 
-const sprints = ref<Sprint[]>([]);
-
-const fetchSprints = async () => {
-  try {
-    const params: any = {};
-    if (backlogStore.selectedBoardId !== null && backlogStore.selectedBoardId !== -1) {
-      params.boardId = backlogStore.selectedBoardId;
-    }
-    const res = await api.get('/sprints', { params });
-    sprints.value = res.data;
-  } catch (err) {
-    console.error('Failed to fetch sprints');
-  }
-};
-
 const isAnyModalOpen = computed(() => {
   return showAddModal.value || 
          showSprintManager.value || 
@@ -95,7 +80,7 @@ onMounted(async () => {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
     backlogStore.initSignalR();
-    fetchSprints();
+    backlogStore.fetchSprints();
   }
   
   if (localStorage.getItem('session_expired') === 'true') {
@@ -109,12 +94,14 @@ watch(() => authStore.isAuthenticated, async (newVal) => {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
     backlogStore.initSignalR();
-    fetchSprints();
+    backlogStore.fetchSprints();
   }
 });
 
 watch(() => backlogStore.selectedBoardId, () => {
-  fetchSprints();
+  backlogStore.setSelectedSprintId(null);
+  backlogStore.fetchItems();
+  backlogStore.fetchSprints();
 });
 
 const handleLogout = () => {
@@ -354,8 +341,8 @@ onMounted(() => {
                 <span class="text-slate-700 dark:text-slate-200 font-medium truncate">
                   {{ backlogStore.selectedSprintId === null 
                     ? $t('common.allSprints') 
-                    : (sprints.find(s => s.id === backlogStore.selectedSprintId)?.name || $t('common.allSprints')) 
-                      + (sprints.find(s => s.id === backlogStore.selectedSprintId)?.isActive ? ` (${$t('common.active')})` : '')
+                    : (backlogStore.sprints.find(s => s.id === backlogStore.selectedSprintId)?.name || $t('common.allSprints')) 
+                      + (backlogStore.sprints.find(s => s.id === backlogStore.selectedSprintId)?.isActive ? ` (${$t('common.active')})` : '')
                   }}
                 </span>
                 <ChevronDown 
@@ -386,7 +373,7 @@ onMounted(() => {
                       <Check v-if="backlogStore.selectedSprintId === null" :size="16" class="text-indigo-600 dark:text-indigo-400" />
                     </li>
                     <li
-                      v-for="s in sprints"
+                      v-for="s in backlogStore.sprints"
                       :key="s.id"
                       @click="backlogStore.selectedSprintId = s.id; showSprintDropdown = false"
                       class="px-4 py-2.5 cursor-pointer flex items-center justify-between gap-2 transition-colors duration-100"

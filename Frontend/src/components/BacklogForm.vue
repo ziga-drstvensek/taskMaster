@@ -39,8 +39,8 @@ const filteredColumns = computed(() => {
 
 const filteredSprints = computed(() => {
   const currentBoardId = boardId.value === '' ? null : parseInt(boardId.value.toString());
-  if (currentBoardId === null) return sprints.value;
-  return sprints.value.filter(s => s.boardId === currentBoardId || s.boardId === null);
+  if (currentBoardId === null) return backlogStore.sprints;
+  return backlogStore.sprints.filter(s => s.boardId === currentBoardId || s.boardId === null);
 });
 
 watch(boardId, (newBoardId) => {
@@ -60,7 +60,7 @@ watch(boardId, (newBoardId) => {
   // Same for sprint
   if (sprintId.value !== '') {
     const currentSprintId = parseInt(sprintId.value.toString());
-    const boardSprints = sprints.value.filter(s => s.boardId === currentBoardId || s.boardId === null);
+    const boardSprints = backlogStore.sprints.filter(s => s.boardId === currentBoardId || s.boardId === null);
     const isSprintValid = boardSprints.some(s => s.id === currentSprintId);
     
     if (!isSprintValid) {
@@ -75,7 +75,6 @@ const isExpanded = ref(false);
 
 const localItem = ref<BacklogItem | null>(props.item || null);
 
-const sprints = ref<Sprint[]>([]);
 const users = ref<string[]>([]);
 const uploading = ref(false);
 
@@ -107,12 +106,11 @@ onMounted(async () => {
 
   try {
     const currentBoardId = boardId.value === '' ? null : parseInt(boardId.value.toString());
-    const [sprintsRes, usersRes] = await Promise.all([
-      api.get('/sprints'),
+    const [usersRes] = await Promise.all([
       api.get('/auth/users'),
-      columnStore.fetchColumns(currentBoardId)
+      columnStore.fetchColumns(currentBoardId),
+      backlogStore.fetchSprints()
     ]);
-    sprints.value = sprintsRes.data;
     users.value = usersRes.data;
     
     // Če imamo stolpce v trgovini, a še nimamo izbranega stolpca (npr. pri ustvarjanju novega)

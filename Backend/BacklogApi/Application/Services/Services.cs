@@ -432,10 +432,12 @@ public class ColumnService : IColumnService
 public class SprintService : ISprintService
 {
     private readonly ISprintRepository _repository;
+    private readonly IHubContext<Infrastructure.Hubs.BacklogHub> _hubContext;
 
-    public SprintService(ISprintRepository repository)
+    public SprintService(ISprintRepository repository, IHubContext<Infrastructure.Hubs.BacklogHub> hubContext)
     {
         _repository = repository;
+        _hubContext = hubContext;
     }
 
     public async Task<IEnumerable<SprintDto>> GetAllAsync(int? boardId = null)
@@ -463,6 +465,7 @@ public class SprintService : ISprintService
 
         await _repository.AddAsync(sprint);
         await _repository.SaveChangesAsync();
+        await _hubContext.Clients.All.SendAsync("SprintsUpdated");
         return MapToDto(sprint);
     }
 
@@ -479,6 +482,7 @@ public class SprintService : ISprintService
 
         _repository.Update(sprint);
         await _repository.SaveChangesAsync();
+        await _hubContext.Clients.All.SendAsync("SprintsUpdated");
         return true;
     }
 
@@ -489,6 +493,7 @@ public class SprintService : ISprintService
 
         _repository.Delete(sprint);
         await _repository.SaveChangesAsync();
+        await _hubContext.Clients.All.SendAsync("SprintsUpdated");
         return true;
     }
 

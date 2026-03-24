@@ -19,22 +19,6 @@ const startDate = ref('');
 const endDate = ref('');
 const isActive = ref(true);
 
-const fetchSprints = async () => {
-  loading.value = true;
-  try {
-    const params: any = {};
-    if (backlogStore.selectedBoardId !== null && backlogStore.selectedBoardId !== -1 && backlogStore.selectedBoardId !== 0) {
-      params.boardId = backlogStore.selectedBoardId;
-    }
-    const response = await api.get('/sprints', { params });
-    sprints.value = response.data;
-  } catch (err) {
-    console.error('Failed to fetch sprints');
-  } finally {
-    loading.value = false;
-  }
-};
-
 const resetForm = () => {
   editingSprintId.value = null;
   name.value = '';
@@ -77,7 +61,6 @@ const handleSubmit = async () => {
       await api.post('/sprints', data);
       triggerToast(t('common.success.created'), 'success');
     }
-    await fetchSprints();
     resetForm();
   } catch (err) {
     triggerToast(t('sprints.save_error'), 'error');
@@ -88,17 +71,16 @@ const deleteSprint = async (id: number) => {
   if (!confirm(t('sprints.delete_confirm'))) return;
   try {
     await api.delete(`/sprints/${id}`);
-    await fetchSprints();
     triggerToast(t('common.success.deleted'), 'success');
   } catch (err) {
     triggerToast(t('sprints.delete_error'), 'error');
   }
 };
 
-onMounted(fetchSprints);
-
-watch(() => backlogStore.selectedBoardId, () => {
-  fetchSprints();
+onMounted(() => {
+  if (backlogStore.sprints.length === 0) {
+    backlogStore.fetchSprints();
+  }
 });
 </script>
 
@@ -149,7 +131,7 @@ watch(() => backlogStore.selectedBoardId, () => {
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-2">
         <Calendar class="text-slate-400 dark:text-slate-500" :size="18" />
-        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.sprints') }} ({{ sprints.length }})</span>
+        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.sprints') }} ({{ backlogStore.sprints.length }})</span>
       </div>
       <button 
         v-if="!showForm"
@@ -165,7 +147,7 @@ watch(() => backlogStore.selectedBoardId, () => {
       <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     
-    <div v-else-if="sprints.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+    <div v-else-if="backlogStore.sprints.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
       <Calendar class="mx-auto text-slate-300 mb-2" :size="48" />
       <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">{{ $t('sprints.no_sprints') }}</p>
     </div>
@@ -181,7 +163,7 @@ watch(() => backlogStore.selectedBoardId, () => {
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
-          <tr v-for="s in sprints" :key="s.id" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
+          <tr v-for="s in backlogStore.sprints" :key="s.id" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
             <td class="px-6 py-4">
                <span class="font-bold text-slate-700 dark:text-slate-200 tracking-tight">{{ s.name }}</span>
             </td>

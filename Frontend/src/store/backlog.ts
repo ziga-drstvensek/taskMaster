@@ -11,12 +11,25 @@ export const useBacklogStore = defineStore('backlog', {
         loading: false,
         error: null as string | null,
         selectedSprintId: null as number | null,
-        selectedDashboardId: localStorage.getItem('selectedDashboardId') || 'all'
+        selectedDashboardId: localStorage.getItem('selectedDashboardId') || 'all',
+        sprints: [] as Sprint[]
     }),
     actions: {
         setSelectedDashboardId(id: string) {
             this.selectedDashboardId = id;
             localStorage.setItem('selectedDashboardId', id);
+        },
+        async fetchSprints() {
+            try {
+                const params: any = {};
+                if (this.selectedBoardId !== null && this.selectedBoardId !== -1) {
+                    params.boardId = this.selectedBoardId;
+                }
+                const response = await api.get('/sprints', { params });
+                this.sprints = response.data;
+            } catch (err) {
+                console.error('Failed to fetch sprints');
+            }
         },
         async fetchBoards() {
             try {
@@ -49,6 +62,7 @@ export const useBacklogStore = defineStore('backlog', {
                 localStorage.setItem('selectedBoardId', id.toString());
             }
             this.fetchItems();
+            this.fetchSprints();
         },
         async fetchItems() {
             this.loading = true;
@@ -83,6 +97,9 @@ export const useBacklogStore = defineStore('backlog', {
             signalRService.start();
             signalRService.onItemsUpdated(() => {
                 this.fetchItems();
+            });
+            signalRService.onSprintsUpdated(() => {
+                this.fetchSprints();
             });
         },
         setSelectedSprintId(id: number | null) {

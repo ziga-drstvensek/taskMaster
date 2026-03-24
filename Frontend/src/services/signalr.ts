@@ -2,7 +2,8 @@ import * as signalR from '@microsoft/signalr';
 
 class SignalRService {
     private connection: signalR.HubConnection | null = null;
-    private callbacks: (() => void)[] = [];
+    private itemsCallbacks: (() => void)[] = [];
+    private sprintsCallbacks: (() => void)[] = [];
 
     constructor() {
         const isElectron = !!(window && (window as any).electron);
@@ -20,7 +21,12 @@ class SignalRService {
 
         this.connection.on('ItemsUpdated', () => {
             console.log('SignalR: ItemsUpdated received');
-            this.callbacks.forEach(cb => cb());
+            this.itemsCallbacks.forEach(cb => cb());
+        });
+
+        this.connection.on('SprintsUpdated', () => {
+            console.log('SignalR: SprintsUpdated received');
+            this.sprintsCallbacks.forEach(cb => cb());
         });
     }
 
@@ -37,7 +43,11 @@ class SignalRService {
     }
 
     onItemsUpdated(callback: () => void) {
-        this.callbacks.push(callback);
+        this.itemsCallbacks.push(callback);
+    }
+
+    onSprintsUpdated(callback: () => void) {
+        this.sprintsCallbacks.push(callback);
     }
 }
 
