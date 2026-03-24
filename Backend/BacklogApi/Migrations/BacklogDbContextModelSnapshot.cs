@@ -110,7 +110,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<int>("BacklogItemId")
                         .HasColumnType("int");
@@ -146,7 +146,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<string>("AssignedTo")
                         .HasColumnType("longtext");
@@ -208,7 +208,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<int>("BacklogItemId")
                         .HasColumnType("int");
@@ -240,7 +240,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -263,7 +263,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -292,7 +292,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -321,7 +321,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -352,7 +352,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<bool>("EnableSsl")
                         .HasColumnType("tinyint(1)");
@@ -420,7 +420,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("longtext");
@@ -445,7 +445,7 @@ namespace BacklogApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.AutoIncrementColumns(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("longtext");
