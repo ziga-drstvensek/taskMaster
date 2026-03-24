@@ -11,7 +11,10 @@ class SignalRService {
             : (import.meta.env.VITE_HUB_URL || '/backlogHub');
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUrl)
+            .withUrl(hubUrl, {
+                transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+                skipNegotiation: false
+            })
             .withAutomaticReconnect()
             .build();
 
