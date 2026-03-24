@@ -6,7 +6,7 @@ import { BacklogItemPriority, BacklogItemStatus } from '../types';
 import { useBacklogStore } from '../store/backlog';
 import { useColumnStore } from '../store/column';
 import api from '../services/api';
-import { X, Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock } from 'lucide-vue-next';
+import { X, Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock, ChevronDown, ChevronRight } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import BaseDatePicker from './common/BaseDatePicker.vue';
 import BaseSelect from './common/BaseSelect.vue';
@@ -72,6 +72,7 @@ const sprintId = ref<number | string>(props.item?.sprintId ?? props.defaultSprin
 const assignedTo = ref(props.item?.assignedTo || '');
 const dueDate = ref(props.item?.dueDate ? props.item.dueDate.split('T')[0] : '');
 const isExpanded = ref(false);
+const isHistoryExpanded = ref(false);
 
 const localItem = ref<BacklogItem | null>(props.item || null);
 
@@ -388,10 +389,21 @@ const handleSubmit = async () => {
 
           <!-- History Section moved to the very end of content -->
           <div v-if="history.length > 0" class="space-y-3 pt-4 border-t border-slate-200/60 dark:border-slate-800">
-            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <History :size="14" /> {{ $t('common.history') }}
-            </label>
-            <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+            <button 
+              type="button"
+              @click="isHistoryExpanded = !isHistoryExpanded"
+              class="w-full flex items-center justify-between group/h-header"
+            >
+              <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5 cursor-pointer group-hover/h-header:text-indigo-600 dark:group-hover/h-header:text-indigo-400 transition-colors">
+                <History :size="14" /> {{ $t('common.history') }} ({{ history.length }})
+              </label>
+              <div class="text-slate-400 group-hover/h-header:text-indigo-500 transition-colors">
+                <ChevronDown v-if="isHistoryExpanded" :size="16" />
+                <ChevronRight v-else :size="16" />
+              </div>
+            </button>
+            
+            <div v-if="isHistoryExpanded" class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               <div v-for="h in history" :key="h.id" class="relative pl-6 pb-1 group/h">
                 <!-- Timeline line -->
                 <div class="absolute left-2 top-2 bottom-0 w-px bg-slate-200 dark:bg-slate-800 group-last/h:bg-transparent"></div>
