@@ -169,7 +169,8 @@ const messages = {
         testPlaceholder: "recipient{'@'}example.com",
         testButton: 'Send Test Email',
         testSuccess: 'Test email sent successfully!',
-        testError: 'Failed to send test email. Check your settings.'
+        testError: 'Failed to send test email. Check your settings.',
+        mailtrapGuideTitle: 'Mailtrap Quick Config'
       }
     },
     dashboard: {
@@ -346,7 +347,8 @@ const messages = {
         testPlaceholder: "prejemnik{'@'}primer.si",
         testButton: 'Pošlji testno e-pošto',
         testSuccess: 'Testna e-pošta je bila uspešno poslana!',
-        testError: 'Pošiljanje testne e-pošte ni uspelo. Preverite nastavitve.'
+        testError: 'Pošiljanje testne e-pošte ni uspelo. Preverite nastavitve.',
+        mailtrapGuideTitle: 'Mailtrap hitra nastavitev'
       }
     },
     dashboard: {

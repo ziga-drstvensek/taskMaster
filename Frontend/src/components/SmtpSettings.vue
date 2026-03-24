@@ -68,6 +68,7 @@ const testSettings = async () => {
     if (!payload.password) delete (payload as any).password;
     await api.post('/settings/smtp', payload);
     
+    console.log('Testing SMTP with email:', testEmail.value);
     await api.post('/settings/smtp/test', JSON.stringify(testEmail.value), {
         headers: { 'Content-Type': 'application/json' }
     });
@@ -101,6 +102,21 @@ onMounted(fetchSettings);
 
     <form v-else @submit.prevent="saveSettings" class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="col-span-full bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
+          <h5 class="text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+            <Server :size="16" />
+            {{ t('settings.smtp.mailtrapGuideTitle') }}
+          </h5>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" @click="settings.host = 'sandbox.smtp.mailtrap.io'; settings.port = 2525; settings.enableSsl = true" class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 rounded hover:bg-blue-200 transition-colors">
+              Mailtrap (2525)
+            </button>
+            <button type="button" @click="settings.host = 'sandbox.smtp.mailtrap.io'; settings.port = 587; settings.enableSsl = true" class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 rounded hover:bg-blue-200 transition-colors">
+              Mailtrap (587)
+            </button>
+          </div>
+        </div>
+
         <div class="space-y-2">
           <label class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
             <Server :size="16" />

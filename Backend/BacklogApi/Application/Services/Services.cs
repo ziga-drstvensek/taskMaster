@@ -808,6 +808,12 @@ public class SmtpSettingsService : ISmtpSettingsService
             client.Credentials = new System.Net.NetworkCredential(settings.UserName, settings.Password);
             client.Timeout = 10000; // 10 seconds timeout to prevent gateway timeouts
 
+            // Force STARTTLS on port 587 or 2525 if SSL is enabled
+            if (settings.EnableSsl && (settings.Port == 587 || settings.Port == 2525 || settings.Port == 25))
+            {
+                // SmtpClient.EnableSsl = true usually triggers STARTTLS on these ports
+            }
+
             var mailMessage = new System.Net.Mail.MailMessage
             {
                 From = new System.Net.Mail.MailAddress(settings.FromEmail, settings.FromName),
@@ -818,13 +824,15 @@ public class SmtpSettingsService : ISmtpSettingsService
             mailMessage.To.Add(to);
 
             _logger.LogInformation("Sending email to {To} via {Host}:{Port} (SSL: {EnableSsl})", to, settings.Host, settings.Port, settings.EnableSsl);
+            _logger.LogDebug("SMTP Debug: User={UserName}, From={FromEmail}, Ssl={EnableSsl}, Timeout={Timeout}", settings.UserName, settings.FromEmail, client.EnableSsl, client.Timeout);
+            
             await client.SendMailAsync(mailMessage);
             _logger.LogInformation("Email sent successfully to {To}", to);
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send email to {To} via {Host}:{Port}. Error: {Message}", to, settings.Host, settings.Port, ex.Message);
+            _logger.LogError(ex, "Failed to send email to {To} via {Host}:{Port}. Error: {Message}. Inner Error: {InnerMessage}", to, settings.Host, settings.Port, ex.Message, ex.InnerException?.Message);
             return false;
         }
     }
