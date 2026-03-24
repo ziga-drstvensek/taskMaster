@@ -97,6 +97,14 @@ const allItems = computed(() => {
     items = items.filter(i => !i.assignedTo);
   }
 
+  if (backlogStore.searchQuery) {
+    const query = backlogStore.searchQuery.toLowerCase();
+    items = items.filter(i => 
+      i.title.toLowerCase().includes(query) || 
+      (i.description && i.description.toLowerCase().includes(query))
+    );
+  }
+
   return items;
 });
 

@@ -14,7 +14,7 @@ import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
 import api from './services/api';
 import type { Sprint } from './types';
-import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -108,6 +108,10 @@ const handleLogout = () => {
   authStore.logout();
 };
 
+const clearSearch = () => {
+  backlogStore.setSearchQuery('');
+};
+
 const toggleLanguage = () => {
   locale.value = locale.value === 'en' ? 'sl' : 'en';
   localStorage.setItem('user-locale', locale.value);
@@ -139,6 +143,18 @@ onMounted(() => {
         <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
           {{ $t('common.backlog') }}
         </h1>
+        <div class="ml-4 flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-1.5 border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all w-64 group/search">
+          <Search :size="16" class="text-slate-400 mr-2 group-focus-within/search:text-indigo-500 transition-colors" />
+          <input 
+            type="text" 
+            v-model="backlogStore.searchQuery"
+            :placeholder="$t('common.search_placeholder')"
+            class="bg-transparent border-none outline-none text-sm w-full text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+          />
+          <button v-if="backlogStore.searchQuery" @click="clearSearch" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            <X :size="14" />
+          </button>
+        </div>
         <button 
           @click="showAddModal = true"
           class="ml-4 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"

@@ -1,4 +1,5 @@
 using BacklogApi.Application.DTOs;
+using BacklogApi.Application.Services;
 using BacklogApi.Core.Entities;
 using BacklogApi.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;

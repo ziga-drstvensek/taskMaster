@@ -63,13 +63,13 @@ onUnmounted(() => {
         type="button"
         @click="toggleDropdown"
         :disabled="disabled"
-        class="w-full px-4 py-2.5 text-left border rounded-lg outline-none transition-all duration-200 flex items-center justify-between gap-2 bg-white dark:bg-slate-800"
+        class="input-field text-left flex items-center justify-between gap-2"
         :class="[
           error 
             ? 'border-rose-400 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500' 
             : isOpen 
               ? 'border-indigo-400 dark:border-indigo-500 ring-2 ring-indigo-500/20' 
-              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 dark:focus:border-indigo-500',
+              : '',
           disabled ? 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-600 cursor-not-allowed' : 'cursor-pointer'
         ]"
       >

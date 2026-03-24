@@ -12,9 +12,13 @@ export const useBacklogStore = defineStore('backlog', {
         error: null as string | null,
         selectedSprintId: null as number | null,
         selectedDashboardId: localStorage.getItem('selectedDashboardId') || 'all',
-        sprints: [] as Sprint[]
+        sprints: [] as Sprint[],
+        searchQuery: ''
     }),
     actions: {
+        setSearchQuery(query: string) {
+            this.searchQuery = query;
+        },
         setSelectedDashboardId(id: string) {
             this.selectedDashboardId = id;
             localStorage.setItem('selectedDashboardId', id);
