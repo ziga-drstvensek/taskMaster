@@ -18,6 +18,7 @@ public class BacklogDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Attachment> Attachments { get; set; }
     public DbSet<Board> Boards { get; set; }
     public DbSet<BacklogItemHistory> History { get; set; }
+    public DbSet<SmtpSettings> SmtpSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

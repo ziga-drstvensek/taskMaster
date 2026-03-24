@@ -61,6 +61,13 @@ public interface IBoardService
     Task<bool> DeleteAsync(int id);
 }
 
+public interface ISmtpSettingsService
+{
+    Task<SmtpSettingsDto?> GetSettingsAsync();
+    Task<bool> UpdateSettingsAsync(UpdateSmtpSettingsDto dto);
+    Task<bool> SendEmailAsync(string to, string subject, string body);
+}
+
 public class BacklogService : IBacklogService
 {
     private readonly IBacklogRepository _repository;
@@ -726,4 +733,86 @@ public class BoardService : IBoardService
         b.Users.Select(u => u.UserName!),
         b.Columns.OrderBy(c => c.Order).Select(c => new BoardColumnDto(c.Id, c.Name, c.Order, c.Color, c.BoardId))
     );
+}
+
+public class SmtpSettingsService : ISmtpSettingsService
+{
+    private readonly BacklogDbContext _context;
+
+    public SmtpSettingsService(BacklogDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<SmtpSettingsDto?> GetSettingsAsync()
+    {
+        var settings = await _context.SmtpSettings.FirstOrDefaultAsync();
+        if (settings == null) return null;
+        
+        return new SmtpSettingsDto(
+            settings.Id,
+            settings.Host,
+            settings.Port,
+            settings.UserName,
+            null, // Don't return password
+            settings.EnableSsl,
+            settings.FromEmail,
+            settings.FromName,
+            settings.UpdatedAt
+        );
+    }
+
+    public async Task<bool> UpdateSettingsAsync(UpdateSmtpSettingsDto dto)
+    {
+        var settings = await _context.SmtpSettings.FirstOrDefaultAsync();
+        if (settings == null)
+        {
+            settings = new SmtpSettings();
+            _context.SmtpSettings.Add(settings);
+        }
+
+        settings.Host = dto.Host;
+        settings.Port = dto.Port;
+        settings.UserName = dto.UserName;
+        if (!string.IsNullOrEmpty(dto.Password))
+        {
+            settings.Password = dto.Password;
+        }
+        settings.EnableSsl = dto.EnableSsl;
+        settings.FromEmail = dto.FromEmail;
+        settings.FromName = dto.FromName;
+        settings.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> SendEmailAsync(string to, string subject, string body)
+    {
+        var settings = await _context.SmtpSettings.FirstOrDefaultAsync();
+        if (settings == null || string.IsNullOrEmpty(settings.Host)) return false;
+
+        try
+        {
+            using var client = new System.Net.Mail.SmtpClient(settings.Host, settings.Port);
+            client.EnableSsl = settings.EnableSsl;
+            client.Credentials = new System.Net.NetworkCredential(settings.UserName, settings.Password);
+
+            var mailMessage = new System.Net.Mail.MailMessage
+            {
+                From = new System.Net.Mail.MailAddress(settings.FromEmail, settings.FromName),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            mailMessage.To.Add(to);
+
+            await client.SendMailAsync(mailMessage);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

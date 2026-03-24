@@ -137,3 +137,25 @@ public record LoginDto(string Username, string Password);
 public record RegisterDto(string Username, string Email, string Password);
 public record UpdateUserDto(string Username, string Email, string? Password, string Role, string? Tags);
 public record AuthResponseDto(string Token, string Username, string Role);
+
+public record SmtpSettingsDto(
+    int Id,
+    string Host,
+    int Port,
+    string UserName,
+    string? Password,
+    bool EnableSsl,
+    string FromEmail,
+    string FromName,
+    DateTime UpdatedAt
+);
+
+public record UpdateSmtpSettingsDto(
+    string Host,
+    int Port,
+    string UserName,
+    string? Password,
+    bool EnableSsl,
+    string FromEmail,
+    string FromName
+);

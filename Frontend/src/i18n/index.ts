@@ -91,6 +91,7 @@ const messages = {
       close: 'Close',
       settings: 'Settings',
       appearance: 'Appearance',
+      mailing: 'Mailing',
       font_size: 'Font Size',
       font_family: 'Font Family',
       small: 'Small',
@@ -146,6 +147,27 @@ const messages = {
       no_users: 'No users found.',
       delete_confirm: 'Are you sure you want to delete this user?',
       password_hint: 'Leave empty if you do not want to change',
+    },
+    settings: {
+      smtp: {
+        title: 'SMTP Settings',
+        description: 'Configure your SMTP server to enable email notifications.',
+        host: 'SMTP Host',
+        port: 'Port',
+        userName: 'Username',
+        password: 'Password',
+        passwordHelp: 'Leave empty to keep existing password.',
+        fromEmail: 'From Email',
+        fromName: 'From Name',
+        enableSsl: 'Enable SSL/TLS',
+        saveSuccess: 'SMTP settings saved successfully.',
+        saveError: 'Failed to save SMTP settings.',
+        testTitle: 'Test Connection',
+        testPlaceholder: 'recipient@example.com',
+        testButton: 'Send Test Email',
+        testSuccess: 'Test email sent successfully!',
+        testError: 'Failed to send test email. Check your settings.'
+      }
     },
     dashboard: {
       all: 'All Tasks',
@@ -243,6 +265,7 @@ const messages = {
       close: 'Zapri',
       settings: 'Nastavitve',
       appearance: 'Videz',
+      mailing: 'E-pošta',
       font_size: 'Velikost pisave',
       font_family: 'Vrsta pisave',
       small: 'Majhna',
@@ -298,6 +321,27 @@ const messages = {
       no_users: 'Ni najdenih uporabnikov.',
       delete_confirm: 'Ali ste prepričani, da želite izbrisati tega uporabnika?',
       password_hint: 'Pustite prazno, če ne želite spremeniti',
+    },
+    settings: {
+      smtp: {
+        title: 'SMTP Nastavitve',
+        description: 'Konfigurirajte SMTP strežnik za omogočanje e-poštnih obvestil.',
+        host: 'SMTP Gostitelj',
+        port: 'Vrata (Port)',
+        userName: 'Uporabniško ime',
+        password: 'Geslo',
+        passwordHelp: 'Pustite prazno, če želite ohraniti obstoječe geslo.',
+        fromEmail: 'E-pošta pošiljatelja',
+        fromName: 'Ime pošiljatelja',
+        enableSsl: 'Omogoči SSL/TLS',
+        saveSuccess: 'SMTP nastavitve so bile uspešno shranjene.',
+        saveError: 'Napaka pri shranjevanju SMTP nastavitev.',
+        testTitle: 'Preizkus povezave',
+        testPlaceholder: 'prejemnik@primer.si',
+        testButton: 'Pošlji testno e-pošto',
+        testSuccess: 'Testna e-pošta je bila uspešno poslana!',
+        testError: 'Pošiljanje testne e-pošte ni uspelo. Preverite nastavitve.'
+      }
     },
     dashboard: {
       all: 'Vsa opravila',
