@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useUIStore } from '../store/ui';
-import { Type, Check } from 'lucide-vue-next';
+import { Type, Check, Type as FontIcon } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const uiStore = useUIStore();
@@ -12,13 +12,25 @@ const fontSizes = [
   { id: 'large', name: t('common.large'), class: 'text-lg' }
 ] as const;
 
+const fontFamilies = [
+  { id: 'sans', name: t('common.fonts.sans'), class: 'font-sans' },
+  { id: 'serif', name: t('common.fonts.serif'), class: 'font-serif' },
+  { id: 'mono', name: t('common.fonts.mono'), class: 'font-mono' },
+  { id: 'display', name: t('common.fonts.display'), class: 'font-display' }
+] as const;
+
 const setFontSize = (size: 'small' | 'medium' | 'large') => {
   uiStore.setFontSize(size);
+};
+
+const setFontFamily = (font: string) => {
+  uiStore.setFontFamily(font);
 };
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-8">
+    <!-- Font Size -->
     <div>
       <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
         <Type :size="20" class="text-indigo-600" />
@@ -53,9 +65,44 @@ const setFontSize = (size: 'small' | 'medium' | 'large') => {
       </div>
     </div>
 
+    <!-- Font Family -->
+    <div>
+      <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+        <FontIcon :size="20" class="text-indigo-600" />
+        {{ $t('common.font_family') }}
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          v-for="font in fontFamilies"
+          :key="font.id"
+          @click="setFontFamily(font.id)"
+          class="flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left"
+          :class="uiStore.fontFamily === font.id
+            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
+            : 'border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 bg-white dark:bg-slate-900'"
+        >
+          <div class="flex flex-col">
+            <span class="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">
+              {{ font.id.toUpperCase() }}
+            </span>
+            <span :class="font.class" class="text-base font-medium text-slate-700 dark:text-slate-200">
+              {{ font.name }}
+            </span>
+          </div>
+          <div 
+            v-if="uiStore.fontFamily === font.id"
+            class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white"
+          >
+            <Check :size="14" />
+          </div>
+        </button>
+      </div>
+    </div>
+
     <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
       <p class="text-sm text-slate-500 dark:text-slate-400 italic">
-        {{ $t('common.font_size') }}: {{ $t(`common.${uiStore.fontSize}`) }}
+        {{ $t('common.appearance') }}: {{ $t(`common.${uiStore.fontSize}`) }}, {{ fontFamilies.find(f => f.id === uiStore.fontFamily)?.name }}
       </p>
     </div>
   </div>

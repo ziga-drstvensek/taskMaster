@@ -91,9 +91,16 @@ const messages = {
       settings: 'Settings',
       appearance: 'Appearance',
       font_size: 'Font Size',
+      font_family: 'Font Family',
       small: 'Small',
       medium: 'Medium',
-      large: 'Large'
+      large: 'Large',
+      fonts: {
+        sans: 'Sans Serif (Inter)',
+        serif: 'Serif (Lora)',
+        mono: 'Monospace (JetBrains Mono)',
+        display: 'Display (Lexend)'
+      }
     },
     auth: {
       login_btn: 'Log In',
@@ -233,9 +240,16 @@ const messages = {
       settings: 'Nastavitve',
       appearance: 'Videz',
       font_size: 'Velikost pisave',
+      font_family: 'Vrsta pisave',
       small: 'Majhna',
       medium: 'Srednja',
-      large: 'Velika'
+      large: 'Velika',
+      fonts: {
+        sans: 'Brezserifna (Inter)',
+        serif: 'Serifna (Lora)',
+        mono: 'Široka (JetBrains Mono)',
+        display: 'Naslovna (Lexend)'
+      }
     },
     auth: {
       login_btn: 'Prijavi se',

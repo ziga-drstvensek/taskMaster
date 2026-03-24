@@ -75,6 +75,7 @@ onMounted(async () => {
   }
   uiStore.applyTheme();
   uiStore.applyFontSize();
+  uiStore.applyFontFamily();
   if (authStore.isAuthenticated) {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
@@ -152,39 +153,12 @@ onMounted(() => {
           <button 
             @click="initialSettingsTab = 'boards'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'boards' }"
-            :title="$t('common.boards')"
-          >
-            <Trello :size="18" />
-            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.boards') }}</span>
-          </button>
-          
-          <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
-
-          <button 
-            @click="initialSettingsTab = 'sprints'; showSettingsManager = true"
-            class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'sprints' }"
-            :title="$t('common.sprints')"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager }"
+            :title="$t('common.settings')"
           >
             <Settings :size="18" />
-            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.sprints') }}</span>
+            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.settings') }}</span>
           </button>
-          
-          <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
-
-          <button 
-            v-if="authStore.isAdmin"
-            @click="initialSettingsTab = 'users'; showSettingsManager = true"
-            class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'users' }"
-            :title="$t('common.users')"
-          >
-            <Users :size="18" />
-            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.users') }}</span>
-          </button>
-
-          <div v-if="authStore.isAdmin" class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-4"></div>
         </div>
 
         <div class="hidden sm:flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
