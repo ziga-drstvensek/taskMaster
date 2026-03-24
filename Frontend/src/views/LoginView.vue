@@ -88,7 +88,9 @@ const seedAdmin = async () => {
           </button>
         </div>
       </div>
-      
+      <p class="text-center text-slate-400 dark:text-slate-500 text-xs mt-8">
+       Version: 1.0.0
+      </p>
       <p class="text-center text-slate-400 dark:text-slate-500 text-xs mt-8">
         &copy; 2026 Backlog Systems. {{ $t('common.rights') }}
       </p>
