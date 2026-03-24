@@ -9,6 +9,7 @@ import BacklogForm from './components/BacklogForm.vue';
 import SprintManager from './components/SprintManager.vue';
 import UserManager from './components/UserManager.vue';
 import BoardManager from './components/BoardManager.vue';
+import SettingsManager from './components/SettingsManager.vue';
 import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
 import api from './services/api';
@@ -21,9 +22,8 @@ const uiStore = useUIStore();
 const { locale, t } = useI18n();
 
 const showAddModal = ref(false);
-const showSprintManager = ref(false);
-const showUserManager = ref(false);
-const showBoardManager = ref(false);
+const showSettingsManager = ref(false);
+const initialSettingsTab = ref<'sprints' | 'users' | 'boards'>('boards');
 const showBoardDropdown = ref(false);
 const showSprintDropdown = ref(false);
 
@@ -58,9 +58,7 @@ const triggerToast = (msg: string, type: 'info' | 'error' | 'success' = 'info') 
 
 const isAnyModalOpen = computed(() => {
   return showAddModal.value || 
-         showSprintManager.value || 
-         showUserManager.value || 
-         showBoardManager.value || 
+         showSettingsManager.value || 
          uiStore.isModalOpen;
 });
 
@@ -76,6 +74,7 @@ onMounted(async () => {
     uiStore.isDarkMode = savedDarkMode === 'true';
   }
   uiStore.applyTheme();
+  uiStore.applyFontSize();
   if (authStore.isAuthenticated) {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
@@ -151,9 +150,9 @@ onMounted(() => {
       <div class="flex items-center gap-4">
         <div v-if="authStore.isManager" class="hidden lg:flex items-center">
           <button 
-            @click="showBoardManager = !showBoardManager; showSprintManager = false; showUserManager = false"
+            @click="initialSettingsTab = 'boards'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showBoardManager }"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'boards' }"
             :title="$t('common.boards')"
           >
             <Trello :size="18" />
@@ -163,9 +162,9 @@ onMounted(() => {
           <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
 
           <button 
-            @click="showSprintManager = !showSprintManager; showUserManager = false; showBoardManager = false"
+            @click="initialSettingsTab = 'sprints'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSprintManager }"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'sprints' }"
             :title="$t('common.sprints')"
           >
             <Settings :size="18" />
@@ -176,9 +175,9 @@ onMounted(() => {
 
           <button 
             v-if="authStore.isAdmin"
-            @click="showUserManager = !showUserManager; showSprintManager = false; showBoardManager = false"
+            @click="initialSettingsTab = 'users'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showUserManager }"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager && initialSettingsTab === 'users' }"
             :title="$t('common.users')"
           >
             <Users :size="18" />
@@ -411,34 +410,13 @@ onMounted(() => {
     <BacklogForm v-if="showAddModal" @close="showAddModal = false" />
     
     <BaseModal 
-      :show="showSprintManager" 
-      @close="showSprintManager = false"
-      :title="$t('sprints.manage')"
-      maxWidth="800px"
+      :show="showSettingsManager" 
+      @close="showSettingsManager = false"
+      :title="$t('common.settings')"
+      maxWidth="1100px"
       persistent
     >
-      <SprintManager />
-    </BaseModal>
-
-
-    <BaseModal 
-      :show="showUserManager" 
-      @close="showUserManager = false"
-      :title="$t('users_mng.manage')"
-      maxWidth="800px"
-      persistent
-    >
-      <UserManager />
-    </BaseModal>
-
-    <BaseModal 
-      :show="showBoardManager" 
-      @close="showBoardManager = false"
-      :title="$t('common.manage_boards')"
-      maxWidth="800px"
-      persistent
-    >
-      <BoardManager />
+      <SettingsManager :initialTab="initialSettingsTab" />
     </BaseModal>
 
     <!-- Toast -->

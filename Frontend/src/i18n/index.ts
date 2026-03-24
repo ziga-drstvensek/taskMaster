@@ -87,7 +87,13 @@ const messages = {
       kanban_view: 'Kanban View',
       select_date: 'Select date',
       today: 'Today',
-      close: 'Close'
+      close: 'Close',
+      settings: 'Settings',
+      appearance: 'Appearance',
+      font_size: 'Font Size',
+      small: 'Small',
+      medium: 'Medium',
+      large: 'Large'
     },
     auth: {
       login_btn: 'Log In',
@@ -223,7 +229,13 @@ const messages = {
       kanban_view: 'Kanban prikaz',
       select_date: 'Izberi datum',
       today: 'Danes',
-      close: 'Zapri'
+      close: 'Zapri',
+      settings: 'Nastavitve',
+      appearance: 'Videz',
+      font_size: 'Velikost pisave',
+      small: 'Majhna',
+      medium: 'Srednja',
+      large: 'Velika'
     },
     auth: {
       login_btn: 'Prijavi se',

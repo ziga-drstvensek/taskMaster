@@ -4,12 +4,23 @@ export const useUIStore = defineStore('ui', {
     state: () => ({
         activeModals: 0,
         isDarkMode: localStorage.getItem('dark-mode') === 'true',
-        viewMode: (localStorage.getItem('view-mode') as 'table' | 'kanban') || 'kanban'
+        viewMode: (localStorage.getItem('view-mode') as 'table' | 'kanban') || 'kanban',
+        fontSize: (localStorage.getItem('font-size') as 'small' | 'medium' | 'large') || 'medium'
     }),
     getters: {
         isModalOpen: (state) => state.activeModals > 0
     },
     actions: {
+        setFontSize(size: 'small' | 'medium' | 'large') {
+            this.fontSize = size;
+            localStorage.setItem('font-size', size);
+            this.applyFontSize();
+        },
+        applyFontSize() {
+            const htmlElement = document.documentElement;
+            htmlElement.classList.remove('text-small', 'text-medium', 'text-large');
+            htmlElement.classList.add(`text-${this.fontSize}`);
+        },
         registerModal() {
             this.activeModals++;
         },
