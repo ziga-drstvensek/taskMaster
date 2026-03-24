@@ -634,6 +634,8 @@ public class BoardService : IBoardService
         else
         {
             columnsToCreate.Add(new BoardColumn { Name = "TODO", Order = 1, Color = "#cbd5e1", BoardId = board.Id });
+            columnsToCreate.Add(new BoardColumn { Name = "In Progress", Order = 2, Color = "#6366f1", BoardId = board.Id });
+            columnsToCreate.Add(new BoardColumn { Name = "Done", Order = 3, Color = "#22c55e", BoardId = board.Id });
         }
 
         foreach (var col in columnsToCreate)

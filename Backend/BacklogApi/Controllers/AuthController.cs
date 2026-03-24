@@ -19,12 +19,14 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
+    private readonly IBoardService _boardService;
 
-    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IBoardService boardService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _boardService = boardService;
     }
 
     [HttpPost("register")]
@@ -40,6 +42,22 @@ public class AuthController : ControllerBase
             await _roleManager.CreateAsync(new IdentityRole("User"));
         
         await _userManager.AddToRoleAsync(user, "User");
+
+        // Create personal board for new user
+        try
+        {
+            await _boardService.CreateAsync(new CreateBoardDto(
+                $"Personal Dashboard - {user.UserName}",
+                $"Automatic dashboard for {user.UserName}",
+                new List<string> { user.UserName! },
+                null // Use default columns from BoardService
+            ));
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't fail registration if board creation fails
+            Console.WriteLine($"Failed to create personal board for {user.UserName}: {ex.Message}");
+        }
 
         return Ok(new { Message = "User registered successfully" });
     }

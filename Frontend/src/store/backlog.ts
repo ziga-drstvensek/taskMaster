@@ -39,10 +39,10 @@ export const useBacklogStore = defineStore('backlog', {
                 if (this.selectedBoardId !== null && this.selectedBoardId !== -1) {
                     const exists = this.boards.some(b => b.id === this.selectedBoardId);
                     if (!exists) {
-                        this.selectedBoardId = this.boards.length > 0 ? this.boards[0].id : null;
+                        this.selectedBoardId = this.boards.length > 0 ? this.boards[this.boards.length - 1].id : null;
                     }
                 } else if (this.boards.length > 0 && this.selectedBoardId === null) {
-                    this.selectedBoardId = this.boards[0].id;
+                    this.selectedBoardId = this.boards[this.boards.length - 1].id;
                 }
 
                 if (this.selectedBoardId === null) {
