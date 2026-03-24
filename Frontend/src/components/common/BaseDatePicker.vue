@@ -164,7 +164,7 @@ watch(() => props.modelValue, (newVal) => {
 
 <template>
   <div class="w-full" ref="dropdownRef">
-    <label v-if="label" class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 ml-1 tracking-widest">
+    <label v-if="label" class="label-caps">
       {{ label }} <span v-if="required" class="text-rose-500">*</span>
     </label>
     
@@ -233,7 +233,7 @@ watch(() => props.modelValue, (newVal) => {
           <!-- Calendar Grid -->
           <div class="grid grid-cols-7 gap-1">
             <!-- Day names -->
-            <div v-for="day in weekDays" :key="day" class="text-center py-1 text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-tighter">
+            <div v-for="day in weekDays" :key="day" class="calendar-day-header">
               {{ day }}
             </div>
             
@@ -263,14 +263,14 @@ watch(() => props.modelValue, (newVal) => {
              <button 
                 @click="selectDate({ day: new Date().getDate(), month: new Date().getMonth(), year: new Date().getFullYear() })"
                 type="button"
-                class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 px-3 py-1.5 rounded-lg transition-all"
+                class="text-xxs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 px-3 py-1.5 rounded-lg transition-all"
               >
                 {{ $t('common.today') }}
              </button>
              <button 
                 @click="isOpen = false"
                 type="button"
-                class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 px-3 py-1.5 rounded-lg transition-all"
+                class="text-xxs font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 px-3 py-1.5 rounded-lg transition-all"
               >
                 {{ $t('common.close') }}
              </button>

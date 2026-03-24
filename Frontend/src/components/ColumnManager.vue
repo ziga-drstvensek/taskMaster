@@ -69,15 +69,15 @@ const startEdit = (column: any) => {
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.name') }}</label>
+          <label class="label-caps text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.name') }}</label>
           <input v-model="name" type="text" class="w-full px-4 py-2.5 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white transition-all" :placeholder="$t('columns.name')">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.order') }}</label>
+          <label class="label-caps text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.order') }}</label>
           <input v-model="order" type="number" class="w-full px-4 py-2.5 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white transition-all">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.color') }}</label>
+          <label class="label-caps text-slate-400 mb-1.5 ml-1 tracking-widest">{{ $t('columns.color') }}</label>
           <div class="flex gap-2">
             <input v-model="color" type="color" class="h-10 w-12 border border-slate-200 rounded-xl cursor-pointer p-1 bg-white">
             <button @click="handleAdd" class="bg-indigo-600 text-white px-6 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all flex-1 shadow-lg shadow-indigo-100 active:scale-95">{{ $t('common.save') }}</button>
@@ -145,7 +145,7 @@ const startEdit = (column: any) => {
 
         <div v-if="editingId !== column.id" class="flex items-center gap-4">
           <div class="flex flex-col items-end">
-             <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">{{ $t('columns.order') }}</span>
+             <span class="text-xxs font-black text-slate-300 uppercase tracking-widest">{{ $t('columns.order') }}</span>
              <span class="text-xs font-black text-slate-500">{{ column.order }}</span>
           </div>
           <button @click="handleDelete(column.id)" class="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0" :title="$t('common.delete')">

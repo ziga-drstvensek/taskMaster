@@ -159,7 +159,7 @@ onMounted(() => {
 
       <!-- Stolpci -->
       <div class="space-y-3">
-        <label class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 ml-1 flex items-center gap-1 tracking-widest">
+        <label class="label-caps">
           <LayoutGrid :size="14" /> {{ $t('common.columns') }}
         </label>
         <div class="space-y-2 bg-white/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
@@ -213,7 +213,7 @@ onMounted(() => {
           <button 
             type="button" 
             @click="addColumnToBoard"
-            class="w-full mt-2 py-3 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 hover:border-indigo-300 dark:hover:border-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all flex items-center justify-center gap-2 bg-slate-50/50 dark:bg-slate-900/20"
+            class="w-full mt-2 py-3 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl text-xxs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 hover:border-indigo-300 dark:hover:border-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all flex items-center justify-center gap-2 bg-slate-50/50 dark:bg-slate-900/20"
           >
             <Plus :size="12" /> {{ $t('columns.add') }}
           </button>
@@ -221,7 +221,7 @@ onMounted(() => {
       </div>
 
       <div class="space-y-3">
-        <label class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 ml-1 flex items-center gap-1 tracking-widest">
+        <label class="label-caps">
           <Users :size="14" /> {{ $t('common.assignee') }}
         </label>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 bg-white/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-[120px]">
@@ -236,7 +236,7 @@ onMounted(() => {
               : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
           >
             <div 
-              class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black uppercase flex-shrink-0 transition-colors"
+              class="w-6 h-6 rounded-lg flex items-center justify-center text-xxs font-black uppercase flex-shrink-0 transition-colors"
               :class="selectedUsernames.includes(user) ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700 group-hover/u:bg-indigo-100 dark:group-hover/u:bg-indigo-900/50'"
             >
               {{ user.substring(0, 2) }}
@@ -245,7 +245,7 @@ onMounted(() => {
           </button>
           <div v-if="allUsers.length === 0" class="col-span-full flex flex-col items-center justify-center py-6 text-slate-400 dark:text-slate-600">
             <Users :size="24" class="mb-2 opacity-20" />
-            <p class="text-[10px] font-bold uppercase tracking-widest">{{ $t('users_mng.no_users') }}</p>
+            <p class="text-xxs font-bold uppercase tracking-widest">{{ $t('users_mng.no_users') }}</p>
           </div>
         </div>
       </div>
@@ -291,7 +291,7 @@ onMounted(() => {
             </div>
             <div>
               <h4 class="font-black text-slate-800 dark:text-slate-100 tracking-tight">{{ board.name }}</h4>
-              <p class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">{{ $t('common.created') }}: {{ new Date(board.createdAt).toLocaleDateString() }}</p>
+              <p class="text-xxs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">{{ $t('common.created') }}: {{ new Date(board.createdAt).toLocaleDateString() }}</p>
             </div>
           </div>
           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
@@ -308,11 +308,11 @@ onMounted(() => {
         
         <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-50 dark:border-slate-800/50">
           <div v-for="user in board.usernames" :key="user" 
-               class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-black uppercase text-slate-500 dark:text-slate-400 border border-white dark:border-slate-700 shadow-sm"
+               class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xxs font-black uppercase text-slate-500 dark:text-slate-400 border border-white dark:border-slate-700 shadow-sm"
                :title="user">
             {{ user.substring(0, 2) }}
           </div>
-          <div v-if="board.usernames.length === 0" class="text-[9px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-700">{{ $t('common.none') }}</div>
+          <div v-if="board.usernames.length === 0" class="text-xxs font-black uppercase tracking-widest text-slate-300 dark:text-slate-700">{{ $t('common.none') }}</div>
         </div>
       </div>
     </div>

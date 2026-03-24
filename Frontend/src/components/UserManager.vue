@@ -189,13 +189,13 @@ onMounted(fetchUsers);
     
     <div v-else-if="users.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
       <Users class="mx-auto text-slate-300 mb-2" :size="48" />
-      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">{{ $t('users_mng.no_users') }}</p>
+      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ $t('users_mng.no_users') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto -mx-2">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+          <tr class="text-slate-400 dark:text-slate-500 text-xxs font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
             <th class="px-6 py-4">{{ $t('common.username') }}</th>
             <th class="px-6 py-4">{{ $t('users_mng.email') }}</th>
             <th class="px-6 py-4">{{ $t('users_mng.role') }}</th>
@@ -223,7 +223,7 @@ onMounted(fetchUsers);
               <div class="flex items-center gap-1.5">
                 <Shield v-if="u.role === 'Admin'" :size="14" class="text-amber-500 dark:text-amber-400" />
                 <ShieldAlert v-else :size="14" class="text-slate-400 dark:text-slate-600" />
-                <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg shadow-sm" 
+                <span class="badge px-2 py-0.5 shadow-sm" 
                       :class="u.role === 'Admin' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'">
                   {{ u.role }}
                 </span>
@@ -232,7 +232,7 @@ onMounted(fetchUsers);
             <td class="px-6 py-4">
               <div class="flex flex-wrap gap-1.5">
                 <span v-for="tag in (u.tags?.split(',').map((s: string) => s.trim()).filter((s: string) => s) || [])" :key="tag" 
-                      class="text-[9px] font-black uppercase px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm">
+                      class="badge px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
                   {{ tag }}
                 </span>
               </div>

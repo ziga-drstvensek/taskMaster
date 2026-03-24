@@ -171,13 +171,13 @@ const deleteItem = async (id: number) => {
         <table class="hidden md:table w-full text-left border-collapse min-w-[1000px]">
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.title') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.column') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.priority') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.boards') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.assignee') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ t('common.due_date') }}</th>
-              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 text-right">{{ t('common.actions') }}</th>
+              <th class="table-header-cell">{{ t('common.title') }}</th>
+              <th class="table-header-cell">{{ t('common.column') }}</th>
+              <th class="table-header-cell">{{ t('common.priority') }}</th>
+              <th class="table-header-cell">{{ t('common.boards') }}</th>
+              <th class="table-header-cell">{{ t('common.assignee') }}</th>
+              <th class="table-header-cell">{{ t('common.due_date') }}</th>
+              <th class="table-header-cell text-right">{{ t('common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -194,20 +194,20 @@ const deleteItem = async (id: number) => {
                     <div class="font-bold text-slate-800 dark:text-slate-200 text-sm hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors" @click="itemToEdit = item">
                       {{ item.title }}
                     </div>
-                    <div class="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate max-w-[200px]" v-if="item.description">
+                    <div class="text-xxs text-slate-400 dark:text-slate-500 font-medium truncate max-w-[200px]" v-if="item.description">
                       {{ item.description }}
                     </div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4">
-                <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border"
+                <span class="badge-outline"
                       :style="{ color: (item as any).columnColor, borderColor: (item as any).columnColor + '40', backgroundColor: (item as any).columnColor + '10' }">
                   {{ (item as any).columnName }}
                 </span>
               </td>
               <td class="px-6 py-4">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border"
+                <span class="badge"
                       :class="priorityClass[item.priority as 0 | 1 | 2]">
                   {{ priorityLabel[item.priority as 0 | 1 | 2] }}
                 </span>
@@ -225,14 +225,14 @@ const deleteItem = async (id: number) => {
                   </div>
                   <span class="text-xs font-bold text-slate-700 dark:text-slate-200">{{ item.assignedTo }}</span>
                 </div>
-                <span v-else class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest italic">{{ t('common.none') }}</span>
+                <span v-else class="text-xxs font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest italic">{{ t('common.none') }}</span>
               </td>
               <td class="px-6 py-4">
                 <div v-if="item.dueDate" class="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
                   <Calendar :size="14" />
                   {{ new Date(item.dueDate).toLocaleDateString(locale === 'sl' ? 'sl-SI' : 'en-US') }}
                 </div>
-                <span v-else class="text-[10px] font-black uppercase text-slate-300 dark:text-slate-700 tracking-widest">-</span>
+                <span v-else class="text-xxs font-black uppercase text-slate-300 dark:text-slate-700 tracking-widest">-</span>
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -264,19 +264,19 @@ const deleteItem = async (id: number) => {
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 mt-3">
-                  <span class="px-2.5 py-1 rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest border"
+                  <span class="badge-outline"
                         :style="{ color: (item as any).columnColor, borderColor: (item as any).columnColor + '40', backgroundColor: (item as any).columnColor + '10' }">
                     {{ (item as any).columnName }}
                   </span>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] md:text-[9px] font-bold uppercase tracking-wider border"
+                  <span class="badge"
                         :class="priorityClass[item.priority as 0 | 1 | 2]">
                     {{ priorityLabel[item.priority as 0 | 1 | 2] }}
                   </span>
-                  <div v-if="item.assignedTo" class="flex items-center gap-1.5 text-xs md:text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                  <div v-if="item.assignedTo" class="flex items-center gap-1.5 text-xs md:text-xxs font-bold text-slate-600 dark:text-slate-400">
                     <User :size="12" />
                     {{ item.assignedTo }}
                   </div>
-                  <div v-if="item.dueDate" class="flex items-center gap-1.5 text-xs md:text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                  <div v-if="item.dueDate" class="flex items-center gap-1.5 text-xs md:text-xxs font-bold text-slate-500 dark:text-slate-400">
                     <Calendar :size="12" />
                     {{ new Date(item.dueDate).toLocaleDateString(locale === 'sl' ? 'sl-SI' : 'en-US') }}
                   </div>
@@ -330,7 +330,7 @@ const deleteItem = async (id: number) => {
             <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: column.color }"></div>
             <h3 class="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs md:text-sm">{{ column.name }}</h3>
           </div>
-          <span class="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-full text-[10px] font-bold">
+          <span class="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-full text-xxs font-bold">
             {{ getItemsForColumn(column.id).value.length }}
           </span>
         </div>

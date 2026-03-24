@@ -94,7 +94,7 @@ onMounted(() => {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="md:col-span-2">
-          <label class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 ml-1 tracking-widest">{{ $t('sprints.name') }}</label>
+          <label class="label-caps">{{ $t('sprints.name') }}</label>
           <input v-model="name" type="text" required class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white dark:bg-slate-800 dark:text-slate-100 transition-all">
         </div>
         <div>
@@ -149,13 +149,13 @@ onMounted(() => {
     
     <div v-else-if="backlogStore.sprints.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
       <Calendar class="mx-auto text-slate-300 mb-2" :size="48" />
-      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">{{ $t('sprints.no_sprints') }}</p>
+      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ $t('sprints.no_sprints') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto -mx-2">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+          <tr class="text-slate-400 dark:text-slate-500 text-xxs font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
             <th class="px-6 py-4">{{ $t('sprints.name') }}</th>
             <th class="px-6 py-4">{{ $t('common.period') }}</th>
             <th class="px-6 py-4">{{ $t('common.status') }}</th>
@@ -174,8 +174,8 @@ onMounted(() => {
               </div>
             </td>
             <td class="px-6 py-4">
-              <span v-if="s.isActive" class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[9px] font-black rounded-lg uppercase tracking-widest shadow-sm">{{ $t('common.active') }}</span>
-              <span v-else class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[9px] font-black rounded-lg uppercase tracking-widest">{{ $t('common.completed') }}</span>
+              <span v-if="s.isActive" class="badge px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm">{{ $t('common.active') }}</span>
+              <span v-else class="badge px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{{ $t('common.completed') }}</span>
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">

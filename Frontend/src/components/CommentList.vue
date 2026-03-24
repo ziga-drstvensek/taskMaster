@@ -143,8 +143,8 @@ const formatDate = (dateStr: string) => {
       <div v-for="c in comments" :key="c.id" class="group bg-slate-50 dark:bg-slate-900/40 p-3 rounded-xl border border-gray-100 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-900 hover:shadow-sm">
         <div class="flex justify-between items-start mb-1.5">
           <div class="flex flex-col">
-            <span class="font-bold text-xs text-indigo-600 dark:text-indigo-400">{{ c.author }}</span>
-            <span class="text-[10px] text-gray-400 dark:text-slate-500">{{ formatDate(c.createdAt) }}</span>
+            <span class="font-bold text-xxs text-indigo-600 dark:text-indigo-400">{{ c.author }}</span>
+            <span class="text-xxs text-gray-400 dark:text-slate-500">{{ formatDate(c.createdAt) }}</span>
           </div>
           
           <div v-if="authStore.user?.username === c.author" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

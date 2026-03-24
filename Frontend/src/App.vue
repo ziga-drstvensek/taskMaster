@@ -157,7 +157,7 @@ onMounted(() => {
             :title="$t('common.boards')"
           >
             <Trello :size="18" />
-            <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.boards') }}</span>
+            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.boards') }}</span>
           </button>
           
           <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
@@ -169,7 +169,7 @@ onMounted(() => {
             :title="$t('common.sprints')"
           >
             <Settings :size="18" />
-            <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.sprints') }}</span>
+            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.sprints') }}</span>
           </button>
           
           <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
@@ -182,7 +182,7 @@ onMounted(() => {
             :title="$t('common.users')"
           >
             <Users :size="18" />
-            <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.users') }}</span>
+            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.users') }}</span>
           </button>
 
           <div v-if="authStore.isAdmin" class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-4"></div>
@@ -200,7 +200,7 @@ onMounted(() => {
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <button 
             @click="toggleLanguage"
-            class="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+            class="px-2 py-1 text-xxs font-black uppercase tracking-widest bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
           >
             {{ locale === 'en' ? 'SL' : 'EN' }}
           </button>
@@ -210,7 +210,7 @@ onMounted(() => {
           </div>
           <div class="flex flex-col">
             <span class="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">{{ authStore.user?.username }}</span>
-            <span class="text-[8px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-black">{{ authStore.user?.role }}</span>
+            <span class="text-xxs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-black leading-none mt-1">{{ authStore.user?.role }}</span>
           </div>
         </div>
         <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>

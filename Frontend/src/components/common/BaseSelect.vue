@@ -53,7 +53,7 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full" ref="dropdownRef">
-    <label v-if="label" class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 ml-1 tracking-widest">
+    <label v-if="label" class="label-caps">
       {{ label }} <span v-if="required" class="text-rose-500">*</span>
     </label>
     

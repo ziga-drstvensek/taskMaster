@@ -138,29 +138,29 @@ const handleDelete = async () => {
 
       <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-50 dark:border-slate-800">
         <div class="flex flex-wrap items-center gap-2.5 md:gap-2">
-          <span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded text-[11px] md:text-[10px] font-bold uppercase tracking-wide border"
+          <span class="badge"
                 :class="priorityClass[item.priority]">
             {{ priorityLabel[item.priority] }}
           </span>
-          <span v-if="item.sprintName" class="inline-flex items-center gap-1.5 px-2.5 py-1 md:px-2 md:py-0.5 rounded text-[11px] md:text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800">
+          <span v-if="item.sprintName" class="badge bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800">
             <Calendar :size="12" class="md:w-2.5 md:h-2.5" /> {{ item.sprintName }}
           </span>
-          <span v-if="backlogStore.selectedBoardId === -1" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-bold bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm" :title="$t('common.boards')">
+          <span v-if="backlogStore.selectedBoardId === -1" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm" :title="$t('common.boards')">
             <LayoutGrid :size="14" class="md:w-3 md:h-3" /> {{ backlogStore.boards.find(b => b.id === item.boardId)?.name || '' }}
           </span>
-          <span v-if="item.assignedTo" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
+          <span v-if="item.assignedTo" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
             <UserCheck :size="14" class="md:w-3 md:h-3" /> {{ item.assignedTo }}
           </span>
-          <span class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" :title="$t('common.author')">
+          <span class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" :title="$t('common.author')">
             <User :size="14" class="md:w-3 md:h-3" /> <span class="font-bold mr-1">{{ $t('common.author') }}:</span> {{ item.createdBy || $t('common.unknown') }}
           </span>
-          <span v-if="item.attachments && item.attachments.length > 0" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm" :title="$t('common.attachments')">
+          <span v-if="item.attachments && item.attachments.length > 0" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm" :title="$t('common.attachments')">
             <Paperclip :size="14" class="md:w-3 md:h-3" /> {{ item.attachments.length }}
           </span>
-          <span v-if="item.commentsCount > 0" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shadow-md animate-pulse-slow" :title="$t('common.comments')">
+          <span v-if="item.commentsCount > 0" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shadow-md animate-pulse-slow" :title="$t('common.comments')">
             <MessageSquare :size="14" class="md:w-3 md:h-3" /> {{ item.commentsCount }}
           </span>
-          <span v-if="item.dueDate" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-2.5 md:py-1 rounded-full text-[11px] md:text-[10px] font-bold shadow-sm" 
+          <span v-if="item.dueDate" class="badge px-3 py-1.5 md:px-2.5 md:py-1 rounded-full shadow-sm" 
                 :class="isNearDueDate ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'"
                 :title="$t('common.due_date')">
             <Clock :size="14" class="md:w-3 md:h-3" /> {{ formattedDueDate }}
@@ -196,13 +196,13 @@ const handleDelete = async () => {
                 {{ sub.title }}
               </span>
               <div class="flex flex-wrap items-center gap-3 mt-1.5 md:mt-1">
-                <span v-if="sub.commentsCount > 0" class="text-[10px] md:text-[9px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 md:gap-1 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 md:px-1.5 md:py-0.5 rounded border border-indigo-100 dark:border-indigo-800 shadow-sm" :title="$t('common.comments')">
+                <span v-if="sub.commentsCount > 0" class="badge bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 shadow-sm" :title="$t('common.comments')">
                    <MessageSquare :size="12" class="md:w-2.5 md:h-2.5" /> {{ sub.commentsCount }}
                 </span>
-                <span class="text-[10px] md:text-[9px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5 md:gap-1 bg-slate-50 dark:bg-slate-800 px-2 py-0.5 md:px-1.5 md:py-0.5 rounded border border-slate-100 dark:border-slate-700">
+                <span class="badge bg-slate-50 dark:bg-slate-800 px-2 py-0.5 md:px-1.5 md:py-0.5 border border-slate-100 dark:border-slate-700">
                   <User :size="12" class="md:w-2.5 md:h-2.5" /> <span class="font-bold">{{ $t('common.author') }}:</span> {{ sub.createdBy || $t('common.unknown') }}
                 </span>
-                <span v-if="sub.assignedTo" class="text-[10px] md:text-[9px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1.5 md:gap-1 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 md:px-1.5 md:py-0.5 rounded border border-emerald-100 dark:border-emerald-800">
+                <span v-if="sub.assignedTo" class="badge text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800">
                   <UserCheck :size="12" class="md:w-2.5 md:h-2.5" /> {{ sub.assignedTo }}
                 </span>
               </div>

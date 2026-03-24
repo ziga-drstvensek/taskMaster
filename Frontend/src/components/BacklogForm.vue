@@ -264,7 +264,7 @@ const handleSubmit = async () => {
                   <div class="flex items-center gap-2 overflow-hidden">
                     <Paperclip :size="12" class="text-slate-400 dark:text-slate-500 flex-shrink-0" />
                     <span class="text-xs text-slate-600 dark:text-slate-300 truncate font-medium" :title="att.fileName">{{ att.fileName }}</span>
-                    <span class="text-[10px] text-slate-400 dark:text-slate-500 flex-shrink-0">({{ (att.size / 1024).toFixed(1) }} KB)</span>
+                    <span class="text-xxs text-slate-400 dark:text-slate-500 flex-shrink-0">({{ (att.size / 1024).toFixed(1) }} KB)</span>
                   </div>
                   <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button type="button" @click="downloadAttachment(att)" class="p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg" :title="$t('common.download')">
@@ -276,7 +276,7 @@ const handleSubmit = async () => {
                   </div>
                 </div>
               </div>
-              <div v-else class="text-[11px] text-slate-400 dark:text-slate-500 text-center py-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+              <div v-else class="text-xxs text-slate-400 dark:text-slate-500 text-center py-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
                 {{ $t('common.no_attachments') }}
               </div>
             </div>
@@ -334,7 +334,7 @@ const handleSubmit = async () => {
                 v-if="item"
                 type="button"
                 @click="$emit('edit-subtask', { parentId: item.id })"
-                class="text-[11px] flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-black uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg transition-all"
+                class="text-xxs flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-black uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg transition-all"
               >
                 <PlusCircle :size="14" /> {{ $t('common.add') }}
               </button>
@@ -343,7 +343,7 @@ const handleSubmit = async () => {
           <div class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-[150px] max-h-[500px] overflow-y-auto p-3 space-y-3 custom-scrollbar flex-1">
               <div v-if="subtasks.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-12">
                 <PlusCircle :size="32" class="mb-2 opacity-20" />
-                <p class="text-[10px] font-bold uppercase tracking-widest">{{ $t('common.no_subtasks') }}</p>
+                <p class="text-xxs font-bold uppercase tracking-widest">{{ $t('common.no_subtasks') }}</p>
               </div>
               <div v-for="sub in subtasks" :key="sub.id" class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-50 dark:border-slate-800 shadow-sm flex items-center justify-between group transition-all hover:shadow-md hover:border-indigo-100 dark:hover:border-indigo-900/40">
                 <div class="flex items-center gap-3 overflow-hidden">
@@ -375,14 +375,14 @@ const handleSubmit = async () => {
         <div v-if="item" class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4 transition-colors">
           <div class="flex flex-wrap justify-between gap-4">
             <div class="flex items-center gap-1.5">
-              <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">
+              <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xxs font-black uppercase text-slate-500 dark:text-slate-400">
                 {{ (item.createdBy || 'N').substring(0, 1) }}
               </div>
-              <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400"><span class="uppercase text-slate-400 dark:text-slate-500 mr-1">{{ $t('common.author') }}:</span> {{ item.createdBy || $t('common.unknown') }}</span>
+              <span class="text-xxs font-bold text-slate-500 dark:text-slate-400"><span class="uppercase text-slate-400 dark:text-slate-500 mr-1">{{ $t('common.author') }}:</span> {{ item.createdBy || $t('common.unknown') }}</span>
             </div>
             <div class="flex flex-col items-end gap-1">
-              <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500"><span class="uppercase mr-1">{{ $t('common.created') }}:</span> {{ new Date(item.createdAt).toLocaleString(locale === 'sl' ? 'sl-SI' : 'en-US') }}</span>
-              <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500"><span class="uppercase mr-1">{{ $t('common.updatedAt') }}:</span> {{ new Date(item.updatedAt).toLocaleString(locale === 'sl' ? 'sl-SI' : 'en-US') }}</span>
+              <span class="text-xxs font-bold text-slate-400 dark:text-slate-500"><span class="uppercase mr-1">{{ $t('common.created') }}:</span> {{ new Date(item.createdAt).toLocaleString(locale === 'sl' ? 'sl-SI' : 'en-US') }}</span>
+              <span class="text-xxs font-bold text-slate-400 dark:text-slate-500"><span class="uppercase mr-1">{{ $t('common.updatedAt') }}:</span> {{ new Date(item.updatedAt).toLocaleString(locale === 'sl' ? 'sl-SI' : 'en-US') }}</span>
             </div>
           </div>
 
@@ -400,14 +400,14 @@ const handleSubmit = async () => {
                 
                 <div class="flex flex-col">
                   <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-tight">{{ h.changedBy }}</span>
-                    <span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold flex items-center gap-1 uppercase">
+                    <span class="text-xxs font-black text-slate-700 dark:text-slate-300 uppercase tracking-tight">{{ h.changedBy }}</span>
+                    <span class="text-xxs text-slate-400 dark:text-slate-500 font-bold flex items-center gap-1 uppercase">
                       <Clock :size="10" /> {{ new Date(h.changedAt).toLocaleString(locale === 'sl' ? 'sl-SI' : 'en-US') }}
                     </span>
                   </div>
                   <div class="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mt-1">
-                    <span class="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400 mb-0.5 block">{{ h.changeType }}</span>
-                    <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">{{ h.description }}</p>
+                    <span class="text-xxs font-black uppercase text-indigo-600 dark:text-indigo-400 mb-0.5 block">{{ h.changeType }}</span>
+                    <p class="text-xxs text-slate-600 dark:text-slate-400 leading-relaxed">{{ h.description }}</p>
                   </div>
                 </div>
               </div>
