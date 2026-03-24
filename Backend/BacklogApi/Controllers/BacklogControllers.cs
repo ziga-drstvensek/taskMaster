@@ -23,11 +23,6 @@ public class BacklogController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BacklogItemDto>>> GetAll([FromQuery] int? boardId)
     {
-        if (boardId == 0)
-        {
-            return Ok(await _service.GetAllAsync(0));
-        }
-
         if (!boardId.HasValue)
         {
             if (User.IsInRole("Admin"))

@@ -153,7 +153,7 @@ public class BacklogService : IBacklogService
         item.History.Add(new BacklogItemHistory
         {
             ChangeType = "Created",
-            Description = $"Task ustvarjen s strani {createdBy}",
+            Description = $"Opravilo ustvarjeno s strani {createdBy}",
             ChangedBy = createdBy
         });
 
@@ -201,16 +201,16 @@ public class BacklogService : IBacklogService
 
         var changes = new List<string>();
         if (item.Title != dto.Title) changes.Add($"Naslov: '{item.Title}' -> '{dto.Title}'");
-        if (item.Description != dto.Description) changes.Add("Opis spremenjen");
-        if (item.ColumnId != newColumnId) changes.Add($"Stolpec ID: {item.ColumnId} -> {newColumnId}");
+        if (item.Description != dto.Description) changes.Add("Opis je bil spremenjen");
+        if (item.ColumnId != newColumnId) changes.Add($"Stolpec: {item.ColumnId} -> {newColumnId}");
         if (item.Priority != dto.Priority) changes.Add($"Prioriteta: {item.Priority} -> {dto.Priority}");
         if (item.BoardId != newBoardId) 
         {
-            var oldBoardName = item.BoardId.HasValue ? $"ID {item.BoardId}" : "Brez plošče";
-            var newBoardName = newBoardId.HasValue ? $"ID {newBoardId}" : "Brez plošče";
+            var oldBoardName = item.BoardId.HasValue ? $"Plošča ID {item.BoardId}" : "Brez plošče";
+            var newBoardName = newBoardId.HasValue ? $"Plošča ID {newBoardId}" : "Brez plošče";
             changes.Add($"Plošča: {oldBoardName} -> {newBoardName}");
         }
-        if (item.SprintId != newSprintId) changes.Add($"Sprint ID: {item.SprintId} -> {newSprintId}");
+        if (item.SprintId != newSprintId) changes.Add($"Sprint: {item.SprintId} -> {newSprintId}");
         if (item.AssignedTo != dto.AssignedTo) changes.Add($"Izvajalec: '{item.AssignedTo}' -> '{dto.AssignedTo}'");
         if (item.DueDate != dto.DueDate) changes.Add($"Rok: {item.DueDate} -> {dto.DueDate}");
 

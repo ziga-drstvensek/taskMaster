@@ -8,6 +8,7 @@ import { useColumnStore } from '../store/column';
 import api from '../services/api';
 import { X, Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
+import BaseDatePicker from './common/BaseDatePicker.vue';
 import BaseSelect from './common/BaseSelect.vue';
 import BaseTextarea from './common/BaseTextarea.vue';
 import BaseModal from './common/BaseModal.vue';
@@ -28,7 +29,7 @@ const title = ref(props.item?.title || '');
 const description = ref(props.item?.description || '');
 const priority = ref(props.item?.priority ?? BacklogItemPriority.Medium);
 const columnId = ref<number | string>(props.item?.columnId ?? props.defaultColumnId ?? '');
-const boardId = ref<number | string>(props.item?.boardId ?? (backlogStore.selectedBoardId === -1 || backlogStore.selectedBoardId === 0 || backlogStore.selectedBoardId === null ? '' : backlogStore.selectedBoardId));
+const boardId = ref<number | string>(props.item?.boardId ?? (backlogStore.selectedBoardId === -1 || backlogStore.selectedBoardId === null ? (backlogStore.boards.length > 0 ? backlogStore.boards[0].id : '') : backlogStore.selectedBoardId));
 
 const filteredColumns = computed(() => {
   const currentBoardId = boardId.value === '' ? null : parseInt(boardId.value.toString());
@@ -72,15 +73,17 @@ const assignedTo = ref(props.item?.assignedTo || '');
 const dueDate = ref(props.item?.dueDate ? props.item.dueDate.split('T')[0] : '');
 const isExpanded = ref(false);
 
+const localItem = ref<BacklogItem | null>(props.item || null);
+
 const sprints = ref<Sprint[]>([]);
 const users = ref<string[]>([]);
 const uploading = ref(false);
 
-const attachments = computed(() => props.item?.attachments || []);
-const history = computed(() => props.item?.history || []);
+const attachments = computed(() => localItem.value?.attachments || []);
+const history = computed(() => localItem.value?.history || []);
 const subtasks = computed(() => {
-  if (!props.item || !backlogStore.items) return [];
-  const itemId = props.item.id;
+  if (!localItem.value || !backlogStore.items) return [];
+  const itemId = localItem.value.id;
   return backlogStore.items.filter(i => i.parentId === itemId);
 });
 
@@ -137,7 +140,8 @@ const handleFileUpload = async (event: any) => {
     await api.post(`/attachments/${props.item.id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
-    await backlogStore.fetchItems();
+    // Refresh only this item to update attachments and history
+    localItem.value = await backlogStore.fetchItem(props.item.id);
     triggerToast(t('common.success.uploaded'), 'success');
     emit('submit');
   } catch (err) {
@@ -166,7 +170,9 @@ const deleteAttachment = async (id: number) => {
   if (!confirm(t('common.delete_confirm'))) return;
   try {
     await api.delete(`/attachments/${id}`);
-    await backlogStore.fetchItems();
+    if (props.item) {
+      localItem.value = await backlogStore.fetchItem(props.item.id);
+    }
     triggerToast(t('common.success.deleted'), 'success');
     emit('submit');
   } catch (err) {
@@ -224,7 +230,7 @@ const handleSubmit = async () => {
     </template>
 
     <form @submit.prevent="handleSubmit" class="flex flex-col h-full overflow-hidden">
-      <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+      <div class="flex-1 overflow-y-auto space-y-6 custom-scrollbar">
         <div :class="['grid grid-cols-1 gap-6', (!parentId && (!item || !item.parentId)) ? 'lg:grid-cols-2' : '']">
           <!-- Left Side: Main Info -->
           <div class="space-y-5">
@@ -281,7 +287,6 @@ const handleSubmit = async () => {
               <BaseSelect 
                 v-model="boardId"
                 :label="$t('common.boards')"
-                :placeholder="$t('common.none')"
                 :options="backlogStore.boards.map(b => ({ value: b.id, label: b.name }))"
               />
               <BaseSelect 
@@ -316,9 +321,8 @@ const handleSubmit = async () => {
                 :placeholder="$t('common.none')"
                 :options="users.map(user => ({ value: user, label: user }))"
               />
-              <BaseInput 
+              <BaseDatePicker 
                 v-model="dueDate"
-                type="date"
                 :label="$t('common.due_date')"
               />
             </div>

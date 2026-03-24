@@ -112,12 +112,12 @@ onMounted(fetchUsers);
 <template>
   <div>
     <!-- Form -->
-    <form @submit.prevent="handleSubmit" v-if="showForm" class="mb-8 p-6 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-3xl border border-indigo-100 dark:border-indigo-900/40 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300 shadow-sm">
+    <form @submit.prevent="handleSubmit" v-if="showForm" class="mb-8 p-6 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-3xl border border-indigo-100 dark:border-indigo-900/40 space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 shadow-sm">
       <div class="flex items-center gap-2 mb-2">
-        <UserPlus class="text-indigo-600" :size="18" />
+        <UserPlus class="text-indigo-600 dark:text-indigo-400" :size="18" />
         <h4 class="font-bold text-slate-800 dark:text-slate-100">{{ isEditing ? $t('users_mng.edit') : $t('users_mng.add') }}</h4>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <BaseInput 
           v-model="username"
           :label="$t('common.username')"
@@ -159,19 +159,19 @@ onMounted(fetchUsers);
         {{ error }}
       </div>
 
-      <div class="flex justify-end gap-3 pt-2">
+      <div class="flex justify-end gap-4 pt-4 border-t border-indigo-100/50 dark:border-indigo-900/30">
         <button type="button" @click="resetForm" class="px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 text-sm font-bold uppercase tracking-wider transition-colors">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 dark:shadow-indigo-900/20 active:scale-95">
+        <button type="submit" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95">
           {{ isEditing ? $t('common.save') : $t('users_mng.add') }}
         </button>
       </div>
     </form>
 
     <!-- List Header -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-2">
-        <Users class="text-slate-400" :size="18" />
-        <span class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ $t('common.users') }} ({{ users.length }})</span>
+        <Users class="text-slate-400 dark:text-slate-500" :size="18" />
+        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.users') }} ({{ users.length }})</span>
       </div>
       <button 
         v-if="!showForm"
@@ -192,20 +192,20 @@ onMounted(fetchUsers);
       <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">{{ $t('users_mng.no_users') }}</p>
     </div>
 
-    <div v-else class="overflow-x-auto">
-      <table class="w-full text-left">
+    <div v-else class="overflow-x-auto -mx-2">
+      <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
-            <th class="px-4 py-3">{{ $t('common.username') }}</th>
-            <th class="px-4 py-3">{{ $t('users_mng.email') }}</th>
-            <th class="px-4 py-3">{{ $t('users_mng.role') }}</th>
-            <th class="px-4 py-3">{{ $t('users_mng.tags') }}</th>
-            <th class="px-4 py-3 text-right">{{ $t('common.actions') }}</th>
+          <tr class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+            <th class="px-6 py-4">{{ $t('common.username') }}</th>
+            <th class="px-6 py-4">{{ $t('users_mng.email') }}</th>
+            <th class="px-6 py-4">{{ $t('users_mng.role') }}</th>
+            <th class="px-6 py-4">{{ $t('users_mng.tags') }}</th>
+            <th class="px-6 py-4 text-right">{{ $t('common.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-50 dark:divide-slate-900/40">
-          <tr v-for="u in users" :key="u.username" class="group hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition-all">
-            <td class="px-4 py-4">
+        <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
+          <tr v-for="u in users" :key="u.username" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
+            <td class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-xs uppercase shadow-sm">
                   {{ u.username.substring(0, 2) }}
@@ -213,23 +213,23 @@ onMounted(fetchUsers);
                 <span class="font-bold text-slate-700 dark:text-slate-200 tracking-tight">{{ u.username }}</span>
               </div>
             </td>
-            <td class="px-4 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
               <div class="flex items-center gap-1.5">
-                <Mail :size="12" class="text-slate-300" />
+                <Mail :size="12" class="text-slate-300 dark:text-slate-600" />
                 {{ u.email }}
               </div>
             </td>
-            <td class="px-4 py-4">
+            <td class="px-6 py-4">
               <div class="flex items-center gap-1.5">
-                <Shield v-if="u.role === 'Admin'" :size="14" class="text-amber-500" />
-                <ShieldAlert v-else :size="14" class="text-slate-400 dark:text-slate-500" />
+                <Shield v-if="u.role === 'Admin'" :size="14" class="text-amber-500 dark:text-amber-400" />
+                <ShieldAlert v-else :size="14" class="text-slate-400 dark:text-slate-600" />
                 <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg shadow-sm" 
                       :class="u.role === 'Admin' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'">
                   {{ u.role }}
                 </span>
               </div>
             </td>
-            <td class="px-4 py-4">
+            <td class="px-6 py-4">
               <div class="flex flex-wrap gap-1.5">
                 <span v-for="tag in (u.tags?.split(',').map((s: string) => s.trim()).filter((s: string) => s) || [])" :key="tag" 
                       class="text-[9px] font-black uppercase px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm">
@@ -237,12 +237,12 @@ onMounted(fetchUsers);
                 </span>
               </div>
             </td>
-            <td class="px-4 py-4 text-right">
-              <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                 <button @click="handleEdit(u)" class="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all shadow-sm hover:shadow-md" :title="$t('common.edit')">
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                 <button @click="handleEdit(u)" class="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all" :title="$t('common.edit')">
                   <Key :size="16" />
                 </button>
-                 <button v-if="u.username !== 'admin'" @click="handleDelete(u)" class="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all shadow-sm hover:shadow-md" :title="$t('common.delete')">
+                 <button v-if="u.username !== 'admin'" @click="handleDelete(u)" class="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all" :title="$t('common.delete')">
                   <Trash2 :size="16" />
                 </button>
               </div>

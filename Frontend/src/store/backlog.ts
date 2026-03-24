@@ -23,7 +23,7 @@ export const useBacklogStore = defineStore('backlog', {
                 const response = await api.get('/boards');
                 this.boards = response.data;
                 
-                if (this.selectedBoardId !== null && this.selectedBoardId !== -1 && this.selectedBoardId !== 0) {
+                if (this.selectedBoardId !== null && this.selectedBoardId !== -1) {
                     const exists = this.boards.some(b => b.id === this.selectedBoardId);
                     if (!exists) {
                         this.selectedBoardId = this.boards.length > 0 ? this.boards[0].id : null;
@@ -65,6 +65,20 @@ export const useBacklogStore = defineStore('backlog', {
                 this.loading = false;
             }
         },
+        async fetchItem(id: number) {
+            try {
+                const response = await api.get(`/backlog/${id}`);
+                const item = response.data as BacklogItem;
+                const index = this.items.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    this.items[index] = item;
+                }
+                return item;
+            } catch (err: any) {
+                console.error(`Failed to fetch item ${id}`);
+                throw err;
+            }
+        },
         initSignalR() {
             signalRService.start();
             signalRService.onItemsUpdated(() => {
@@ -76,7 +90,7 @@ export const useBacklogStore = defineStore('backlog', {
         },
         async addItem(item: any) {
             try {
-                if (this.selectedBoardId !== null && this.selectedBoardId !== -1 && this.selectedBoardId !== 0 && !item.boardId) {
+                if (this.selectedBoardId !== null && this.selectedBoardId !== -1 && !item.boardId) {
                     item.boardId = this.selectedBoardId;
                 }
                 

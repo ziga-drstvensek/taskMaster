@@ -38,7 +38,7 @@ const seedAdmin = async () => {
       <!-- Logo/Brand -->
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center w-24 h-24 mb-4">
-           <img src="../assets/logo.png" :alt="$t('common.backlog')" class="w-full h-full object-contain drop-shadow-xl" />
+           <img src="../assets/logo2.png" :alt="$t('common.backlog')" class="w-full h-full object-contain drop-shadow-xl" />
         </div>
         <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ $t('common.backlog') }}</h1>
         <p class="text-slate-500 dark:text-slate-400 mt-2">{{ $t('common.welcome') }}</p>

@@ -100,7 +100,7 @@ watch(() => props.show, (newVal, oldVal) => {
           </div>
 
           <!-- Body -->
-          <div class="flex-1 overflow-y-auto custom-scrollbar dark:text-slate-300 min-h-0">
+          <div class="flex-1 overflow-y-auto p-6 custom-scrollbar dark:text-slate-300 min-h-0">
             <slot></slot>
           </div>
 

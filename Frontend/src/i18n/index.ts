@@ -53,7 +53,6 @@ const messages = {
       history: 'Change History',
       boards: 'Boards',
       all_boards: 'All Boards',
-      no_board: 'No Board',
       select_board: 'Select Board',
       manage_boards: 'Manage Boards',
       delete_confirm: 'Are you sure you want to delete this item?',
@@ -83,7 +82,12 @@ const messages = {
       rights: 'All rights reserved.',
       no_items: 'No items available',
       dark_mode: 'Dark Mode',
-      light_mode: 'Light Mode'
+      light_mode: 'Light Mode',
+      table_view: 'Table View',
+      kanban_view: 'Kanban View',
+      select_date: 'Select date',
+      today: 'Today',
+      close: 'Close'
     },
     auth: {
       login_btn: 'Log In',
@@ -142,17 +146,17 @@ const messages = {
       add: 'Dodaj',
       loading: 'Nalaganje...',
       logout: 'Odjava',
-      backlog: 'Backlog',
+      backlog: 'Seznam opravil',
       sprints: 'Sprinti',
       columns: 'Stolpci',
       users: 'Uporabniki',
       dashboard: 'Pregledna plošča',
       allSprints: 'Vsi sprinti',
       active: 'Aktiven',
-      new_task: 'Nov task',
-      new_subtask: 'Nov subtask',
-      edit_task: 'Uredi task',
-      edit_subtask: 'Uredi subtask',
+      new_task: 'Novo opravilo',
+      new_subtask: 'Novo podopravilo',
+      edit_task: 'Uredi opravilo',
+      edit_subtask: 'Uredi podopravilo',
       povlecite_sem: 'Povlecite sem',
       title: 'Naslov',
       description: 'Opis',
@@ -172,8 +176,8 @@ const messages = {
       welcome: 'Dobrodošli nazaj v vaš projekt.',
       session_expired: 'Seja je potekla. Prosimo, prijavite se ponovno.',
       none: 'Nihče',
-      subtasks: 'Subtaski',
-      no_subtasks: 'Ni subtaskov',
+      subtasks: 'Podopravila',
+      no_subtasks: 'Ni podopravil',
       updatedAt: 'Posodobljeno',
       created: 'Ustvarjeno',
       attachments: 'Priponke',
@@ -185,7 +189,6 @@ const messages = {
       history: 'Zgodovina sprememb',
       boards: 'Plošče',
       all_boards: 'Vse plošče',
-      no_board: 'Brez plošče',
       select_board: 'Izberi ploščo',
       manage_boards: 'Upravljanje plošč',
       delete_confirm: 'Ali ste prepričani, da želite izbrisati ta element?',
@@ -215,14 +218,19 @@ const messages = {
       no_items: 'Ni elementov',
       rights: 'Vse pravice pridržane.',
       dark_mode: 'Temni način',
-      light_mode: 'Svetli način'
+      light_mode: 'Svetli način',
+      table_view: 'Tabelarni prikaz',
+      kanban_view: 'Kanban prikaz',
+      select_date: 'Izberi datum',
+      today: 'Danes',
+      close: 'Zapri'
     },
     auth: {
       login_btn: 'Prijavi se',
       error_login: 'Prišlo je do napake pri prijavi.'
     },
     backlog: {
-      delete_confirm: 'Ali ste prepričani, da želite izbrisati ta task?',
+      delete_confirm: 'Ali ste prepričani, da želite izbrisati to opravilo?',
       save_error: 'Napaka pri shranjevanju: '
     },
     sprints: {
@@ -253,16 +261,16 @@ const messages = {
       edit: 'Uredi uporabnika',
       email: 'Email',
       role: 'Vloga',
-      tags: 'Tagi',
+      tags: 'Oznake',
       tags_hint: 'Ločite s vejico (npr. dev, frontend)',
       no_users: 'Ni najdenih uporabnikov.',
       delete_confirm: 'Ali ste prepričani, da želite izbrisati tega uporabnika?',
       password_hint: 'Pustite prazno, če ne želite spremeniti',
     },
     dashboard: {
-      all: 'Vsi taski',
-      me: 'Moji taski',
-      unassigned: 'Nedodeljeni'
+      all: 'Vsa opravila',
+      me: 'Moja opravila',
+      unassigned: 'Nedodeljena'
     }
   }
 };

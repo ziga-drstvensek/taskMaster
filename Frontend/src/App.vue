@@ -61,7 +61,7 @@ const sprints = ref<Sprint[]>([]);
 const fetchSprints = async () => {
   try {
     const params: any = {};
-    if (backlogStore.selectedBoardId !== null && backlogStore.selectedBoardId !== -1 && backlogStore.selectedBoardId !== 0) {
+    if (backlogStore.selectedBoardId !== null && backlogStore.selectedBoardId !== -1) {
       params.boardId = backlogStore.selectedBoardId;
     }
     const res = await api.get('/sprints', { params });
@@ -144,7 +144,7 @@ onMounted(() => {
     <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 px-6 py-3 flex justify-between items-center transition-colors">
       <div class="flex items-center gap-3">
         <div class="relative">
-          <img src="./assets/logo.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
+          <img src="./assets/logo2.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
           <div class="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm" v-if="backlogStore.loading">
             <div class="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
@@ -154,7 +154,7 @@ onMounted(() => {
         </h1>
         <button 
           @click="showAddModal = true"
-          class="ml-4 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95"
+          class="ml-4 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
           :title="$t('common.new_task')"
         >
           <Plus :size="20" />
@@ -165,40 +165,40 @@ onMounted(() => {
         <div v-if="authStore.isManager" class="hidden lg:flex items-center">
           <button 
             @click="showBoardManager = !showBoardManager; showSprintManager = false; showUserManager = false"
-            class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 shadow-inner': showBoardManager }"
+            class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showBoardManager }"
             :title="$t('common.boards')"
           >
             <Trello :size="18" />
             <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.boards') }}</span>
           </button>
           
-          <div class="h-6 w-px bg-slate-100 mx-2"></div>
+          <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
 
           <button 
             @click="showSprintManager = !showSprintManager; showUserManager = false; showBoardManager = false"
-            class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 shadow-inner': showSprintManager }"
+            class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSprintManager }"
             :title="$t('common.sprints')"
           >
             <Settings :size="18" />
             <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.sprints') }}</span>
           </button>
           
-          <div class="h-6 w-px bg-slate-100 mx-2"></div>
+          <div class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-2"></div>
 
           <button 
             v-if="authStore.isAdmin"
             @click="showUserManager = !showUserManager; showSprintManager = false; showBoardManager = false"
-            class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all flex items-center gap-2"
-            :class="{ 'text-indigo-600 bg-indigo-50 shadow-inner': showUserManager }"
+            class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
+            :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showUserManager }"
             :title="$t('common.users')"
           >
             <Users :size="18" />
             <span class="text-[10px] font-black uppercase tracking-widest">{{ $t('common.users') }}</span>
           </button>
 
-          <div v-if="authStore.isAdmin" class="h-6 w-px bg-slate-100 mx-4"></div>
+          <div v-if="authStore.isAdmin" class="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-4"></div>
         </div>
 
         <div class="hidden sm:flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
@@ -226,10 +226,10 @@ onMounted(() => {
             <span class="text-[8px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-black">{{ authStore.user?.role }}</span>
           </div>
         </div>
-        <div class="h-8 w-px bg-slate-200"></div>
+        <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
         <button 
           @click="handleLogout" 
-          class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+          class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
           :title="$t('common.logout')"
         >
           <LogOut :size="20" />
@@ -247,7 +247,7 @@ onMounted(() => {
         @click.stop
       ></div>
       <div class="px-6 py-6 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm relative z-50 transition-colors">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <div>
             <div class="flex items-center gap-3">
               <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ $t('common.dashboard') }}</h2>
@@ -259,7 +259,7 @@ onMounted(() => {
                     @click.stop="showBoardDropdown = !showBoardDropdown"
                   >
                     <Trello :size="16" />
-                    <span>{{ backlogStore.selectedBoardId === -1 ? $t('common.all_boards') : (backlogStore.selectedBoardId === 0 ? $t('common.no_board') : (backlogStore.boards.find(b => b.id === backlogStore.selectedBoardId)?.name || $t('common.select_board'))) }}</span>
+                    <span>{{ backlogStore.selectedBoardId === -1 ? $t('common.all_boards') : (backlogStore.boards.find(b => b.id === backlogStore.selectedBoardId)?.name || $t('common.select_board')) }}</span>
                     <ChevronDown :size="14" class="transition-transform duration-200" :class="{ 'rotate-180': showBoardDropdown }" />
                   </button>
                   
@@ -281,7 +281,7 @@ onMounted(() => {
                         @click="backlogStore.setSelectedBoardId(-1); showBoardDropdown = false"
                         class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all relative overflow-hidden group/item"
                         :class="backlogStore.selectedBoardId === -1
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 ring-2 ring-indigo-600 ring-offset-2' 
+                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none ring-2 ring-indigo-600 ring-offset-2' 
                           : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400'"
                       >
                         <div class="flex items-center gap-3 min-w-0">
@@ -298,26 +298,6 @@ onMounted(() => {
 
                       <div v-if="authStore.isAdmin" class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
 
-                      <button 
-                        @click="backlogStore.setSelectedBoardId(0); showBoardDropdown = false"
-                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all relative overflow-hidden group/item"
-                        :class="backlogStore.selectedBoardId === 0
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 ring-2 ring-indigo-600 ring-offset-2' 
-                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400'"
-                      >
-                        <div class="flex items-center gap-3 min-w-0">
-                          <div 
-                            class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-                            :class="backlogStore.selectedBoardId === 0 ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700 group-hover/item:bg-indigo-100 dark:group-hover/item:bg-indigo-900/50'"
-                          >
-                            <Trello :size="14" class="opacity-50" />
-                          </div>
-                          <span class="truncate">{{ $t('common.no_board') }}</span>
-                        </div>
-                        <Check v-if="backlogStore.selectedBoardId === 0" :size="16" class="flex-shrink-0" />
-                      </button>
-
-                      <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
 
                       <button 
                         v-for="b in backlogStore.boards" 
@@ -325,7 +305,7 @@ onMounted(() => {
                         @click="backlogStore.setSelectedBoardId(b.id); showBoardDropdown = false"
                         class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all relative overflow-hidden group/item"
                         :class="backlogStore.selectedBoardId === b.id 
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 ring-2 ring-indigo-600 ring-offset-2' 
+                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none ring-2 ring-indigo-600 ring-offset-2' 
                           : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400'"
                       >
                         <div class="flex items-center gap-3 min-w-0">
@@ -360,7 +340,7 @@ onMounted(() => {
               </button>
             </div>
           </div>
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div class="relative min-w-[200px]" v-click-outside="() => showSprintDropdown = false">
               <button
                 type="button"
@@ -433,8 +413,8 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="flex-1 overflow-auto p-6 custom-scrollbar">
-        <div class="h-full">
+      <div class="flex-1 overflow-auto p-8 custom-scrollbar">
+        <div class="h-full max-w-[1600px] mx-auto">
           <BacklogList :disabled="isAnyModalOpen" />
         </div>
       </div>
