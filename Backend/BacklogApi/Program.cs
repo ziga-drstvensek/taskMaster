@@ -8,6 +8,7 @@ using BacklogApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -66,13 +67,23 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder => builder
-            .WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:12404", "https://ziga-drstvensek.top:12404")
+            .WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:12404", "https://ziga-drstvensek.top:12404", "https://task-manager.ziga-drstvensek.top")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // Prazni seznami KnownNetworks in KnownProxies dovoljujejo preusmeritve iz vseh virov (vsebnikov v Dockerju)
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 using (var scope = app.Services.CreateScope())
 {
