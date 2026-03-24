@@ -43,6 +43,6 @@ public class SettingsController : ControllerBase
         {
             return Ok(new { message = "Testno e-poštno sporočilo je bilo uspešno poslano" });
         }
-        return BadRequest(new { message = "Pošiljanje testnega e-poštnega sporočila ni uspelo. Preverite nastavitve SMTP." });
+        return StatusCode(500, new { message = "Pošiljanje testnega e-poštnega sporočila ni uspelo. Preverite nastavitve SMTP in loge za več podrobnosti." });
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.Extensions.Logging;
+
 namespace BacklogApi.Application.Services;
 
 public interface IBacklogService
@@ -739,10 +741,12 @@ public class BoardService : IBoardService
 public class SmtpSettingsService : ISmtpSettingsService
 {
     private readonly BacklogDbContext _context;
+    private readonly ILogger<SmtpSettingsService> _logger;
 
-    public SmtpSettingsService(BacklogDbContext context)
+    public SmtpSettingsService(BacklogDbContext context, ILogger<SmtpSettingsService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<SmtpSettingsDto?> GetSettingsAsync()
@@ -791,13 +795,18 @@ public class SmtpSettingsService : ISmtpSettingsService
     public async Task<bool> SendEmailAsync(string to, string subject, string body)
     {
         var settings = await _context.SmtpSettings.FirstOrDefaultAsync();
-        if (settings == null || string.IsNullOrEmpty(settings.Host)) return false;
+        if (settings == null || string.IsNullOrEmpty(settings.Host))
+        {
+            _logger.LogWarning("SMTP settings are not configured.");
+            return false;
+        }
 
         try
         {
             using var client = new System.Net.Mail.SmtpClient(settings.Host, settings.Port);
             client.EnableSsl = settings.EnableSsl;
             client.Credentials = new System.Net.NetworkCredential(settings.UserName, settings.Password);
+            client.Timeout = 10000; // 10 seconds timeout to prevent gateway timeouts
 
             var mailMessage = new System.Net.Mail.MailMessage
             {
@@ -808,11 +817,14 @@ public class SmtpSettingsService : ISmtpSettingsService
             };
             mailMessage.To.Add(to);
 
+            _logger.LogInformation("Sending email to {To} via {Host}:{Port} (SSL: {EnableSsl})", to, settings.Host, settings.Port, settings.EnableSsl);
             await client.SendMailAsync(mailMessage);
+            _logger.LogInformation("Email sent successfully to {To}", to);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to send email to {To} via {Host}:{Port}. Error: {Message}", to, settings.Host, settings.Port, ex.Message);
             return false;
         }
     }
