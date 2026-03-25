@@ -23,7 +23,10 @@ import {
   ChevronDown,
   ChevronRight,
   Columns,
-  List
+  List,
+  Zap,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-vue-next';
 
 const backlogStore = useBacklogStore();
@@ -33,6 +36,20 @@ const authStore = useAuthStore();
 const { t, locale } = useI18n();
 
 const itemToEdit = ref<any>(null);
+const activeQuickFilters = ref<string[]>([]);
+
+const toggleQuickFilter = (filter: string) => {
+  const index = activeQuickFilters.value.indexOf(filter);
+  if (index === -1) {
+    activeQuickFilters.value.push(filter);
+  } else {
+    activeQuickFilters.value.splice(index, 1);
+  }
+};
+
+const clearQuickFilters = () => {
+  activeQuickFilters.value = [];
+};
 
 onMounted(async () => {
   if (!backlogStore.boards.length) {
@@ -105,6 +122,22 @@ const allItems = computed(() => {
     );
   }
 
+  // Quick Filters
+  if (activeQuickFilters.value.length > 0) {
+    if (activeQuickFilters.value.includes('high_priority')) {
+      items = items.filter(i => i.priority === 2);
+    }
+    if (activeQuickFilters.value.includes('my_tasks')) {
+      items = items.filter(i => i.assignedTo === authStore.user?.username);
+    }
+    if (activeQuickFilters.value.includes('due_soon')) {
+      const now = new Date();
+      const in3Days = new Date();
+      in3Days.setDate(now.getDate() + 3);
+      items = items.filter(i => i.dueDate && new Date(i.dueDate) <= in3Days && new Date(i.dueDate) >= now);
+    }
+  }
+
   return items;
 });
 
@@ -151,9 +184,58 @@ const deleteItem = async (id: number) => {
 
 <template>
   <div v-if="backlogStore.selectedBoardId === -1 || uiStore.viewMode === 'table'" class="h-full flex flex-col">
-    <!-- View Mode Switcher (only for individual boards) -->
-    <div v-if="backlogStore.selectedBoardId !== -1" class="flex justify-end mb-4">
-      <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+    <!-- View Mode Switcher and Quick Filters -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+          <Zap :size="14" class="text-amber-500" />
+          <span class="text-xs font-black uppercase tracking-widest">{{ t('common.quick_filters') }}</span>
+        </div>
+        
+        <button 
+          @click="toggleQuickFilter('my_tasks')"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border"
+          :class="activeQuickFilters.includes('my_tasks') 
+            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200 dark:shadow-none' 
+            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+        >
+          <UserCheck :size="14" />
+          {{ t('common.filter_my_tasks') }}
+        </button>
+
+        <button 
+          @click="toggleQuickFilter('high_priority')"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border"
+          :class="activeQuickFilters.includes('high_priority') 
+            ? 'bg-rose-600 text-white border-rose-600 shadow-md shadow-rose-200 dark:shadow-none' 
+            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-rose-300 dark:hover:border-rose-700'"
+        >
+          <AlertCircle :size="14" />
+          {{ t('common.filter_priority_high') }}
+        </button>
+
+        <button 
+          @click="toggleQuickFilter('due_soon')"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border"
+          :class="activeQuickFilters.includes('due_soon') 
+            ? 'bg-amber-600 text-white border-amber-600 shadow-md shadow-amber-200 dark:shadow-none' 
+            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700'"
+        >
+          <Clock :size="14" />
+          {{ t('common.filter_due_soon') }}
+        </button>
+
+        <button 
+          v-if="activeQuickFilters.length > 0"
+          @click="clearQuickFilters"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all"
+        >
+          <Trash2 :size="14" />
+          {{ t('common.clear_filters') }}
+        </button>
+      </div>
+
+      <div v-if="backlogStore.selectedBoardId !== -1" class="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-end sm:self-auto">
         <button 
           @click="uiStore.setViewMode('kanban')"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"

@@ -145,6 +145,7 @@ onMounted(fetchUsers);
             { value: 'Manager', label: 'Manager' },
             { value: 'Admin', label: 'Admin' }
           ]"
+          searchable
         />
         <div class="md:col-span-2">
           <BaseInput 

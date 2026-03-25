@@ -287,12 +287,14 @@ const handleSubmit = async () => {
                 v-model="boardId"
                 :label="$t('common.boards')"
                 :options="backlogStore.boards.map(b => ({ value: b.id, label: b.name }))"
+                searchable
               />
               <BaseSelect 
                 v-model="sprintId"
                 :label="$t('common.sprint')"
                 :placeholder="$t('common.no_sprint')"
                 :options="filteredSprints.map(s => ({ value: s.id, label: s.name }))"
+                searchable
               />
             </div>
 
@@ -310,30 +312,18 @@ const handleSubmit = async () => {
                 v-model="columnId"
                 :label="$t('common.column')"
                 :options="filteredColumns.map(c => ({ value: c.id, label: c.name }))"
+                searchable
               />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="label-caps">{{ $t('common.assignee') }}</label>
-                <div class="relative group">
-                  <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
-                    <UserCheck :size="18" />
-                  </div>
-                  <select 
-                    v-model="assignedTo"
-                    class="input-field pl-10 appearance-none"
-                  >
-                    <option value="">{{ $t('common.none') }}</option>
-                    <option v-for="user in users" :key="user" :value="user">
-                      {{ user }}
-                    </option>
-                  </select>
-                  <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                    <ChevronDown :size="16" />
-                  </div>
-                </div>
-              </div>
+              <BaseSelect 
+                v-model="assignedTo"
+                :label="$t('common.assignee')"
+                :placeholder="$t('common.none')"
+                :options="users.map(u => ({ value: u, label: u }))"
+                searchable
+              />
               <BaseDatePicker 
                 v-model="dueDate"
                 :label="$t('common.due_date')"

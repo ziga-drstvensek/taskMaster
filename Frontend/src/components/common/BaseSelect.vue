@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { ChevronDown, Check } from 'lucide-vue-next';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import { ChevronDown, Check, Search } from 'lucide-vue-next';
 
 const props = defineProps<{
   modelValue: string | number;
@@ -10,12 +10,23 @@ const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   error?: string;
+  searchable?: boolean;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
 
 const isOpen = ref(false);
+const searchQuery = ref('');
 const dropdownRef = ref<HTMLElement | null>(null);
+const searchInputRef = ref<HTMLInputElement | null>(null);
+
+const filteredOptions = computed(() => {
+  if (!props.searchable || !searchQuery.value) return props.options;
+  const query = searchQuery.value.toLowerCase();
+  return props.options.filter(opt => 
+    opt.label.toLowerCase().includes(query)
+  );
+});
 
 const selectedOption = computed(() => {
   return props.options.find(opt => String(opt.value) === String(props.modelValue));
@@ -28,11 +39,17 @@ const displayValue = computed(() => {
 const selectOption = (opt: { value: string | number; label: string }) => {
   emit('update:modelValue', opt.value);
   isOpen.value = false;
+  searchQuery.value = '';
 };
 
-const toggleDropdown = () => {
+const toggleDropdown = async () => {
   if (!props.disabled) {
     isOpen.value = !isOpen.value;
+    if (isOpen.value && props.searchable) {
+      searchQuery.value = '';
+      await nextTick();
+      searchInputRef.value?.focus();
+    }
   }
 };
 
@@ -97,18 +114,33 @@ onUnmounted(() => {
       >
         <div 
           v-if="isOpen"
-          class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg overflow-hidden"
+          class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg overflow-hidden flex flex-col"
         >
+          <!-- Search input -->
+          <div v-if="searchable" class="p-2 border-b border-slate-100 dark:border-slate-700">
+            <div class="relative">
+              <Search :size="14" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                ref="searchInputRef"
+                v-model="searchQuery"
+                type="text"
+                class="w-full pl-8 pr-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500/50 focus:border-indigo-500 placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                :placeholder="$t('common.search_placeholder')"
+                @click.stop
+              />
+            </div>
+          </div>
+
           <ul class="py-1 max-h-60 overflow-auto custom-scrollbar">
             <!-- Empty state -->
             <li
-              v-if="options.length === 0"
+              v-if="filteredOptions.length === 0"
               class="px-4 py-3 text-center text-sm text-slate-400 dark:text-slate-500 italic"
             >
               {{ $t('common.no_items') }}
             </li>
             <li
-              v-for="opt in options"
+              v-for="opt in filteredOptions"
               :key="opt.value"
               @click="selectOption(opt)"
               class="px-4 py-2.5 cursor-pointer flex items-center justify-between gap-2 transition-colors duration-100"

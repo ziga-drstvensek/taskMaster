@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from './store/auth';
 import { useBacklogStore } from './store/backlog';
@@ -14,7 +14,7 @@ import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
 import api from './services/api';
 import type { Sprint } from './types';
-import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -23,9 +23,44 @@ const { locale, t } = useI18n();
 
 const showAddModal = ref(false);
 const showSettingsManager = ref(false);
+const showShortcutsModal = ref(false);
 const initialSettingsTab = ref<'sprints' | 'users' | 'boards'>('boards');
 const showBoardDropdown = ref(false);
 const showSprintDropdown = ref(false);
+const searchInput = ref<HTMLInputElement | null>(null);
+
+const shortcuts = computed(() => [
+  { key: 'N', label: t('common.new_task_shortcut') },
+  { key: '/', label: t('common.search_shortcut') },
+  { key: '?', label: t('common.help_shortcut') },
+  { key: 'Esc', label: t('common.esc_shortcut') },
+]);
+
+const handleGlobalKeydown = (e: KeyboardEvent) => {
+  if (isAnyModalOpen.value) {
+    if (e.key === 'Escape' && !uiStore.isModalOpen) {
+       showAddModal.value = false;
+       showSettingsManager.value = false;
+       showShortcutsModal.value = false;
+    }
+    return;
+  }
+
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) {
+    return;
+  }
+
+  if (e.key.toLowerCase() === 'n') {
+    e.preventDefault();
+    showAddModal.value = true;
+  } else if (e.key === '/') {
+    e.preventDefault();
+    searchInput.value?.focus();
+  } else if (e.key === '?') {
+    e.preventDefault();
+    showShortcutsModal.value = true;
+  }
+};
 
 const vClickOutside = {
   mounted(el: any, binding: any) {
@@ -59,6 +94,7 @@ const triggerToast = (msg: string, type: 'info' | 'error' | 'success' = 'info') 
 const isAnyModalOpen = computed(() => {
   return showAddModal.value || 
          showSettingsManager.value || 
+         showShortcutsModal.value ||
          uiStore.isModalOpen;
 });
 
@@ -69,6 +105,7 @@ const dashboards = computed<{id: string, name: string, icon: any}[]>(() => [
 ]);
 
 onMounted(async () => {
+  window.addEventListener('keydown', handleGlobalKeydown);
   const savedDarkMode = localStorage.getItem('dark-mode');
   if (savedDarkMode !== null) {
     uiStore.isDarkMode = savedDarkMode === 'true';
@@ -87,6 +124,10 @@ onMounted(async () => {
     triggerToast(t('common.session_expired'));
     localStorage.removeItem('session_expired');
   }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown);
 });
 
 watch(() => authStore.isAuthenticated, async (newVal) => {
@@ -147,10 +188,14 @@ onMounted(() => {
           <Search :size="16" class="text-slate-400 mr-2 group-focus-within/search:text-indigo-500 transition-colors" />
           <input 
             type="text" 
+            ref="searchInput"
             v-model="backlogStore.searchQuery"
             :placeholder="$t('common.search_placeholder')"
             class="bg-transparent border-none outline-none text-sm w-full text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
           />
+          <div v-if="!backlogStore.searchQuery" class="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[10px] font-bold text-slate-400 select-none">
+            /
+          </div>
           <button v-if="backlogStore.searchQuery" @click="clearSearch" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
             <X :size="14" />
           </button>
@@ -178,6 +223,14 @@ onMounted(() => {
         </div>
 
         <div class="hidden sm:flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
+          <button 
+            @click="showShortcutsModal = true"
+            class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all shadow-sm active:scale-90"
+            :title="$t('common.shortcuts')"
+          >
+            <Keyboard :size="16" />
+          </button>
+          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <button 
             @click="uiStore.toggleDarkMode"
             class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all shadow-sm active:scale-90"
@@ -407,6 +460,28 @@ onMounted(() => {
       persistent
     >
       <SettingsManager :initialTab="initialSettingsTab" />
+    </BaseModal>
+
+    <BaseModal
+      :show="showShortcutsModal"
+      @close="showShortcutsModal = false"
+      :title="$t('common.shortcuts')"
+      maxWidth="400px"
+    >
+      <div class="space-y-4">
+        <div v-for="shortcut in shortcuts" :key="shortcut.key" class="flex items-center justify-between p-3 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+          <span class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ shortcut.label }}</span>
+          <div class="flex items-center gap-1.5">
+            <div class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border-b-2 border-slate-200 dark:border-slate-900 text-xs font-black text-slate-700 dark:text-slate-200 shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50 min-w-[32px] flex items-center justify-center">
+              <Command v-if="shortcut.key === 'Esc'" :size="10" class="mr-1 opacity-50" />
+              {{ shortcut.key }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 text-center text-xs text-slate-400 dark:text-slate-500 font-medium">
+        {{ $t('common.shortcut_help') }}
+      </div>
     </BaseModal>
 
     <!-- Toast -->
