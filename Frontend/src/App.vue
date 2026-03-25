@@ -100,8 +100,11 @@ const isAnyModalOpen = computed(() => {
 
 const dashboards = computed<{id: string, name: string, icon: any}[]>(() => [
   { id: 'all', name: t('dashboard.all'), icon: LayoutGrid },
-  { id: 'me', name: t('dashboard.me'), icon: User },
   { id: 'unassigned', name: t('dashboard.unassigned'), icon: UserPlus }
+]);
+
+const personalDashboards = computed<{id: string, name: string, icon: any}[]>(() => [
+  { id: 'me', name: t('dashboard.me'), icon: User }
 ]);
 
 onMounted(async () => {
@@ -354,19 +357,48 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-2 mt-1">
-              <button 
-                v-for="db in dashboards" 
-                :key="db.id"
-                @click="backlogStore.setSelectedDashboardId(db.id)"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border"
-                :class="backlogStore.selectedDashboardId === db.id 
-                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
-                  : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
-              >
-                <component :is="db.icon" :size="14" />
-                {{ db.name }}
-              </button>
+            <div class="flex flex-col gap-3 mt-1">
+              <!-- General Dashboards -->
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">
+                  {{ $t('dashboard.general') }}
+                </span>
+                <div class="flex items-center gap-2">
+                  <button 
+                    v-for="db in dashboards" 
+                    :key="db.id"
+                    @click="backlogStore.setSelectedDashboardId(db.id)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border"
+                    :class="backlogStore.selectedDashboardId === db.id 
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                      : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
+                  >
+                    <component :is="db.icon" :size="14" />
+                    {{ db.name }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Personal Dashboards -->
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">
+                  {{ $t('dashboard.personal') }}
+                </span>
+                <div class="flex items-center gap-2">
+                  <button 
+                    v-for="db in personalDashboards" 
+                    :key="db.id"
+                    @click="backlogStore.setSelectedDashboardId(db.id)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border"
+                    :class="backlogStore.selectedDashboardId === db.id 
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                      : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
+                  >
+                    <component :is="db.icon" :size="14" />
+                    {{ db.name }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">

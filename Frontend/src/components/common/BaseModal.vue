@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue';
+import { onMounted, onUnmounted, watch, computed } from 'vue';
 import { X } from 'lucide-vue-next';
 import { useUIStore } from '../../store/ui';
 
@@ -13,6 +13,16 @@ const props = defineProps<{
 
 const emit = defineEmits(['close']);
 const uiStore = useUIStore();
+
+const computedMaxWidth = computed(() => {
+  if (props.maxWidth) return props.maxWidth;
+  return uiStore.modalSize === 'expanded' ? '1200px' : '600px';
+});
+
+const computedMaxHeight = computed(() => {
+  if (props.maxHeight) return props.maxHeight;
+  return uiStore.modalSize === 'expanded' ? '95vh' : '90vh';
+});
 
 const close = () => {
   emit('close');
@@ -82,7 +92,7 @@ watch(() => props.show, (newVal, oldVal) => {
         <div 
           v-if="show"
           class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl ring-1 ring-black/5 flex flex-col overflow-hidden w-full transition-all border border-slate-200 dark:border-slate-800"
-          :style="{ maxWidth: maxWidth || '600px', maxHeight: maxHeight || '90vh' }"
+          :style="{ maxWidth: computedMaxWidth, maxHeight: computedMaxHeight }"
           @click.stop
         >
           <!-- Header -->

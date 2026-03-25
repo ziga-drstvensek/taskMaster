@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Board } from '../types';
 import api from '../services/api';
 import { useBacklogStore } from '../store/backlog';
-import { Plus, Edit2, Trash2, Trello, Users, LayoutGrid, GripVertical } from 'lucide-vue-next';
+import { Plus, Edit2, Trash2, Trello, Users, LayoutGrid, GripVertical, Search } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import draggable from 'vuedraggable';
 
@@ -13,6 +13,16 @@ const backlogStore = useBacklogStore();
 const boards = ref<Board[]>([]);
 const loading = ref(false);
 const showForm = ref(false);
+const searchQuery = ref('');
+
+const filteredBoards = computed(() => {
+  if (!searchQuery.value) return boards.value;
+  const q = searchQuery.value.toLowerCase();
+  return boards.value.filter(b => 
+    b.name.toLowerCase().includes(q) || 
+    (b.description && b.description.toLowerCase().includes(q))
+  );
+});
 
 const editingId = ref<number | null>(null);
 const name = ref('');
@@ -258,16 +268,29 @@ onMounted(() => {
       </div>
     </form>
 
-    <!-- List Header -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-2">
-        <Trello class="text-slate-400 dark:text-slate-500" :size="18" />
-        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.boards') }} ({{ boards.length }})</span>
+    <!-- Search and List Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div class="flex items-center gap-4 w-full md:w-auto">
+        <div class="flex items-center gap-2">
+          <Trello class="text-slate-400 dark:text-slate-500" :size="18" />
+          <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.boards') }} ({{ boards.length }})</span>
+        </div>
+        
+        <div class="relative flex-1 md:w-64">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" :size="14" />
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            :placeholder="$t('common.search')"
+            class="w-full pl-9 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-xs focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-slate-200"
+          >
+        </div>
       </div>
+      
       <button 
         v-if="!showForm"
         @click="resetForm(); showForm = true" 
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95 whitespace-nowrap"
       >
         <Plus :size="14" class="inline mr-1" /> {{ $t('common.add') }}
       </button>
@@ -278,12 +301,13 @@ onMounted(() => {
       <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     
-    <div v-else-if="boards.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+    <div v-else-if="filteredBoards.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
       <Trello class="mx-auto text-slate-300 dark:text-slate-700 mb-2" :size="48" />
+      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ searchQuery ? $t('common.no_results') : '' }}</p>
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <div v-for="board in boards" :key="board.id" class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-indigo-100 dark:hover:border-indigo-900/50 transition-all relative overflow-hidden">
+      <div v-for="board in filteredBoards" :key="board.id" class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-indigo-100 dark:hover:border-indigo-900/50 transition-all relative overflow-hidden">
         <div class="flex justify-between items-start mb-3">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-inner">

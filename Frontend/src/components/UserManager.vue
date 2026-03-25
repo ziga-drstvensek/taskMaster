@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '../services/api';
-import { Plus, Trash2, UserPlus, Users, Mail, Shield, ShieldAlert, Key } from 'lucide-vue-next';
+import { Plus, Trash2, UserPlus, Users, Mail, Shield, ShieldAlert, Key, Search } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import BaseSelect from './common/BaseSelect.vue';
 
@@ -18,6 +18,17 @@ const password = ref('');
 const role = ref('User');
 const tags = ref('');
 const error = ref('');
+const searchQuery = ref('');
+
+const filteredUsers = computed(() => {
+  if (!searchQuery.value) return users.value;
+  const q = searchQuery.value.toLowerCase();
+  return users.value.filter(u => 
+    u.username.toLowerCase().includes(q) || 
+    u.email.toLowerCase().includes(q) ||
+    (u.tags && u.tags.toLowerCase().includes(q))
+  );
+});
 
 const fetchUsers = async () => {
   loading.value = true;
@@ -168,16 +179,29 @@ onMounted(fetchUsers);
       </div>
     </form>
 
-    <!-- List Header -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-2">
-        <Users class="text-slate-400 dark:text-slate-500" :size="18" />
-        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.users') }} ({{ users.length }})</span>
+    <!-- Search and List Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div class="flex items-center gap-4 w-full md:w-auto">
+        <div class="flex items-center gap-2">
+          <Users class="text-slate-400 dark:text-slate-500" :size="18" />
+          <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.users') }} ({{ users.length }})</span>
+        </div>
+        
+        <div class="relative flex-1 md:w-64">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" :size="14" />
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            :placeholder="$t('common.search')"
+            class="w-full pl-9 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-xs focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-slate-200"
+          >
+        </div>
       </div>
+      
       <button 
         v-if="!showForm"
         @click="showForm = true" 
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95 whitespace-nowrap"
       >
         <Plus :size="14" class="inline mr-1" /> {{ $t('users_mng.add') }}
       </button>
@@ -188,9 +212,9 @@ onMounted(fetchUsers);
       <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     
-    <div v-else-if="users.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-      <Users class="mx-auto text-slate-300 mb-2" :size="48" />
-      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ $t('users_mng.no_users') }}</p>
+    <div v-else-if="filteredUsers.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+      <Users class="mx-auto text-slate-300 dark:text-slate-700 mb-2" :size="48" />
+      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ searchQuery ? $t('common.no_results') : $t('users_mng.no_users') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto -mx-2">
@@ -205,7 +229,7 @@ onMounted(fetchUsers);
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
-          <tr v-for="u in users" :key="u.username" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
+          <tr v-for="u in filteredUsers" :key="u.username" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-xs uppercase shadow-sm">

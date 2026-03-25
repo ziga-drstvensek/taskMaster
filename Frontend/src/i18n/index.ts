@@ -85,7 +85,9 @@ const messages = {
       light_mode: 'Light Mode',
       table_view: 'Table View',
       kanban_view: 'Kanban View',
-      search_placeholder: 'Search...',
+      search_placeholder: 'Search tasks...',
+      search: 'Search',
+      no_results: 'No matching items found.',
       select_date: 'Select date',
       today: 'Today',
       close: 'Close',
@@ -105,6 +107,9 @@ const messages = {
       clear_filters: 'Clear Filters',
       font_size: 'Font Size',
       font_family: 'Font Family',
+      modal_size: 'Default Modal Size',
+      modal_normal: 'Normal',
+      modal_expanded: 'Expanded',
       very_small: 'Very Small',
       small: 'Small',
       medium_size: 'Medium',
@@ -185,6 +190,8 @@ const messages = {
       }
     },
     dashboard: {
+      personal: 'Personal',
+      general: 'General',
       all: 'All Tasks',
       me: 'My Tasks',
       unassigned: 'Unassigned'
@@ -274,7 +281,9 @@ const messages = {
       light_mode: 'Svetli način',
       table_view: 'Tabelarni prikaz',
       kanban_view: 'Kanban prikaz',
-      search_placeholder: 'Išči...',
+      search_placeholder: 'Išči naloge...',
+      search: 'Išči',
+      no_results: 'Ni zadetkov za iskanje.',
       select_date: 'Izberi datum',
       today: 'Danes',
       close: 'Zapri',
@@ -294,6 +303,9 @@ const messages = {
       clear_filters: 'Počisti filtre',
       font_size: 'Velikost pisave',
       font_family: 'Vrsta pisave',
+      modal_size: 'Privzeta velikost modalov',
+      modal_normal: 'Običajna',
+      modal_expanded: 'Razširjena',
       very_small: 'Zelo majhna',
       small: 'Majhna',
       medium_size: 'Srednja',
@@ -374,6 +386,8 @@ const messages = {
       }
     },
     dashboard: {
+      personal: 'Osebno',
+      general: 'Splošno',
       all: 'Vsa opravila',
       me: 'Moja opravila',
       unassigned: 'Nedodeljena'

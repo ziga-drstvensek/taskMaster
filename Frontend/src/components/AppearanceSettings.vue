@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useUIStore } from '../store/ui';
-import { Type, Check, Type as FontIcon, Sun, Moon } from 'lucide-vue-next';
+import { Type, Check, Type as FontIcon, Sun, Moon, Maximize2, Layout } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const uiStore = useUIStore();
@@ -27,6 +27,10 @@ const setFontSize = (size: 'small' | 'medium' | 'large') => {
 
 const setFontFamily = (font: string) => {
   uiStore.setFontFamily(font);
+};
+
+const setModalSize = (size: 'normal' | 'expanded') => {
+  uiStore.setModalSize(size);
 };
 
 const toggleDarkMode = () => {
@@ -152,9 +156,55 @@ const toggleDarkMode = () => {
       </div>
     </div>
 
+    <!-- Modal Size -->
+    <div>
+      <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+        <Maximize2 :size="20" class="text-indigo-600" />
+        {{ $t('common.modal_size') }}
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          @click="setModalSize('normal')"
+          class="flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left"
+          :class="uiStore.modalSize === 'normal'
+            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
+            : 'border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 bg-white dark:bg-slate-900'"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
+              <Layout :size="20" />
+            </div>
+            <span class="font-medium text-slate-700 dark:text-slate-200">{{ $t('common.modal_normal') }}</span>
+          </div>
+          <div v-if="uiStore.modalSize === 'normal'" class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+            <Check :size="14" />
+          </div>
+        </button>
+
+        <button
+          @click="setModalSize('expanded')"
+          class="flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left"
+          :class="uiStore.modalSize === 'expanded'
+            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
+            : 'border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 bg-white dark:bg-slate-900'"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600">
+              <Maximize2 :size="20" />
+            </div>
+            <span class="font-medium text-slate-700 dark:text-slate-200">{{ $t('common.modal_expanded') }}</span>
+          </div>
+          <div v-if="uiStore.modalSize === 'expanded'" class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+            <Check :size="14" />
+          </div>
+        </button>
+      </div>
+    </div>
+
     <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
       <p class="text-sm text-slate-500 dark:text-slate-400 italic">
-        {{ $t('common.appearance') }}: {{ $t(`common.${uiStore.fontSize}`) }}, {{ fontFamilies.find(f => f.id === uiStore.fontFamily)?.name }}
+        {{ $t('common.appearance') }}: {{ $t(`common.${uiStore.fontSize}`) }}, {{ fontFamilies.find(f => f.id === uiStore.fontFamily)?.name }}, {{ $t(`common.modal_${uiStore.modalSize}`) }}
       </p>
     </div>
   </div>

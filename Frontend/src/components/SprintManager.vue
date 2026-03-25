@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Sprint } from '../types';
 import api from '../services/api';
 import { useBacklogStore } from '../store/backlog';
-import { Plus, Edit2, Trash2, X, Check, Calendar } from 'lucide-vue-next';
+import { Plus, Edit2, Trash2, X, Check, Calendar, Search } from 'lucide-vue-next';
 import BaseDatePicker from './common/BaseDatePicker.vue';
 
 const { t } = useI18n();
@@ -18,6 +18,15 @@ const name = ref('');
 const startDate = ref('');
 const endDate = ref('');
 const isActive = ref(true);
+const searchQuery = ref('');
+
+const filteredSprints = computed(() => {
+  if (!searchQuery.value) return backlogStore.sprints;
+  const q = searchQuery.value.toLowerCase();
+  return backlogStore.sprints.filter(s => 
+    s.name.toLowerCase().includes(q)
+  );
+});
 
 const resetForm = () => {
   editingSprintId.value = null;
@@ -127,16 +136,29 @@ onMounted(() => {
       </div>
     </form>
 
-    <!-- List Header -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-2">
-        <Calendar class="text-slate-400 dark:text-slate-500" :size="18" />
-        <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.sprints') }} ({{ backlogStore.sprints.length }})</span>
+    <!-- Search and List Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div class="flex items-center gap-4 w-full md:w-auto">
+        <div class="flex items-center gap-2">
+          <Calendar class="text-slate-400 dark:text-slate-500" :size="18" />
+          <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('common.sprints') }} ({{ backlogStore.sprints.length }})</span>
+        </div>
+        
+        <div class="relative flex-1 md:w-64">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" :size="14" />
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            :placeholder="$t('common.search')"
+            class="w-full pl-9 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-xs focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-slate-200"
+          >
+        </div>
       </div>
+      
       <button 
         v-if="!showForm"
         @click="showForm = true" 
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-900/40 transition-all shadow-sm active:scale-95 whitespace-nowrap"
       >
         <Plus :size="14" class="inline mr-1" /> {{ $t('sprints.add') }}
       </button>
@@ -147,9 +169,9 @@ onMounted(() => {
       <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     
-    <div v-else-if="backlogStore.sprints.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+    <div v-else-if="filteredSprints.length === 0" class="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
       <Calendar class="mx-auto text-slate-300 mb-2" :size="48" />
-      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ $t('sprints.no_sprints') }}</p>
+      <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xxs">{{ searchQuery ? $t('common.no_results') : $t('sprints.no_sprints') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto -mx-2">
@@ -163,7 +185,7 @@ onMounted(() => {
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
-          <tr v-for="s in backlogStore.sprints" :key="s.id" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
+          <tr v-for="s in filteredSprints" :key="s.id" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
             <td class="px-6 py-4">
                <span class="font-bold text-slate-700 dark:text-slate-200 tracking-tight">{{ s.name }}</span>
             </td>

@@ -5,6 +5,7 @@ export const useUIStore = defineStore('ui', {
         activeModals: 0,
         isDarkMode: localStorage.getItem('dark-mode') === 'true',
         viewMode: (localStorage.getItem('view-mode') as 'table' | 'kanban') || 'kanban',
+        modalSize: (localStorage.getItem('modal-size') as 'normal' | 'expanded') || 'normal',
         fontSize: (localStorage.getItem('font-size') as 'small' | 'medium' | 'large') || 'medium',
         fontFamily: (localStorage.getItem('font-family')) || 'sans'
     }),
@@ -44,6 +45,10 @@ export const useUIStore = defineStore('ui', {
         setViewMode(mode: 'table' | 'kanban') {
             this.viewMode = mode;
             localStorage.setItem('view-mode', mode);
+        },
+        setModalSize(size: 'normal' | 'expanded') {
+            this.modalSize = size;
+            localStorage.setItem('modal-size', size);
         },
         saveTheme(mode: string) {
             localStorage.setItem('dark-mode', mode);
