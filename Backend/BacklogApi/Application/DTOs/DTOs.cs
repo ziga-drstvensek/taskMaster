@@ -138,7 +138,7 @@ public record RegisterDto(string Username, string Email, string Password);
 public record UpdateUserDto(string Username, string Email, string? Password, string Role, string? Tags, string? ProfilePicture = null, string? TeamsWebhookUrl = null);
 public record UpdateProfileDto(string? ProfilePicture, string? TeamsWebhookUrl = null);
 public record UserDto(string Username, string Email, string Role, string? Tags, string? ProfilePicture, string? TeamsWebhookUrl = null);
-public record AuthResponseDto(string Token, string Username, string Role, string? ProfilePicture = null);
+public record AuthResponseDto(string Token, string Username, string Role, string? ProfilePicture = null, string? TeamsWebhookUrl = null);
 
 public record NotificationDto(
     int Id,

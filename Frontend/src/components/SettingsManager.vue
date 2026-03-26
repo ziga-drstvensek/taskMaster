@@ -11,13 +11,13 @@ import SmtpSettings from './SmtpSettings.vue';
 import NotificationSettings from './NotificationSettings.vue';
 
 const props = defineProps<{
-  initialTab?: 'sprints' | 'users' | 'boards' | 'appearance' | 'mailing';
+  initialTab?: 'sprints' | 'users' | 'boards' | 'appearance' | 'mailing' | 'notifications';
 }>();
 
 const { t } = useI18n();
 const authStore = useAuthStore();
 
-const activeTab = ref(props.initialTab || 'boards');
+const activeTab = ref(props.initialTab || 'notifications');
 
 const tabs = computed(() => {
   const items = [

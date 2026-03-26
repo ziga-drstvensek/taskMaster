@@ -97,7 +97,8 @@ public class AuthController : ControllerBase
             new JwtSecurityTokenHandler().WriteToken(token),
             user.UserName!,
             roles.FirstOrDefault() ?? "User",
-            user.ProfilePicture
+            user.ProfilePicture,
+            user.TeamsWebhookUrl
         ));
     }
 

@@ -25,7 +25,7 @@ const showAddModal = ref(false);
 const showSettingsManager = ref(false);
 const showShortcutsModal = ref(false);
 const showNotificationsDropdown = ref(false);
-const initialSettingsTab = ref<'sprints' | 'users' | 'boards'>('boards');
+const initialSettingsTab = ref<'sprints' | 'users' | 'boards' | 'notifications'>('notifications');
 const showBoardDropdown = ref(false);
 const showSprintDropdown = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
@@ -244,9 +244,9 @@ onMounted(() => {
       </div>
       
       <div class="flex items-center gap-4">
-        <div v-if="authStore.isManager" class="flex items-center">
+        <div class="flex items-center">
           <button 
-            @click="initialSettingsTab = 'boards'; showSettingsManager = true"
+            @click="initialSettingsTab = 'notifications'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
             :class="{ 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:text-indigo-400 shadow-inner': showSettingsManager }"
             :title="$t('common.settings')"
