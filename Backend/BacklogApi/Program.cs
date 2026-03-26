@@ -93,6 +93,14 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<BacklogDbContext>();
+        
+        // Ročni popravek za stolpec ProfilePictureUrl v ProfilePicture, če obstaja
+        try {
+            await context.Database.ExecuteSqlRawAsync("ALTER TABLE AspNetUsers CHANGE COLUMN ProfilePictureUrl ProfilePicture longtext NULL;");
+        } catch {
+            // Ignoriramo, če stolpec ne obstaja
+        }
+
         if ((await context.Database.GetPendingMigrationsAsync()).Any())
         {
             await context.Database.MigrateAsync();
