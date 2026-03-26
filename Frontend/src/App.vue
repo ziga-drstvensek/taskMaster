@@ -14,7 +14,7 @@ import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
 import api from './services/api';
 import type { Sprint } from './types';
-import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell, Camera } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -155,6 +155,36 @@ const handleLogout = () => {
 
 const clearSearch = () => {
   backlogStore.setSearchQuery('');
+};
+
+const fileInput = ref<HTMLInputElement | null>(null);
+const isUploading = ref(false);
+
+const handleProfilePictureUpload = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.files || input.files.length === 0) return;
+
+  const file = input.files[0];
+  if (file.size > 2 * 1024 * 1024) {
+    triggerToast(t('common.error.file_too_large'), 'error');
+    return;
+  }
+
+  isUploading.value = true;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const base64Image = e.target?.result as string;
+      await authStore.updateProfilePicture(base64Image);
+      triggerToast(t('common.success.saved'), 'success');
+    } catch (err) {
+      triggerToast(t('common.error.save'), 'error');
+    } finally {
+      isUploading.value = false;
+      if (fileInput.value) fileInput.value.value = '';
+    }
+  };
+  reader.readAsDataURL(file);
 };
 
 const toggleLanguage = () => {
@@ -304,12 +334,30 @@ onMounted(() => {
             {{ locale === 'en' ? 'SL' : 'EN' }}
           </button>
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
-          <div 
-            class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden flex-shrink-0"
-            :title="authStore.user?.username"
-          >
-            <img v-if="authStore.user?.profilePictureUrl" :src="authStore.user.profilePictureUrl" class="w-full h-full object-cover" />
-            <User v-else :size="16" />
+          <div class="relative group/avatar">
+            <div 
+              class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden flex-shrink-0 cursor-pointer"
+              :title="authStore.user?.username"
+              @click="fileInput?.click()"
+            >
+              <img v-if="authStore.user?.profilePicture" :src="authStore.user.profilePicture" class="w-full h-full object-cover" />
+              <User v-else :size="16" />
+              
+              <div v-if="isUploading" class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                <Camera :size="14" class="text-white" />
+              </div>
+            </div>
+            <input 
+              type="file" 
+              ref="fileInput" 
+              class="hidden" 
+              accept="image/*"
+              @change="handleProfilePictureUpload"
+            />
           </div>
           <div class="hidden md:flex flex-col">
             <span class="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">{{ authStore.user?.username }}</span>

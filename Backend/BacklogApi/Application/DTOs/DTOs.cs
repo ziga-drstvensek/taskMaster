@@ -135,9 +135,10 @@ public record CreateCommentDto(
 
 public record LoginDto(string Username, string Password);
 public record RegisterDto(string Username, string Email, string Password);
-public record UpdateUserDto(string Username, string Email, string? Password, string Role, string? Tags, string? ProfilePictureUrl = null);
-public record UserDto(string Username, string Email, string Role, string? Tags, string? ProfilePictureUrl);
-public record AuthResponseDto(string Token, string Username, string Role, string? ProfilePictureUrl = null);
+public record UpdateUserDto(string Username, string Email, string? Password, string Role, string? Tags, string? ProfilePicture = null);
+public record UpdateProfileDto(string? ProfilePicture);
+public record UserDto(string Username, string Email, string Role, string? Tags, string? ProfilePicture);
+public record AuthResponseDto(string Token, string Username, string Role, string? ProfilePicture = null);
 
 public record NotificationDto(
     int Id,

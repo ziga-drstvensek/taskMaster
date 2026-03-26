@@ -5,5 +5,5 @@ namespace BacklogApi.Core.Entities;
 public class ApplicationUser : IdentityUser
 {
     public string? Tags { get; set; }
-    public string? ProfilePictureUrl { get; set; }
+    public string? ProfilePicture { get; set; }
 }

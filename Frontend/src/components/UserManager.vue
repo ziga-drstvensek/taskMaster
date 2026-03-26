@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '../services/api';
-import { Plus, Trash2, UserPlus, Users, Mail, Shield, ShieldAlert, Key, Search } from 'lucide-vue-next';
+import { Plus, Trash2, UserPlus, Users, Mail, Shield, ShieldAlert, Key, Search, Camera } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import BaseSelect from './common/BaseSelect.vue';
 
@@ -17,9 +17,11 @@ const email = ref('');
 const password = ref('');
 const role = ref('User');
 const tags = ref('');
-const profilePictureUrl = ref('');
+const profilePicture = ref('');
 const error = ref('');
 const searchQuery = ref('');
+const fileInput = ref<HTMLInputElement | null>(null);
+const isUploading = ref(false);
 
 const filteredUsers = computed(() => {
   if (!searchQuery.value) return users.value;
@@ -49,7 +51,7 @@ const resetForm = () => {
   password.value = '';
   role.value = 'User';
   tags.value = '';
-  profilePictureUrl.value = '';
+  profilePicture.value = '';
   error.value = '';
   showForm.value = false;
   isEditing.value = false;
@@ -61,9 +63,28 @@ const handleEdit = (user: any) => {
   password.value = '';
   role.value = user.role;
   tags.value = user.tags || '';
-  profilePictureUrl.value = user.profilePictureUrl || '';
+  profilePicture.value = user.profilePicture || '';
   isEditing.value = true;
   showForm.value = true;
+};
+
+const handleFileUpload = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.files || input.files.length === 0) return;
+
+  const file = input.files[0];
+  if (file.size > 2 * 1024 * 1024) {
+    triggerToast(t('common.error.file_too_large'), 'error');
+    return;
+  }
+
+  isUploading.value = true;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    profilePicture.value = e.target?.result as string;
+    isUploading.value = false;
+  };
+  reader.readAsDataURL(file);
 };
 
 const triggerToast = (msg: string, type: 'info' | 'error' | 'success' = 'info') => {
@@ -92,7 +113,7 @@ const handleSubmit = async () => {
         password: password.value,
         role: role.value,
         tags: tags.value,
-        profilePictureUrl: profilePictureUrl.value
+        profilePicture: profilePicture.value
       });
       triggerToast(t('common.success.saved'), 'success');
     } else {
@@ -101,13 +122,13 @@ const handleSubmit = async () => {
         email: email.value,
         password: password.value
       });
-      if (role.value !== 'User' || tags.value || profilePictureUrl.value) {
+      if (role.value !== 'User' || tags.value || profilePicture.value) {
           await api.put(`/auth/users/${username.value}`, {
             username: username.value,
             email: email.value,
             role: role.value,
             tags: tags.value,
-            profilePictureUrl: profilePictureUrl.value
+            profilePicture: profilePicture.value
           });
       }
       triggerToast(t('common.success.created'), 'success');
@@ -163,11 +184,44 @@ onMounted(fetchUsers);
           ]"
           searchable
         />
-        <BaseInput 
-          v-model="profilePictureUrl"
-          :label="$t('users_mng.profile_picture_url')"
-          placeholder="https://example.com/avatar.png"
-        />
+        <div class="flex flex-col gap-2">
+          <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">
+            {{ $t('users_mng.profile_picture') }}
+          </label>
+          <div class="flex items-center gap-4">
+            <div 
+              class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-indigo-600 overflow-hidden cursor-pointer hover:border-indigo-300 transition-all shadow-sm"
+              @click="fileInput?.click()"
+            >
+              <img v-if="profilePicture" :src="profilePicture" class="w-full h-full object-cover" />
+              <Camera v-else :size="20" class="text-slate-400" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <button 
+                type="button" 
+                @click="fileInput?.click()"
+                class="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+              >
+                {{ profilePicture ? $t('common.change') : $t('common.upload') }}
+              </button>
+              <button 
+                v-if="profilePicture"
+                type="button" 
+                @click="profilePicture = ''"
+                class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors"
+              >
+                {{ $t('common.remove') }}
+              </button>
+            </div>
+            <input 
+              type="file" 
+              ref="fileInput" 
+              class="hidden" 
+              accept="image/*"
+              @change="handleFileUpload"
+            />
+          </div>
+        </div>
         <div class="md:col-span-2">
           <BaseInput 
             v-model="tags"
@@ -242,8 +296,9 @@ onMounted(fetchUsers);
           <tr v-for="u in filteredUsers" :key="u.username" class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-xs uppercase shadow-sm">
-                  {{ u.username.substring(0, 2) }}
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-xs uppercase shadow-sm overflow-hidden">
+                  <img v-if="u.profilePicture" :src="u.profilePicture" class="w-full h-full object-cover" />
+                  <span v-else>{{ u.username.substring(0, 2) }}</span>
                 </div>
                 <span class="font-bold text-slate-700 dark:text-slate-200 tracking-tight">{{ u.username }}</span>
               </div>

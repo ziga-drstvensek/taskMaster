@@ -97,7 +97,7 @@ public class AuthController : ControllerBase
             new JwtSecurityTokenHandler().WriteToken(token),
             user.UserName!,
             roles.FirstOrDefault() ?? "User",
-            user.ProfilePictureUrl
+            user.ProfilePicture
         ));
     }
 
@@ -124,7 +124,7 @@ public class AuthController : ControllerBase
                 user.Email!,
                 roles.FirstOrDefault() ?? "User",
                 user.Tags,
-                user.ProfilePictureUrl
+                user.ProfilePicture
             ));
         }
 
@@ -140,7 +140,7 @@ public class AuthController : ControllerBase
 
         user.Email = dto.Email;
         user.Tags = dto.Tags;
-        user.ProfilePictureUrl = dto.ProfilePictureUrl;
+        user.ProfilePicture = dto.ProfilePicture;
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
         {
@@ -175,6 +175,24 @@ public class AuthController : ControllerBase
         if (!result.Succeeded) return BadRequest(result.Errors);
 
         return Ok(new { Message = "User deleted successfully" });
+    }
+
+    [HttpPut("profile")]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
+    {
+        var username = User.Identity?.Name;
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return NotFound();
+
+        user.ProfilePicture = dto.ProfilePicture;
+        
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        return Ok(new { Message = "Profil uspešno posodobljen" });
     }
 
     [HttpPost("seed-admin")]

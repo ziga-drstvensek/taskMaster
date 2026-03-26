@@ -31,6 +31,18 @@ export const useAuthStore = defineStore('auth', {
                 this.loading = false;
             }
         },
+        async updateProfilePicture(base64Image: string) {
+            try {
+                await api.put('/auth/profile', { profilePicture: base64Image });
+                if (this.user) {
+                    this.user.profilePicture = base64Image;
+                    localStorage.setItem('user', JSON.stringify(this.user));
+                }
+            } catch (err: any) {
+                console.error('Failed to update profile picture', err);
+                throw err;
+            }
+        },
         async fetchNotifications() {
             if (!this.user) return;
             try {

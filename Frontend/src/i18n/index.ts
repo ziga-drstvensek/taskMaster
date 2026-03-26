@@ -64,6 +64,8 @@ const messages = {
       actions: 'Actions',
       write_comment: 'Write a comment...',
       no_comments: 'No comments yet. Be the first to comment!',
+      change: 'Change',
+      remove: 'Remove',
       success: {
         saved: 'Changes saved successfully.',
         created: 'Created successfully.',
@@ -76,7 +78,8 @@ const messages = {
         delete: 'Error while deleting.',
         upload: 'Error while uploading file.',
         download: 'Error while downloading file.',
-        seed_admin: 'Error while seeding admin.'
+        seed_admin: 'Error while seeding admin.',
+        file_too_large: 'File is too large (max 2MB).'
       },
       seed_admin: 'Seed Admin User (development)',
       rights: 'All rights reserved.',
@@ -166,6 +169,7 @@ const messages = {
       delete_confirm: 'Are you sure you want to delete this user?',
       password_hint: 'Leave empty if you do not want to change',
       profile_picture_url: 'Profile Picture URL',
+      profile_picture: 'Profile Picture',
     },
     notifications: {
       title: 'Notifications',
@@ -268,6 +272,8 @@ const messages = {
       actions: 'Akcije',
       write_comment: 'Napiši komentar...',
       no_comments: 'Ni komentarjev. Bodite prvi, ki boste komentirali!',
+      change: 'Spremeni',
+      remove: 'Odstrani',
       success: {
         saved: 'Spremembe shranjene.',
         created: 'Ustvarjeno uspešno.',
@@ -280,7 +286,8 @@ const messages = {
         delete: 'Napaka pri brisanju.',
         upload: 'Napaka pri nalaganju datoteke.',
         download: 'Napaka pri prenosu datoteke.',
-        seed_admin: 'Napaka pri sejanju admina.'
+        seed_admin: 'Napaka pri sejanju admina.',
+        file_too_large: 'Datoteka je prevelika (največ 2MB).'
       },
       seed_admin: 'Sejaj Admin uporabnika (razvoj)',
       no_items: 'Ni elementov',
@@ -370,6 +377,7 @@ const messages = {
       delete_confirm: 'Ali ste prepričani, da želite izbrisati tega uporabnika?',
       password_hint: 'Pustite prazno, če ne želite spremeniti',
       profile_picture_url: 'URL profilne slike',
+      profile_picture: 'Profilna slika',
     },
     notifications: {
       title: 'Obvestila',

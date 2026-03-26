@@ -88,7 +88,7 @@ export interface User {
     username: string;
     role: string;
     token: string;
-    profilePictureUrl?: string;
+    profilePicture?: string;
 }
 
 export interface UserDetails {
@@ -96,7 +96,7 @@ export interface UserDetails {
     email: string;
     role: string;
     tags?: string;
-    profilePictureUrl?: string;
+    profilePicture?: string;
 }
 
 export interface Notification {
