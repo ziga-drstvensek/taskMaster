@@ -394,7 +394,7 @@ onMounted(() => {
         class="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[1px] pointer-events-auto"
         @click.stop
       ></div>
-      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
+      <div class="px-6 py-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
         <div class="max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div class="flex flex-wrap items-center gap-4">
             <div class="flex items-center gap-2">
@@ -609,7 +609,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="flex-1 overflow-auto p-8 custom-scrollbar">
+      <div class="flex-1 overflow-auto p-4 lg:p-6 custom-scrollbar">
         <div class="h-full max-w-[1600px] mx-auto">
           <BacklogList :disabled="isAnyModalOpen" />
         </div>
