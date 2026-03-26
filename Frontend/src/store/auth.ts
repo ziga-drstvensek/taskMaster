@@ -47,6 +47,19 @@ export const useAuthStore = defineStore('auth', {
         async updateProfilePicture(base64Image: string) {
             return this.updateProfile({ profilePicture: base64Image });
         },
+        async testTeamsWebhook(webhookUrl: string) {
+            try {
+                const response = await api.post('/auth/test-webhook', JSON.stringify(webhookUrl), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                return response.data;
+            } catch (err: any) {
+                console.error('Failed to test webhook', err);
+                throw err;
+            }
+        },
         async fetchNotifications() {
             if (!this.user) return;
             try {

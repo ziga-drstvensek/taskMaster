@@ -2,12 +2,13 @@
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../store/auth';
 import { useI18n } from 'vue-i18n';
-import { Save, BellRing, Info } from 'lucide-vue-next';
+import { Save, BellRing, Info, Send } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
 const teamsWebhookUrl = ref('');
 const isSaving = ref(false);
+const isTesting = ref(false);
 
 onMounted(() => {
   if (authStore.user?.teamsWebhookUrl) {
@@ -24,6 +25,20 @@ const saveSettings = async () => {
     (window as any).triggerToast(t('common.error.save'), 'error');
   } finally {
     isSaving.value = false;
+  }
+};
+
+const testWebhook = async () => {
+  if (!teamsWebhookUrl.value) return;
+  
+  isTesting.value = true;
+  try {
+    await authStore.testTeamsWebhook(teamsWebhookUrl.value);
+    (window as any).triggerToast(t('common.teams_test_success'), 'success');
+  } catch (err) {
+    (window as any).triggerToast(t('common.teams_test_error'), 'error');
+  } finally {
+    isTesting.value = false;
   }
 };
 </script>
@@ -63,7 +78,17 @@ const saveSettings = async () => {
           </div>
         </div>
 
-        <div class="pt-4 flex justify-end">
+        <div class="pt-4 flex justify-end gap-3">
+          <button
+            @click="testWebhook"
+            :disabled="isTesting || !teamsWebhookUrl"
+            class="flex items-center gap-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 text-slate-700 dark:text-slate-200 rounded-xl font-bold transition-all"
+          >
+            <Send :size="18" v-if="!isTesting" />
+            <div v-else class="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
+            <span>{{ t('common.teams_test_button') }}</span>
+          </button>
+
           <button
             @click="saveSettings"
             :disabled="isSaving"

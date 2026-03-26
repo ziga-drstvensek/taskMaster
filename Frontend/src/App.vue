@@ -200,6 +200,16 @@ onMounted(() => {
 });
 </script>
 
+<style>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+    
 <template>
   <div v-if="!authStore.isAuthenticated">
     <LoginView />
@@ -384,21 +394,21 @@ onMounted(() => {
         class="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[1px] pointer-events-auto"
         @click.stop
       ></div>
-      <div class="px-6 py-6 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
-        <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-          <div>
-            <div class="flex items-center gap-3">
-              <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ $t('common.dashboard') }}</h2>
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
+        <div class="max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-2">
+              <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">{{ $t('common.dashboard') }}</h2>
               <div v-if="backlogStore.boards.length > 0" class="flex items-center gap-2 relative group/board">
                 <span class="text-slate-400 dark:text-slate-600">/</span>
                 <div class="relative" v-click-outside="() => showBoardDropdown = false">
                   <button 
-                    class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all text-indigo-600 dark:text-indigo-400 font-bold shadow-sm"
+                    class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all text-indigo-600 dark:text-indigo-400 font-bold shadow-sm text-sm"
                     @click.stop="showBoardDropdown = !showBoardDropdown"
                   >
-                    <Trello :size="16" />
+                    <Trello :size="14" />
                     <span>{{ backlogStore.selectedBoardId === -1 ? $t('common.all_boards') : (backlogStore.boards.find(b => b.id === backlogStore.selectedBoardId)?.name || $t('common.select_board')) }}</span>
-                    <ChevronDown :size="14" class="transition-transform duration-200" :class="{ 'rotate-180': showBoardDropdown }" />
+                    <ChevronDown :size="12" class="transition-transform duration-200" :class="{ 'rotate-180': showBoardDropdown }" />
                   </button>
                   
                   <Transition
@@ -463,56 +473,50 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 mt-1">
-              <!-- General Dashboards -->
-              <div class="flex flex-col gap-1.5">
-                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">
-                  {{ $t('dashboard.general') }}
-                </span>
-                <div class="flex items-center gap-2">
-                  <button 
-                    v-for="db in dashboards" 
-                    :key="db.id"
-                    @click="backlogStore.setSelectedDashboardId(db.id)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border"
-                    :class="backlogStore.selectedDashboardId === db.id 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
-                      : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
-                  >
-                    <component :is="db.icon" :size="14" />
-                    {{ db.name }}
-                  </button>
-                </div>
+
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block"></div>
+
+            <div class="flex items-center gap-3 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+              <div class="flex items-center gap-1.5 flex-nowrap">
+                <button 
+                  v-for="db in dashboards" 
+                  :key="db.id"
+                  @click="backlogStore.setSelectedDashboardId(db.id)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border whitespace-nowrap"
+                  :class="backlogStore.selectedDashboardId === db.id 
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                    : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
+                >
+                  <component :is="db.icon" :size="13" />
+                  {{ db.name }}
+                </button>
               </div>
 
-              <!-- Personal Dashboards -->
-              <div class="flex flex-col gap-1.5">
-                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">
-                  {{ $t('dashboard.personal') }}
-                </span>
-                <div class="flex items-center gap-2">
-                  <button 
-                    v-for="db in personalDashboards" 
-                    :key="db.id"
-                    @click="backlogStore.setSelectedDashboardId(db.id)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border"
-                    :class="backlogStore.selectedDashboardId === db.id 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
-                      : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
-                  >
-                    <component :is="db.icon" :size="14" />
-                    {{ db.name }}
-                  </button>
-                </div>
+              <div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+
+              <div class="flex items-center gap-1.5 flex-nowrap">
+                <button 
+                  v-for="db in personalDashboards" 
+                  :key="db.id"
+                  @click="backlogStore.setSelectedDashboardId(db.id)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border whitespace-nowrap"
+                  :class="backlogStore.selectedDashboardId === db.id 
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                    : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
+                >
+                  <component :is="db.icon" :size="13" />
+                  {{ db.name }}
+                </button>
               </div>
             </div>
           </div>
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div class="relative min-w-[200px]" v-click-outside="() => showSprintDropdown = false">
+
+          <div class="flex items-center gap-3 w-full lg:w-auto">
+            <div class="relative flex-1 lg:flex-initial min-w-[160px]" v-click-outside="() => showSprintDropdown = false">
               <button
                 type="button"
                 @click="showSprintDropdown = !showSprintDropdown"
-                class="w-full pl-10 pr-10 py-2.5 text-left text-sm bg-white dark:bg-slate-800 border rounded-xl transition-all flex items-center justify-between gap-2 shadow-sm"
+                class="w-full pl-9 pr-9 py-2 text-left text-sm bg-white dark:bg-slate-800 border rounded-xl transition-all flex items-center justify-between gap-2 shadow-sm"
                 :class="showSprintDropdown ? 'border-indigo-400 dark:border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
               >
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -526,8 +530,8 @@ onMounted(() => {
                   }}
                 </span>
                 <ChevronDown 
-                  :size="16" 
-                  class="absolute right-3 text-slate-400 transition-transform duration-200"
+                  :size="14" 
+                  class="absolute right-2.5 text-slate-400 transition-transform duration-200"
                   :class="{ 'rotate-180': showSprintDropdown }"
                 />
               </button>
@@ -571,10 +575,10 @@ onMounted(() => {
 
             <button 
               @click="showAddModal = true"
-              class="btn-primary group"
+              class="btn-primary group !py-2 !px-4"
             >
-              <Plus :size="18" class="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              {{ $t('common.new_task') }}
+              <Plus :size="16" class="mr-1.5 group-hover:rotate-90 transition-transform duration-300" />
+              <span class="text-sm">{{ $t('common.new_task') }}</span>
             </button>
           </div>
         </div>

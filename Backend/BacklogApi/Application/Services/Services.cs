@@ -80,6 +80,7 @@ public interface INotificationService
     Task<bool> MarkAsReadAsync(int notificationId, string username);
     Task<bool> MarkAllAsReadAsync(string username);
     Task CreateNotificationAsync(string username, string title, string message, string? link = null, string? type = null);
+    Task<bool> TestTeamsWebhookAsync(string webhookUrl);
 }
 
 public class BacklogService : IBacklogService
@@ -1008,6 +1009,55 @@ public class NotificationService : INotificationService
             {
                 _logger.LogError(ex, "Error sending Teams notification for user {Username}", username);
             }
+        }
+    }
+
+    public async Task<bool> TestTeamsWebhookAsync(string webhookUrl)
+    {
+        if (string.IsNullOrEmpty(webhookUrl)) return false;
+
+        try
+        {
+            var client = _httpClientFactory.CreateClient();
+            var teamsMessage = new
+            {
+                type = "message",
+                attachments = new[]
+                {
+                    new
+                    {
+                        contentType = "application/vnd.microsoft.card.adaptive",
+                        content = new
+                        {
+                            type = "AdaptiveCard",
+                            body = new object[]
+                            {
+                                new { type = "TextBlock", size = "Medium", weight = "Bolder", text = "Testno obvestilo - TaskMaster" },
+                                new { type = "TextBlock", text = "To je testno obvestilo za Microsoft Teams. Če ste to prejeli, vaš webhook deluje pravilno.", wrap = true }
+                            },
+                            @schema = "http://adaptivecards.io/schemas/adaptive-card.json",
+                            version = "1.4"
+                        }
+                    }
+                }
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(teamsMessage), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(webhookUrl, content);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                _logger.LogWarning("Failed to send test notification to Teams. Status: {Status}, Error: {Error}", response.StatusCode, error);
+                return false;
+            }
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending test Teams notification to {WebhookUrl}", webhookUrl);
+            return false;
         }
     }
 }

@@ -21,13 +21,15 @@ public class AuthController : ControllerBase
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
     private readonly IBoardService _boardService;
+    private readonly INotificationService _notificationService;
 
-    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IBoardService boardService)
+    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IBoardService boardService, INotificationService notificationService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
         _boardService = boardService;
+        _notificationService = notificationService;
     }
 
     [HttpPost("register")]
@@ -267,5 +269,17 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new { Message = "Roles, Users, Default Board and Columns seeded" });
+    }
+
+    [HttpPost("test-webhook")]
+    [Authorize]
+    public async Task<IActionResult> TestWebhook([FromBody] string webhookUrl)
+    {
+        var result = await _notificationService.TestTeamsWebhookAsync(webhookUrl);
+        if (result)
+        {
+            return Ok(new { message = "Testno obvestilo je bilo uspešno poslano v Teams" });
+        }
+        return StatusCode(500, new { message = "Pošiljanje testnega obvestila ni uspelo. Preverite webhook URL in loge za več podrobnosti." });
     }
 }
