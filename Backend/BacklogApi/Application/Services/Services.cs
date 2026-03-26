@@ -17,7 +17,7 @@ public interface IBacklogService
     Task<BacklogItemDto?> GetByIdAsync(int id);
     Task<BacklogItemDto> CreateAsync(CreateBacklogItemDto dto, string createdBy);
     Task<bool> UpdateAsync(int id, UpdateBacklogItemDto dto, string updatedBy);
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAsync(int id, string deletedBy);
     Task ReorderAsync(IEnumerable<ReorderBacklogItemDto> dto, string updatedBy);
 }
 
@@ -254,6 +254,30 @@ public class BacklogService : IBacklogService
                 Description = string.Join("; ", changes),
                 ChangedBy = updatedBy
             });
+
+            // Notification for assigned user about any update, if they are not the one who updated it
+            if (!string.IsNullOrEmpty(item.AssignedTo) && item.AssignedTo != updatedBy)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    item.AssignedTo,
+                    "Posodobljeno opravilo",
+                    $"Opravilo '{item.Title}' je bilo posodobljeno s strani {updatedBy}.",
+                    $"/task/{item.Id}",
+                    "TaskUpdated"
+                );
+            }
+
+            // Notification for author of the task if they are different from assigned and the one updating
+            if (!string.IsNullOrEmpty(item.CreatedBy) && item.CreatedBy != updatedBy && item.CreatedBy != item.AssignedTo)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    item.CreatedBy,
+                    "Posodobljeno vaše opravilo",
+                    $"Opravilo '{item.Title}', ki ste ga ustvarili, je bilo posodobljeno s strani {updatedBy}.",
+                    $"/task/{item.Id}",
+                    "TaskUpdated"
+                );
+            }
         }
 
         var oldAssignee = item.AssignedTo;
@@ -299,13 +323,39 @@ public class BacklogService : IBacklogService
         return true;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, string deletedBy)
     {
         var item = await _repository.GetByIdAsync(id);
         if (item == null) return false;
 
+        var assignedTo = item.AssignedTo;
+        var title = item.Title;
+
         _repository.Delete(item);
         await _repository.SaveChangesAsync();
+
+        if (!string.IsNullOrEmpty(assignedTo) && assignedTo != deletedBy)
+        {
+            await _notificationService.CreateNotificationAsync(
+                assignedTo,
+                "Izbrisano opravilo",
+                $"Opravilo '{title}' je bilo izbrisano s strani {deletedBy}.",
+                null,
+                "TaskDeleted"
+            );
+        }
+
+        // Notify author of the task if they are different from assigned and the one deleting
+        if (!string.IsNullOrEmpty(item.CreatedBy) && item.CreatedBy != deletedBy && item.CreatedBy != assignedTo)
+        {
+            await _notificationService.CreateNotificationAsync(
+                item.CreatedBy,
+                "Izbrisano vaše opravilo",
+                $"Opravilo '{title}', ki ste ga ustvarili, je bilo izbrisano s strani {deletedBy}.",
+                null,
+                "TaskDeleted"
+            );
+        }
 
         await _hubContext.Clients.All.SendAsync("ItemsUpdated");
 
@@ -576,6 +626,7 @@ public class CommentService : ICommentService
 
     public async Task<CommentDto> AddCommentAsync(int backlogItemId, string content, string author)
     {
+        var item = await _repository.GetByIdAsync(backlogItemId);
         var comment = new Comment
         {
             BacklogItemId = backlogItemId,
@@ -586,6 +637,33 @@ public class CommentService : ICommentService
 
         await _repository.AddAsync(comment);
         await _repository.SaveChangesAsync();
+
+        if (item != null)
+        {
+            // Notify assigned user
+            if (!string.IsNullOrEmpty(item.AssignedTo) && item.AssignedTo != author)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    item.AssignedTo,
+                    "Nov komentar",
+                    $"Uporabnik {author} je dodal komentar k vašemu opravilu: {item.Title}",
+                    $"/task/{item.Id}",
+                    "CommentAdded"
+                );
+            }
+
+            // Notify author of the task if they are different from assigned and the one commenting
+            if (!string.IsNullOrEmpty(item.CreatedBy) && item.CreatedBy != author && item.CreatedBy != item.AssignedTo)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    item.CreatedBy,
+                    "Nov komentar na vašem opravilu",
+                    $"Uporabnik {author} je komentiral opravilo, ki ste ga ustvarili: {item.Title}",
+                    $"/task/{item.Id}",
+                    "CommentAdded"
+                );
+            }
+        }
 
         await _hubContext.Clients.All.SendAsync("ItemsUpdated");
 

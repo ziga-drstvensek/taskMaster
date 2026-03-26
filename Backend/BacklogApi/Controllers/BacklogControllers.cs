@@ -76,7 +76,7 @@ public class BacklogController : ControllerBase
         var item = await _service.GetByIdAsync(id);
         if (item == null) return NotFound();
 
-        var currentUser = User.Identity?.Name;
+        var currentUser = User.Identity?.Name ?? "Unknown";
         var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 
         if (item.CreatedBy != currentUser && !isAdminOrManager)
@@ -84,7 +84,7 @@ public class BacklogController : ControllerBase
             return Forbid();
         }
 
-        var success = await _service.DeleteAsync(id);
+        var success = await _service.DeleteAsync(id, currentUser);
         if (!success) return NotFound();
         return NoContent();
     }
