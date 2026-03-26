@@ -93,9 +93,9 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<BacklogDbContext>();
-        if (context.Database.GetPendingMigrations().Any())
+        if ((await context.Database.GetPendingMigrationsAsync()).Any())
         {
-            context.Database.Migrate();
+            await context.Database.MigrateAsync();
         }
 
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
