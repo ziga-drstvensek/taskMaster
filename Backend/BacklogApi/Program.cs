@@ -101,6 +101,26 @@ using (var scope = app.Services.CreateScope())
             // Ignoriramo, če stolpec ne obstaja
         }
 
+        // Ustvari tabelo Notifications, če še ne obstaja
+        try {
+            await context.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS Notifications (
+                    Id INT NOT NULL AUTO_INCREMENT,
+                    UserId VARCHAR(255) NOT NULL,
+                    Title LONGTEXT NOT NULL,
+                    Message LONGTEXT NOT NULL,
+                    Link LONGTEXT NULL,
+                    IsRead TINYINT(1) NOT NULL,
+                    CreatedAt DATETIME NOT NULL,
+                    Type LONGTEXT NULL,
+                    PRIMARY KEY (Id),
+                    CONSTRAINT FK_Notifications_AspNetUsers_UserId FOREIGN KEY (UserId) REFERENCES AspNetUsers (Id) ON DELETE CASCADE
+                ) CHARACTER SET=utf8mb4;
+            ");
+        } catch {
+            // Ignoriramo napake pri ustvarjanju tabele
+        }
+
         if ((await context.Database.GetPendingMigrationsAsync()).Any())
         {
             await context.Database.MigrateAsync();
