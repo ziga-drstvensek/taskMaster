@@ -611,11 +611,13 @@ public class CommentService : ICommentService
 {
     private readonly ICommentRepository _repository;
     private readonly IHubContext<BacklogHub> _hubContext;
+    private readonly INotificationService _notificationService;
 
-    public CommentService(ICommentRepository repository, IHubContext<BacklogHub> hubContext)
+    public CommentService(ICommentRepository repository, IHubContext<BacklogHub> hubContext, INotificationService notificationService)
     {
         _repository = repository;
         _hubContext = hubContext;
+        _notificationService = notificationService;
     }
 
     public async Task<IEnumerable<CommentDto>> GetByBacklogItemIdAsync(int backlogItemId)
@@ -638,28 +640,29 @@ public class CommentService : ICommentService
         await _repository.AddAsync(comment);
         await _repository.SaveChangesAsync();
 
-        if (item != null)
+        if (item != null && item.BacklogItem != null)
         {
+            var backlogItem = item.BacklogItem;
             // Notify assigned user
-            if (!string.IsNullOrEmpty(item.AssignedTo) && item.AssignedTo != author)
+            if (!string.IsNullOrEmpty(backlogItem.AssignedTo) && backlogItem.AssignedTo != author)
             {
                 await _notificationService.CreateNotificationAsync(
-                    item.AssignedTo,
+                    backlogItem.AssignedTo,
                     "Nov komentar",
-                    $"Uporabnik {author} je dodal komentar k vašemu opravilu: {item.Title}",
-                    $"/task/{item.Id}",
+                    $"Uporabnik {author} je dodal komentar k vašemu opravilu: {backlogItem.Title}",
+                    $"/task/{backlogItem.Id}",
                     "CommentAdded"
                 );
             }
 
             // Notify author of the task if they are different from assigned and the one commenting
-            if (!string.IsNullOrEmpty(item.CreatedBy) && item.CreatedBy != author && item.CreatedBy != item.AssignedTo)
+            if (!string.IsNullOrEmpty(backlogItem.CreatedBy) && backlogItem.CreatedBy != author && backlogItem.CreatedBy != backlogItem.AssignedTo)
             {
                 await _notificationService.CreateNotificationAsync(
-                    item.CreatedBy,
+                    backlogItem.CreatedBy,
                     "Nov komentar na vašem opravilu",
-                    $"Uporabnik {author} je komentiral opravilo, ki ste ga ustvarili: {item.Title}",
-                    $"/task/{item.Id}",
+                    $"Uporabnik {author} je komentiral opravilo, ki ste ga ustvarili: {backlogItem.Title}",
+                    $"/task/{backlogItem.Id}",
                     "CommentAdded"
                 );
             }
