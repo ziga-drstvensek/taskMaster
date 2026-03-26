@@ -508,6 +508,31 @@ onMounted(() => {
                   {{ db.name }}
                 </button>
               </div>
+
+              <template v-if="backlogStore.selectedBoardId !== -1">
+                <div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+
+                <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700 flex-nowrap">
+                  <button 
+                    @click="uiStore.setViewMode('kanban')"
+                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold transition-all whitespace-nowrap"
+                    :class="uiStore.viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                    :title="$t('common.kanban_view')"
+                  >
+                    <Columns :size="12" />
+                    <span class="hidden sm:inline">{{ $t('common.kanban_view') }}</span>
+                  </button>
+                  <button 
+                    @click="uiStore.setViewMode('table')"
+                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold transition-all whitespace-nowrap"
+                    :class="uiStore.viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                    :title="$t('common.table_view')"
+                  >
+                    <List :size="12" />
+                    <span class="hidden sm:inline">{{ $t('common.table_view') }}</span>
+                  </button>
+                </div>
+              </template>
             </div>
           </div>
 

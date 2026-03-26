@@ -234,25 +234,6 @@ const deleteItem = async (id: number) => {
           {{ t('common.clear_filters') }}
         </button>
       </div>
-
-      <div v-if="backlogStore.selectedBoardId !== -1" class="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-end sm:self-auto">
-        <button 
-          @click="uiStore.setViewMode('kanban')"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === ('kanban' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-        >
-          <Columns :size="14" />
-          {{ t('common.kanban_view') }}
-        </button>
-        <button 
-          @click="uiStore.setViewMode('table')"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === ('table' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-        >
-          <List :size="14" />
-          {{ t('common.table_view') }}
-        </button>
-      </div>
     </div>
 
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex-1 flex flex-col">
@@ -391,28 +372,6 @@ const deleteItem = async (id: number) => {
   </div>
 
   <div v-else class="h-full flex flex-col">
-    <!-- View Mode Switcher -->
-    <div class="flex justify-end mb-4">
-      <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
-        <button 
-          @click="uiStore.setViewMode('kanban')"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === ('kanban' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-        >
-          <Columns :size="14" />
-          {{ t('common.kanban_view') }}
-        </button>
-        <button 
-          @click="uiStore.setViewMode('table')"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="uiStore.viewMode === ('table' as any) ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-        >
-          <List :size="14" />
-          {{ t('common.table_view') }}
-        </button>
-      </div>
-    </div>
-
     <div class="flex flex-row gap-4 md:gap-6 overflow-x-auto pb-4 custom-scrollbar items-stretch min-h-[calc(100vh-250px)]">
       <div v-for="column in columnStore.columns" :key="column.id" class="flex flex-col flex-shrink-0 w-[280px] md:w-[350px]">
         <div class="flex justify-between items-center mb-4 px-1">
