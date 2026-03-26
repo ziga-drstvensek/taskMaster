@@ -6,4 +6,5 @@ public class ApplicationUser : IdentityUser
 {
     public string? Tags { get; set; }
     public string? ProfilePicture { get; set; }
+    public string? TeamsWebhookUrl { get; set; }
 }

@@ -89,6 +89,7 @@ export interface User {
     role: string;
     token: string;
     profilePicture?: string;
+    teamsWebhookUrl?: string;
 }
 
 export interface UserDetails {
@@ -97,6 +98,7 @@ export interface UserDetails {
     role: string;
     tags?: string;
     profilePicture?: string;
+    teamsWebhookUrl?: string;
 }
 
 export interface Notification {

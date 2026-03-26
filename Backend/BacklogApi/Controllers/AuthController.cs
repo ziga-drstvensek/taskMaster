@@ -188,7 +188,8 @@ public class AuthController : ControllerBase
         if (user == null) return NotFound();
 
         user.ProfilePicture = dto.ProfilePicture;
-        
+        user.TeamsWebhookUrl = dto.TeamsWebhookUrl;
+
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded) return BadRequest(result.Errors);
 

@@ -2,12 +2,13 @@
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../store/auth';
-import { Settings, Users, Trello, ChevronRight, Palette, Mail } from 'lucide-vue-next';
+import { Settings, Users, Trello, ChevronRight, Palette, Mail, BellRing } from 'lucide-vue-next';
 import SprintManager from './SprintManager.vue';
 import UserManager from './UserManager.vue';
 import BoardManager from './BoardManager.vue';
 import AppearanceSettings from './AppearanceSettings.vue';
 import SmtpSettings from './SmtpSettings.vue';
+import NotificationSettings from './NotificationSettings.vue';
 
 const props = defineProps<{
   initialTab?: 'sprints' | 'users' | 'boards' | 'appearance' | 'mailing';
@@ -24,6 +25,7 @@ const tabs = computed(() => {
     { id: 'sprints', name: t('common.sprints'), icon: Settings, show: authStore.isManager },
     { id: 'users', name: t('common.users'), icon: Users, show: authStore.isAdmin },
     { id: 'mailing', name: t('common.mailing'), icon: Mail, show: authStore.isAdmin },
+    { id: 'notifications', name: t('common.notifications'), icon: BellRing, show: true },
     { id: 'appearance', name: t('common.appearance'), icon: Palette, show: true },
   ];
   return items.filter(item => item.show);
@@ -67,6 +69,9 @@ const tabs = computed(() => {
       </div>
       <div v-else-if="activeTab === 'appearance'">
         <AppearanceSettings />
+      </div>
+      <div v-else-if="activeTab === 'notifications'">
+        <NotificationSettings />
       </div>
     </div>
   </div>

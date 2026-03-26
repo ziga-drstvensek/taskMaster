@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text;
 
 namespace BacklogApi.Application.Services;
 
@@ -871,12 +874,21 @@ public class NotificationService : INotificationService
     private readonly BacklogDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IHubContext<BacklogHub> _hubContext;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<NotificationService> _logger;
 
-    public NotificationService(BacklogDbContext context, UserManager<ApplicationUser> userManager, IHubContext<BacklogHub> hubContext)
+    public NotificationService(
+        BacklogDbContext context, 
+        UserManager<ApplicationUser> userManager, 
+        IHubContext<BacklogHub> hubContext,
+        IHttpClientFactory httpClientFactory,
+        ILogger<NotificationService> logger)
     {
         _context = context;
         _userManager = userManager;
         _hubContext = hubContext;
+        _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string username)
@@ -945,6 +957,58 @@ public class NotificationService : INotificationService
         // Notify user via SignalR if they are online
         await _hubContext.Clients.User(user.Id).SendAsync("ReceiveNotification", new NotificationDto(
             notification.Id, notification.Title, notification.Message, notification.Link, notification.IsRead, notification.CreatedAt, notification.Type));
+
+        // Send to Teams if webhook is configured
+        if (!string.IsNullOrEmpty(user.TeamsWebhookUrl))
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var teamsMessage = new
+                {
+                    type = "message",
+                    attachments = new[]
+                    {
+                        new
+                        {
+                            contentType = "application/vnd.microsoft.card.adaptive",
+                            content = new
+                            {
+                                type = "AdaptiveCard",
+                                body = new object[]
+                                {
+                                    new { type = "TextBlock", size = "Medium", weight = "Bolder", text = title },
+                                    new { type = "TextBlock", text = message, wrap = true }
+                                },
+                                actions = string.IsNullOrEmpty(link) ? null : new[]
+                                {
+                                    new
+                                    {
+                                        type = "Action.OpenUrl",
+                                        title = "Poglej opravilo",
+                                        url = link.StartsWith("http") ? link : $"https://task-manager.ziga-drstvensek.top{link}"
+                                    }
+                                },
+                                @schema = "http://adaptivecards.io/schemas/adaptive-card.json",
+                                version = "1.4"
+                            }
+                        }
+                    }
+                };
+
+                var content = new StringContent(JsonSerializer.Serialize(teamsMessage), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(user.TeamsWebhookUrl, content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Failed to send notification to Teams for user {Username}. Status: {Status}, Error: {Error}", username, response.StatusCode, error);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending Teams notification for user {Username}", username);
+            }
+        }
     }
 }
 public class SmtpSettingsService : ISmtpSettingsService

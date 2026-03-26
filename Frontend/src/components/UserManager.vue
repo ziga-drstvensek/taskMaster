@@ -18,6 +18,7 @@ const password = ref('');
 const role = ref('User');
 const tags = ref('');
 const profilePicture = ref('');
+const teamsWebhookUrl = ref('');
 const error = ref('');
 const searchQuery = ref('');
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -52,6 +53,7 @@ const resetForm = () => {
   role.value = 'User';
   tags.value = '';
   profilePicture.value = '';
+  teamsWebhookUrl.value = '';
   error.value = '';
   showForm.value = false;
   isEditing.value = false;
@@ -64,6 +66,7 @@ const handleEdit = (user: any) => {
   role.value = user.role;
   tags.value = user.tags || '';
   profilePicture.value = user.profilePicture || '';
+  teamsWebhookUrl.value = user.teamsWebhookUrl || '';
   isEditing.value = true;
   showForm.value = true;
 };
@@ -113,7 +116,8 @@ const handleSubmit = async () => {
         password: password.value,
         role: role.value,
         tags: tags.value,
-        profilePicture: profilePicture.value
+        profilePicture: profilePicture.value,
+        teamsWebhookUrl: teamsWebhookUrl.value
       });
       triggerToast(t('common.success.saved'), 'success');
     } else {
@@ -122,13 +126,14 @@ const handleSubmit = async () => {
         email: email.value,
         password: password.value
       });
-      if (role.value !== 'User' || tags.value || profilePicture.value) {
+      if (role.value !== 'User' || tags.value || profilePicture.value || teamsWebhookUrl.value) {
           await api.put(`/auth/users/${username.value}`, {
             username: username.value,
             email: email.value,
             role: role.value,
             tags: tags.value,
-            profilePicture: profilePicture.value
+            profilePicture: profilePicture.value,
+            teamsWebhookUrl: teamsWebhookUrl.value
           });
       }
       triggerToast(t('common.success.created'), 'success');
@@ -227,6 +232,13 @@ onMounted(fetchUsers);
             v-model="tags"
             :label="$t('users_mng.tags')"
             :placeholder="$t('users_mng.tags_hint')"
+          />
+        </div>
+        <div class="md:col-span-2">
+          <BaseInput 
+            v-model="teamsWebhookUrl"
+            label="Teams Webhook URL"
+            placeholder="https://your-org.webhook.office.com/..."
           />
         </div>
       </div>

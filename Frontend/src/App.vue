@@ -207,7 +207,7 @@ onMounted(() => {
   
   <div v-else class="min-h-screen flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-300 dark:text-slate-200">
     <!-- Header -->
-    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 px-6 py-3 flex justify-between items-center transition-colors">
+    <header class="h-[65px] bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20 px-6 py-3 flex justify-between items-center transition-colors">
       <div class="flex items-center gap-3">
         <div class="relative">
           <img src="./assets/logo2.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
@@ -277,7 +277,7 @@ onMounted(() => {
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
 
           <!-- Notifications -->
-          <div class="relative" v-click-outside="() => showNotificationsDropdown = false">
+          <div class="relative flex items-center" v-click-outside="() => showNotificationsDropdown = false">
             <button 
               @click="showNotificationsDropdown = !showNotificationsDropdown"
               class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
@@ -289,7 +289,7 @@ onMounted(() => {
               </span>
             </button>
             
-            <div v-if="showNotificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 z-50 overflow-hidden">
+            <div v-if="showNotificationsDropdown" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 z-[100] overflow-hidden">
               <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                 <h3 class="font-bold text-sm">{{ $t('notifications.title') }}</h3>
                 <button 
@@ -384,7 +384,7 @@ onMounted(() => {
         class="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[1px] pointer-events-auto"
         @click.stop
       ></div>
-      <div class="px-6 py-6 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm relative z-50 transition-colors">
+      <div class="px-6 py-6 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
         <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <div>
             <div class="flex items-center gap-3">

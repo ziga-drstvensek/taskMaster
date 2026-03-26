@@ -60,6 +60,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddHostedService<DatabaseBackupService>();
 
 builder.Services.AddSignalR();
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -99,6 +100,13 @@ using (var scope = app.Services.CreateScope())
             await context.Database.ExecuteSqlRawAsync("ALTER TABLE AspNetUsers CHANGE COLUMN ProfilePictureUrl ProfilePicture longtext NULL;");
         } catch {
             // Ignoriramo, če stolpec ne obstaja
+        }
+
+        // Dodaj TeamsWebhookUrl stolpec, če ne obstaja
+        try {
+            await context.Database.ExecuteSqlRawAsync("ALTER TABLE AspNetUsers ADD COLUMN TeamsWebhookUrl longtext NULL;");
+        } catch {
+            // Ignoriramo, če stolpec že obstaja
         }
 
         // Ustvari tabelo Notifications, če še ne obstaja

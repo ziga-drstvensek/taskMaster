@@ -31,17 +31,21 @@ export const useAuthStore = defineStore('auth', {
                 this.loading = false;
             }
         },
-        async updateProfilePicture(base64Image: string) {
+        async updateProfile(data: { profilePicture?: string, teamsWebhookUrl?: string }) {
             try {
-                await api.put('/auth/profile', { profilePicture: base64Image });
+                await api.put('/auth/profile', data);
                 if (this.user) {
-                    this.user.profilePicture = base64Image;
+                    if (data.profilePicture !== undefined) this.user.profilePicture = data.profilePicture;
+                    if (data.teamsWebhookUrl !== undefined) this.user.teamsWebhookUrl = data.teamsWebhookUrl;
                     localStorage.setItem('user', JSON.stringify(this.user));
                 }
             } catch (err: any) {
-                console.error('Failed to update profile picture', err);
+                console.error('Failed to update profile', err);
                 throw err;
             }
+        },
+        async updateProfilePicture(base64Image: string) {
+            return this.updateProfile({ profilePicture: base64Image });
         },
         async fetchNotifications() {
             if (!this.user) return;
