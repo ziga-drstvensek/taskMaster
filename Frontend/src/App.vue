@@ -14,7 +14,7 @@ import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
 import api from './services/api';
 import type { Sprint } from './types';
-import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -24,6 +24,7 @@ const { locale, t } = useI18n();
 const showAddModal = ref(false);
 const showSettingsManager = ref(false);
 const showShortcutsModal = ref(false);
+const showNotificationsDropdown = ref(false);
 const initialSettingsTab = ref<'sprints' | 'users' | 'boards'>('boards');
 const showBoardDropdown = ref(false);
 const showSprintDropdown = ref(false);
@@ -242,6 +243,59 @@ onMounted(() => {
             <Sun v-if="uiStore.isDarkMode" :size="16" class="text-amber-500" />
             <Moon v-else :size="16" />
           </button>
+          
+          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+
+          <!-- Notifications -->
+          <div class="relative" v-click-outside="() => showNotificationsDropdown = false">
+            <button 
+              @click="showNotificationsDropdown = !showNotificationsDropdown"
+              class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
+              :class="{ 'bg-slate-100 dark:bg-slate-800 text-indigo-600': showNotificationsDropdown }"
+            >
+              <Bell :size="20" />
+              <span v-if="authStore.unreadNotificationsCount > 0" class="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900">
+                {{ authStore.unreadNotificationsCount }}
+              </span>
+            </button>
+            
+            <div v-if="showNotificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 z-50 overflow-hidden">
+              <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                <h3 class="font-bold text-sm">{{ $t('notifications.title') }}</h3>
+                <button 
+                  v-if="authStore.unreadNotificationsCount > 0"
+                  @click="authStore.markAllNotificationsAsRead()"
+                  class="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                  {{ $t('notifications.mark_all_read') }}
+                </button>
+              </div>
+              
+              <div class="max-h-96 overflow-y-auto">
+                <div v-if="authStore.notifications.length === 0" class="px-4 py-8 text-center text-slate-400 dark:text-slate-500 text-sm">
+                  {{ $t('notifications.no_notifications') }}
+                </div>
+                <div 
+                  v-for="notification in authStore.notifications" 
+                  :key="notification.id"
+                  @click="() => { authStore.markNotificationAsRead(notification.id); showNotificationsDropdown = false; }"
+                  class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer border-b border-slate-50 dark:border-slate-800 last:border-0"
+                  :class="{ 'bg-indigo-50/30 dark:bg-indigo-900/10': !notification.isRead }"
+                >
+                  <div class="flex justify-between items-start gap-2 mb-1">
+                    <span class="font-semibold text-sm" :class="{ 'text-indigo-600 dark:text-indigo-400': !notification.isRead }">
+                      {{ notification.title }}
+                    </span>
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap">
+                      {{ new Date(notification.createdAt).toLocaleDateString() }}
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">{{ notification.message }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <button 
             @click="toggleLanguage"
@@ -250,8 +304,12 @@ onMounted(() => {
             {{ locale === 'en' ? 'SL' : 'EN' }}
           </button>
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
-          <div class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm">
-             <User :size="16" />
+          <div 
+            class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden"
+            :title="authStore.user?.username"
+          >
+            <img v-if="authStore.user?.profilePictureUrl" :src="authStore.user.profilePictureUrl" class="w-full h-full object-cover" />
+            <User v-else :size="16" />
           </div>
           <div class="flex flex-col">
             <span class="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">{{ authStore.user?.username }}</span>

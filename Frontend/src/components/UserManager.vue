@@ -17,6 +17,7 @@ const email = ref('');
 const password = ref('');
 const role = ref('User');
 const tags = ref('');
+const profilePictureUrl = ref('');
 const error = ref('');
 const searchQuery = ref('');
 
@@ -48,6 +49,7 @@ const resetForm = () => {
   password.value = '';
   role.value = 'User';
   tags.value = '';
+  profilePictureUrl.value = '';
   error.value = '';
   showForm.value = false;
   isEditing.value = false;
@@ -59,6 +61,7 @@ const handleEdit = (user: any) => {
   password.value = '';
   role.value = user.role;
   tags.value = user.tags || '';
+  profilePictureUrl.value = user.profilePictureUrl || '';
   isEditing.value = true;
   showForm.value = true;
 };
@@ -88,7 +91,8 @@ const handleSubmit = async () => {
         email: email.value,
         password: password.value,
         role: role.value,
-        tags: tags.value
+        tags: tags.value,
+        profilePictureUrl: profilePictureUrl.value
       });
       triggerToast(t('common.success.saved'), 'success');
     } else {
@@ -97,12 +101,13 @@ const handleSubmit = async () => {
         email: email.value,
         password: password.value
       });
-      if (role.value !== 'User' || tags.value) {
+      if (role.value !== 'User' || tags.value || profilePictureUrl.value) {
           await api.put(`/auth/users/${username.value}`, {
             username: username.value,
             email: email.value,
             role: role.value,
-            tags: tags.value
+            tags: tags.value,
+            profilePictureUrl: profilePictureUrl.value
           });
       }
       triggerToast(t('common.success.created'), 'success');
@@ -157,6 +162,11 @@ onMounted(fetchUsers);
             { value: 'Admin', label: 'Admin' }
           ]"
           searchable
+        />
+        <BaseInput 
+          v-model="profilePictureUrl"
+          :label="$t('users_mng.profile_picture_url')"
+          placeholder="https://example.com/avatar.png"
         />
         <div class="md:col-span-2">
           <BaseInput 

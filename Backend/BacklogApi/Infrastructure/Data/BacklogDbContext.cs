@@ -19,10 +19,16 @@ public class BacklogDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Board> Boards { get; set; }
     public DbSet<BacklogItemHistory> History { get; set; }
     public DbSet<SmtpSettings> SmtpSettings { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.User)
+            .WithMany()
+            .HasForeignKey(n => n.UserId);
 
         modelBuilder.Entity<BacklogItemHistory>()
             .HasOne(h => h.BacklogItem)

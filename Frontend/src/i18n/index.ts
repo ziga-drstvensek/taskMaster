@@ -165,6 +165,14 @@ const messages = {
       no_users: 'No users found.',
       delete_confirm: 'Are you sure you want to delete this user?',
       password_hint: 'Leave empty if you do not want to change',
+      profile_picture_url: 'Profile Picture URL',
+    },
+    notifications: {
+      title: 'Notifications',
+      mark_all_read: 'Mark all as read',
+      no_notifications: 'No notifications',
+      task_assigned: 'Task Assigned',
+      task_removed: 'Removed from Task'
     },
     settings: {
       smtp: {
@@ -361,6 +369,14 @@ const messages = {
       no_users: 'Ni najdenih uporabnikov.',
       delete_confirm: 'Ali ste prepričani, da želite izbrisati tega uporabnika?',
       password_hint: 'Pustite prazno, če ne želite spremeniti',
+      profile_picture_url: 'URL profilne slike',
+    },
+    notifications: {
+      title: 'Obvestila',
+      mark_all_read: 'Označi vse kot prebrano',
+      no_notifications: 'Ni obvestil',
+      task_assigned: 'Dodeljeno opravilo',
+      task_removed: 'Odstranjeni iz opravila'
     },
     settings: {
       smtp: {

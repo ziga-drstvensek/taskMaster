@@ -1,9 +1,11 @@
 import * as signalR from '@microsoft/signalr';
+import type { Notification } from '../types';
 
 class SignalRService {
     private connection: signalR.HubConnection | null = null;
     private itemsCallbacks: (() => void)[] = [];
     private sprintsCallbacks: (() => void)[] = [];
+    private notificationCallbacks: ((notification: Notification) => void)[] = [];
 
     constructor() {
         const isElectron = !!(window && (window as any).electron);
@@ -14,7 +16,15 @@ class SignalRService {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, {
                 transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
-                skipNegotiation: false
+                skipNegotiation: false,
+                accessTokenFactory: () => {
+                    const userJson = localStorage.getItem('user');
+                    if (userJson) {
+                        const user = JSON.parse(userJson);
+                        return user.token;
+                    }
+                    return '';
+                }
             })
             .withAutomaticReconnect()
             .build();
@@ -27,6 +37,11 @@ class SignalRService {
         this.connection.on('SprintsUpdated', () => {
             console.log('SignalR: SprintsUpdated received');
             this.sprintsCallbacks.forEach(cb => cb());
+        });
+
+        this.connection.on('ReceiveNotification', (notification: Notification) => {
+            console.log('SignalR: ReceiveNotification received', notification);
+            this.notificationCallbacks.forEach(cb => cb(notification));
         });
     }
 
@@ -48,6 +63,10 @@ class SignalRService {
 
     onSprintsUpdated(callback: () => void) {
         this.sprintsCallbacks.push(callback);
+    }
+
+    onNotificationReceived(callback: (notification: Notification) => void) {
+        this.notificationCallbacks.push(callback);
     }
 }
 

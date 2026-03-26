@@ -88,4 +88,23 @@ export interface User {
     username: string;
     role: string;
     token: string;
+    profilePictureUrl?: string;
+}
+
+export interface UserDetails {
+    username: string;
+    email: string;
+    role: string;
+    tags?: string;
+    profilePictureUrl?: string;
+}
+
+export interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    link?: string;
+    isRead: boolean;
+    createdAt: string;
+    type?: string;
 }

@@ -71,23 +71,34 @@ public interface ISmtpSettingsService
     Task<bool> SendEmailAsync(string to, string subject, string body);
 }
 
+public interface INotificationService
+{
+    Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string username);
+    Task<bool> MarkAsReadAsync(int notificationId, string username);
+    Task<bool> MarkAllAsReadAsync(string username);
+    Task CreateNotificationAsync(string username, string title, string message, string? link = null, string? type = null);
+}
+
 public class BacklogService : IBacklogService
 {
     private readonly IBacklogRepository _repository;
     private readonly IColumnRepository _columnRepository;
     private readonly ISprintRepository _sprintRepository;
     private readonly IHubContext<BacklogHub> _hubContext;
+    private readonly INotificationService _notificationService;
 
     public BacklogService(
         IBacklogRepository repository, 
         IColumnRepository columnRepository,
         ISprintRepository sprintRepository,
-        IHubContext<BacklogHub> hubContext)
+        IHubContext<BacklogHub> hubContext,
+        INotificationService notificationService)
     {
         _repository = repository;
         _columnRepository = columnRepository;
         _sprintRepository = sprintRepository;
         _hubContext = hubContext;
+        _notificationService = notificationService;
     }
 
     public async Task<IEnumerable<BacklogItemDto>> GetAllAsync(int? boardId = null)
@@ -170,6 +181,17 @@ public class BacklogService : IBacklogService
         await _repository.AddAsync(item);
         await _repository.SaveChangesAsync();
 
+        if (!string.IsNullOrEmpty(item.AssignedTo) && item.AssignedTo != createdBy)
+        {
+            await _notificationService.CreateNotificationAsync(
+                item.AssignedTo,
+                "Dodeljeno opravilo",
+                $"Dodeljeni ste bili k opravilu: {item.Title}",
+                $"/task/{item.Id}",
+                "TaskAssigned"
+            );
+        }
+
         await _hubContext.Clients.All.SendAsync("ItemsUpdated");
 
         return MapToDto(item);
@@ -234,6 +256,9 @@ public class BacklogService : IBacklogService
             });
         }
 
+        var oldAssignee = item.AssignedTo;
+        var newAssignee = dto.AssignedTo;
+
         item.Title = dto.Title;
         item.Description = dto.Description;
         item.ColumnId = newColumnId;
@@ -241,11 +266,33 @@ public class BacklogService : IBacklogService
         item.Priority = dto.Priority;
         item.SprintId = newSprintId;
         item.ParentId = dto.ParentId;
-        item.AssignedTo = dto.AssignedTo;
+        item.AssignedTo = newAssignee;
         item.DueDate = dto.DueDate;
 
         _repository.Update(item);
         await _repository.SaveChangesAsync();
+
+        if (oldAssignee != newAssignee && !string.IsNullOrEmpty(newAssignee) && newAssignee != updatedBy)
+        {
+            await _notificationService.CreateNotificationAsync(
+                newAssignee,
+                "Dodeljeno opravilo",
+                $"Dodeljeni ste bili k opravilu: {item.Title}",
+                $"/task/{item.Id}",
+                "TaskAssigned"
+            );
+        }
+
+        if (oldAssignee != newAssignee && !string.IsNullOrEmpty(oldAssignee) && oldAssignee != updatedBy)
+        {
+            await _notificationService.CreateNotificationAsync(
+                oldAssignee,
+                "Odstranjeni iz opravila",
+                $"Niste več dodeljeni k opravilu: {item.Title}",
+                $"/task/{item.Id}",
+                "TaskRemoved"
+            );
+        }
 
         await _hubContext.Clients.All.SendAsync("ItemsUpdated");
 
@@ -738,6 +785,87 @@ public class BoardService : IBoardService
     );
 }
 
+public class NotificationService : INotificationService
+{
+    private readonly BacklogDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IHubContext<BacklogHub> _hubContext;
+
+    public NotificationService(BacklogDbContext context, UserManager<ApplicationUser> userManager, IHubContext<BacklogHub> hubContext)
+    {
+        _context = context;
+        _userManager = userManager;
+        _hubContext = hubContext;
+    }
+
+    public async Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return Enumerable.Empty<NotificationDto>();
+
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == user.Id)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(50)
+            .ToListAsync();
+
+        return notifications.Select(n => new NotificationDto(
+            n.Id, n.Title, n.Message, n.Link, n.IsRead, n.CreatedAt, n.Type));
+    }
+
+    public async Task<bool> MarkAsReadAsync(int notificationId, string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return false;
+
+        var notification = await _context.Notifications
+            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == user.Id);
+
+        if (notification == null) return false;
+
+        notification.IsRead = true;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> MarkAllAsReadAsync(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return false;
+
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == user.Id && !n.IsRead)
+            .ToListAsync();
+
+        foreach (var n in notifications) n.IsRead = true;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task CreateNotificationAsync(string username, string title, string message, string? link = null, string? type = null)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return;
+
+        var notification = new Notification
+        {
+            UserId = user.Id,
+            Title = title,
+            Message = message,
+            Link = link,
+            Type = type,
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.Notifications.Add(notification);
+        await _context.SaveChangesAsync();
+
+        // Notify user via SignalR if they are online
+        await _hubContext.Clients.User(user.Id).SendAsync("ReceiveNotification", new NotificationDto(
+            notification.Id, notification.Title, notification.Message, notification.Link, notification.IsRead, notification.CreatedAt, notification.Type));
+    }
+}
 public class SmtpSettingsService : ISmtpSettingsService
 {
     private readonly BacklogDbContext _context;

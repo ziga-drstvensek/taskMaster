@@ -75,6 +75,7 @@ public class AuthController : ControllerBase
         {
             new Claim(ClaimTypes.Name, user.UserName!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
         };
 
         foreach (var role in roles)
@@ -95,7 +96,8 @@ public class AuthController : ControllerBase
         return Ok(new AuthResponseDto(
             new JwtSecurityTokenHandler().WriteToken(token),
             user.UserName!,
-            roles.FirstOrDefault() ?? "User"
+            roles.FirstOrDefault() ?? "User",
+            user.ProfilePictureUrl
         ));
     }
 
@@ -109,21 +111,21 @@ public class AuthController : ControllerBase
 
     [HttpGet("users-list")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<IEnumerable<object>>> GetUsersList()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersList()
     {
         var users = await _userManager.Users.ToListAsync();
-        var result = new List<object>();
+        var result = new List<UserDto>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            result.Add(new
-            {
-                Username = user.UserName,
-                Email = user.Email,
-                Role = roles.FirstOrDefault() ?? "User",
-                Tags = user.Tags
-            });
+            result.Add(new UserDto(
+                user.UserName!,
+                user.Email!,
+                roles.FirstOrDefault() ?? "User",
+                user.Tags,
+                user.ProfilePictureUrl
+            ));
         }
 
         return Ok(result);
@@ -138,6 +140,7 @@ public class AuthController : ControllerBase
 
         user.Email = dto.Email;
         user.Tags = dto.Tags;
+        user.ProfilePictureUrl = dto.ProfilePictureUrl;
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
         {

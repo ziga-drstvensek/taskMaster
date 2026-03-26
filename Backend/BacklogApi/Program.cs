@@ -55,6 +55,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<ISmtpSettingsService, SmtpSettingsService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddHostedService<DatabaseBackupService>();
 

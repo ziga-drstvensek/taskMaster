@@ -97,13 +97,21 @@ export const useBacklogStore = defineStore('backlog', {
                 throw err;
             }
         },
-        initSignalR() {
+        async initSignalR() {
             signalRService.start();
             signalRService.onItemsUpdated(() => {
                 this.fetchItems();
             });
             signalRService.onSprintsUpdated(() => {
                 this.fetchSprints();
+            });
+            signalRService.onNotificationReceived(async (notification) => {
+                const { useAuthStore } = await import('./auth');
+                const authStore = useAuthStore();
+                authStore.addNotification(notification);
+                if (typeof (window as any).triggerToast === 'function') {
+                    (window as any).triggerToast(notification.title + ': ' + notification.message, 'info');
+                }
             });
         },
         setSelectedSprintId(id: number | null) {
