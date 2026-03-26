@@ -11,7 +11,7 @@ namespace BacklogApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ProfilePictureUrl",
+                name: "ProfilePicture",
                 table: "AspNetUsers",
                 type: "longtext",
                 nullable: true)
@@ -22,7 +22,7 @@ namespace BacklogApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ProfilePictureUrl",
+                name: "ProfilePicture",
                 table: "AspNetUsers");
         }
     }
