@@ -188,7 +188,7 @@ onMounted(() => {
         <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
           {{ $t('common.backlog') }}
         </h1>
-        <div class="ml-4 flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-1.5 border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all w-64 group/search">
+        <div class="ml-4 hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-1.5 border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all w-64 group/search">
           <Search :size="16" class="text-slate-400 mr-2 group-focus-within/search:text-indigo-500 transition-colors" />
           <input 
             type="text" 
@@ -206,7 +206,7 @@ onMounted(() => {
         </div>
         <button 
           @click="showAddModal = true"
-          class="ml-4 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
+          class="ml-2 sm:ml-4 bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
           :title="$t('common.new_task')"
         >
           <Plus :size="20" />
@@ -214,7 +214,7 @@ onMounted(() => {
       </div>
       
       <div class="flex items-center gap-4">
-        <div v-if="authStore.isManager" class="hidden lg:flex items-center">
+        <div v-if="authStore.isManager" class="flex items-center">
           <button 
             @click="initialSettingsTab = 'boards'; showSettingsManager = true"
             class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all flex items-center gap-2"
@@ -222,19 +222,19 @@ onMounted(() => {
             :title="$t('common.settings')"
           >
             <Settings :size="18" />
-            <span class="text-xxs font-black uppercase tracking-widest">{{ $t('common.settings') }}</span>
+            <span class="hidden sm:inline text-xxs font-black uppercase tracking-widest">{{ $t('common.settings') }}</span>
           </button>
         </div>
 
-        <div class="hidden sm:flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
+        <div class="flex items-center gap-2 sm:gap-3 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
           <button 
             @click="showShortcutsModal = true"
-            class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all shadow-sm active:scale-90"
+            class="hidden sm:block p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all shadow-sm active:scale-90"
             :title="$t('common.shortcuts')"
           >
             <Keyboard :size="16" />
           </button>
-          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+          <div class="hidden sm:block h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <button 
             @click="uiStore.toggleDarkMode"
             class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all shadow-sm active:scale-90"
@@ -305,13 +305,13 @@ onMounted(() => {
           </button>
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <div 
-            class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden"
+            class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden flex-shrink-0"
             :title="authStore.user?.username"
           >
             <img v-if="authStore.user?.profilePictureUrl" :src="authStore.user.profilePictureUrl" class="w-full h-full object-cover" />
             <User v-else :size="16" />
           </div>
-          <div class="flex flex-col">
+          <div class="hidden md:flex flex-col">
             <span class="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">{{ authStore.user?.username }}</span>
             <span class="text-xxs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-black leading-none mt-1">{{ authStore.user?.role }}</span>
           </div>
