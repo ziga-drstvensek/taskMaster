@@ -5,6 +5,7 @@ import type { BacklogItem, Sprint, BoardColumn, Attachment, HistoryEntry } from 
 import { BacklogItemPriority, BacklogItemStatus } from '../types';
 import { useBacklogStore } from '../store/backlog';
 import { useColumnStore } from '../store/column';
+import { useUIStore } from '../store/ui';
 import api from '../services/api';
 import { X, Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock, ChevronDown, ChevronRight } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
@@ -24,6 +25,7 @@ const props = defineProps<{
 const emit = defineEmits(['close', 'edit-subtask', 'submit']);
 const backlogStore = useBacklogStore();
 const columnStore = useColumnStore();
+const uiStore = useUIStore();
 
 const title = ref(props.item?.title || '');
 const description = ref(props.item?.description || '');
@@ -71,7 +73,7 @@ watch(boardId, (newBoardId) => {
 const sprintId = ref<number | string>(props.item?.sprintId ?? props.defaultSprintId ?? '');
 const assignedTo = ref(props.item?.assignedTo || '');
 const dueDate = ref(props.item?.dueDate ? props.item.dueDate.split('T')[0] : '');
-const isExpanded = ref(false);
+const isExpanded = ref(uiStore.modalSize === 'expanded');
 const isHistoryExpanded = ref(false);
 
 const localItem = ref<BacklogItem | null>(props.item || null);

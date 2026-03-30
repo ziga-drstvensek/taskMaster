@@ -32,6 +32,11 @@ const searchInput = ref<HTMLInputElement | null>(null);
 
 const shortcuts = computed(() => [
   { key: 'N', label: t('common.new_task_shortcut') },
+  { key: 'K', label: t('common.kanban_shortcut') },
+  { key: 'T', label: t('common.table_shortcut') },
+  { key: 'M', label: t('common.my_tasks_shortcut') },
+  { key: 'U', label: t('common.unassigned_shortcut') },
+  { key: 'S', label: t('common.settings_shortcut') },
   { key: '/', label: t('common.search_shortcut') },
   { key: '?', label: t('common.help_shortcut') },
   { key: 'Esc', label: t('common.esc_shortcut') },
@@ -54,6 +59,23 @@ const handleGlobalKeydown = (e: KeyboardEvent) => {
   if (e.key.toLowerCase() === 'n') {
     e.preventDefault();
     showAddModal.value = true;
+  } else if (e.key.toLowerCase() === 'k') {
+    if (backlogStore.selectedBoardId !== -1) {
+      e.preventDefault();
+      uiStore.setViewMode('kanban');
+    }
+  } else if (e.key.toLowerCase() === 't') {
+    e.preventDefault();
+    uiStore.setViewMode('table');
+  } else if (e.key.toLowerCase() === 'm') {
+    e.preventDefault();
+    backlogStore.setSelectedDashboardId('me');
+  } else if (e.key.toLowerCase() === 'u') {
+    e.preventDefault();
+    backlogStore.setSelectedDashboardId('unassigned');
+  } else if (e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    showSettingsManager.value = true;
   } else if (e.key === '/') {
     e.preventDefault();
     searchInput.value?.focus();
@@ -217,15 +239,16 @@ onMounted(() => {
   
   <div v-else class="min-h-screen flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-300 dark:text-slate-200">
     <!-- Header -->
-    <header class="h-[65px] bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20 px-6 py-3 flex justify-between items-center transition-colors">
-      <div class="flex items-center gap-3">
+    <header class="h-16.25 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 flex items-center transition-colors">
+      <div class="max-w-400 mx-auto w-full px-4 lg:px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
         <div class="relative">
           <img src="./assets/logo2.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
           <div class="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm" v-if="backlogStore.loading">
             <div class="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
-        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-violet-600">
           {{ $t('common.backlog') }}
         </h1>
         <div class="ml-4 hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-1.5 border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all w-64 group/search">
@@ -252,7 +275,7 @@ onMounted(() => {
           <Plus :size="20" />
         </button>
       </div>
-      
+
       <div class="flex items-center gap-4">
         <div class="flex items-center">
           <button 
@@ -383,10 +406,10 @@ onMounted(() => {
           <LogOut :size="20" />
         </button>
       </div>
+    </div>
     </header>
-
     <!-- Main Content -->
-    <main 
+    <main
       class="flex-1 overflow-hidden flex flex-col transition-all duration-300"
     >
       <div 
@@ -394,14 +417,14 @@ onMounted(() => {
         class="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[1px] pointer-events-auto"
         @click.stop
       ></div>
-      <div class="px-6 py-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-[65px] z-10 transition-colors">
-        <div class="max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      <div class="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-0 z-40 transition-colors">
+        <div class="max-w-400 mx-auto px-4 lg:px-6 py-2 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div class="flex flex-wrap items-center gap-4">
             <div class="flex items-center gap-2">
               <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">{{ $t('common.dashboard') }}</h2>
               <div v-if="backlogStore.boards.length > 0" class="flex items-center gap-2 relative group/board">
                 <span class="text-slate-400 dark:text-slate-600">/</span>
-                <div class="relative" v-click-outside="() => showBoardDropdown = false">
+                <div class="relative " v-click-outside="() => showBoardDropdown = false">
                   <button 
                     class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all text-indigo-600 dark:text-indigo-400 font-bold shadow-sm text-sm"
                     @click.stop="showBoardDropdown = !showBoardDropdown"
@@ -609,8 +632,8 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="flex-1 overflow-auto p-4 lg:p-6 custom-scrollbar">
-        <div class="h-full max-w-[1600px] mx-auto">
+      <div class="flex-1 overflow-auto custom-scrollbar">
+        <div class="h-full max-w-[1600px] mx-auto p-4 lg:p-6">
           <BacklogList :disabled="isAnyModalOpen" />
         </div>
       </div>

@@ -239,9 +239,9 @@ const deleteItem = async (id: number) => {
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex-1 flex flex-col">
       <div class="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
         <!-- Desktop Table View (visible on medium and larger screens) -->
-        <table class="hidden md:table w-full text-left border-collapse min-w-[1000px]">
+        <table class="hidden md:table w-full text-left border-collapse min-w-[1000px] relative z-0">
           <thead>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
+            <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30">
               <th class="table-header-cell">{{ t('common.title') }}</th>
               <th class="table-header-cell">{{ t('common.column') }}</th>
               <th class="table-header-cell">{{ t('common.priority') }}</th>
