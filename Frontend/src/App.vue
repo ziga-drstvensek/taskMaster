@@ -27,6 +27,7 @@ const searchInput = ref<HTMLInputElement | null>(null);
 
 const shortcuts = computed(() => [
   { key: 'N', label: t('common.new_task_shortcut') },
+  { key: 'A', label: t('common.all_tasks_shortcut') },
   { key: 'K', label: t('common.kanban_shortcut') },
   { key: 'T', label: t('common.table_shortcut') },
   { key: 'M', label: t('common.my_tasks_shortcut') },
@@ -38,12 +39,25 @@ const shortcuts = computed(() => [
 ]);
 
 const handleGlobalKeydown = (e: KeyboardEvent) => {
-  if (isAnyModalOpen.value) {
-    if (e.key === 'Escape' && !uiStore.isModalOpen) {
-       showAddModal.value = false;
-       showSettingsManager.value = false;
-       showShortcutsModal.value = false;
+  if (e.key === 'Escape') {
+    if (showAddModal.value) {
+      showAddModal.value = false;
+      e.stopImmediatePropagation();
+      return;
     }
+    if (showSettingsManager.value) {
+      showSettingsManager.value = false;
+      e.stopImmediatePropagation();
+      return;
+    }
+    if (showShortcutsModal.value) {
+      showShortcutsModal.value = false;
+      e.stopImmediatePropagation();
+      return;
+    }
+  }
+
+  if (isAnyModalOpen.value) {
     return;
   }
 
@@ -54,6 +68,9 @@ const handleGlobalKeydown = (e: KeyboardEvent) => {
   if (e.key.toLowerCase() === 'n') {
     e.preventDefault();
     showAddModal.value = true;
+  } else if (e.key.toLowerCase() === 'a') {
+    e.preventDefault();
+    backlogStore.setSelectedDashboardId('all');
   } else if (e.key.toLowerCase() === 'k') {
     if (backlogStore.selectedBoardId !== -1) {
       e.preventDefault();

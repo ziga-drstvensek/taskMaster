@@ -36,6 +36,7 @@ const handleBackdropClick = () => {
 
 const handleEscape = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && props.show && !props.persistent) {
+    e.stopImmediatePropagation();
     close();
   }
 };
