@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import api from '../services/api';
-import type { User, Notification } from '../types';
+import type { User, Notification } from '@/types';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({

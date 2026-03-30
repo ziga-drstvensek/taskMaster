@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useUIStore } from '../store/ui';
+import { useUIStore } from '@/store/ui';
 import { Type, Check, Type as FontIcon, Sun, Moon, Maximize2, Layout } from 'lucide-vue-next';
 
 const { t } = useI18n();
@@ -31,10 +31,6 @@ const setFontFamily = (font: string) => {
 
 const setModalSize = (size: 'normal' | 'expanded') => {
   uiStore.setModalSize(size);
-};
-
-const toggleDarkMode = () => {
-  uiStore.toggleDarkMode();
 };
 </script>
 

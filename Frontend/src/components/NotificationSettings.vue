@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useAuthStore } from '../store/auth';
+import { useAuthStore } from '@/store/auth';
 import { useI18n } from 'vue-i18n';
 import { Save, BellRing, Info, Send } from 'lucide-vue-next';
 

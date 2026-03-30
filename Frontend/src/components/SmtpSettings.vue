@@ -29,7 +29,7 @@ const fetchSettings = async () => {
       host: response.data.host || '',
       port: response.data.port || 587,
       userName: response.data.userName || '',
-      password: '', // Don't use null for password field
+      password: '',
       enableSsl: response.data.enableSsl !== undefined ? response.data.enableSsl : true,
       fromEmail: response.data.fromEmail || '',
       fromName: response.data.fromName || ''
@@ -63,7 +63,6 @@ const testSettings = async () => {
   testing.value = true;
   message.value = { text: '', type: '' };
   try {
-    // First save the current settings so the backend can use them for testing
     const payload = { ...settings.value };
     if (!payload.password) delete (payload as any).password;
     await api.post('/settings/smtp', payload);
@@ -202,7 +201,7 @@ onMounted(fetchSettings);
       <div class="flex items-center gap-3">
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" v-model="settings.enableSsl" class="sr-only peer">
-          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-indigo-600"></div>
+          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-indigo-600"></div>
           <span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">{{ t('settings.smtp.enableSsl') }}</span>
         </label>
       </div>

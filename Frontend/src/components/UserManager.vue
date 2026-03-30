@@ -198,7 +198,7 @@ onMounted(fetchUsers);
               class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-indigo-600 overflow-hidden cursor-pointer hover:border-indigo-300 transition-all shadow-sm"
               @click="fileInput?.click()"
             >
-              <img v-if="profilePicture" :src="profilePicture" class="w-full h-full object-cover" />
+              <img v-if="profilePicture" :src="profilePicture" class="w-full h-full object-cover" alt="User profile picture"/>
               <Camera v-else :size="20" class="text-slate-400" />
             </div>
             <div class="flex flex-col gap-1">
@@ -309,7 +309,7 @@ onMounted(fetchUsers);
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-xs uppercase shadow-sm overflow-hidden">
-                  <img v-if="u.profilePicture" :src="u.profilePicture" class="w-full h-full object-cover" />
+                  <img v-if="u.profilePicture" :src="u.profilePicture" class="w-full h-full object-cover" alt="User profile picture"/>
                   <span v-else>{{ u.username.substring(0, 2) }}</span>
                 </div>
                 <span class="font-bold text-slate-700 dark:text-slate-200 tracking-tight">{{ u.username }}</span>

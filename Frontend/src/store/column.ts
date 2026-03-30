@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import api from '../services/api';
-import type { BoardColumn } from '../types';
+import type { BoardColumn } from '@/types';
 
 export const useColumnStore = defineStore('column', {
     state: () => ({

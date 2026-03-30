@@ -6,15 +6,10 @@ import { useBacklogStore } from './store/backlog';
 import { useUIStore } from './store/ui';
 import BacklogList from './components/BacklogList.vue';
 import BacklogForm from './components/BacklogForm.vue';
-import SprintManager from './components/SprintManager.vue';
-import UserManager from './components/UserManager.vue';
-import BoardManager from './components/BoardManager.vue';
 import SettingsManager from './components/SettingsManager.vue';
 import LoginView from './views/LoginView.vue';
 import BaseModal from './components/common/BaseModal.vue';
-import api from './services/api';
-import type { Sprint } from './types';
-import { LogOut, Plus, Settings, LayoutGrid, Users, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell, Camera } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell, Camera } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -142,8 +137,8 @@ onMounted(async () => {
   if (authStore.isAuthenticated) {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
-    backlogStore.initSignalR();
-    backlogStore.fetchSprints();
+    await backlogStore.initSignalR();
+    await backlogStore.fetchSprints();
   }
   
   if (localStorage.getItem('session_expired') === 'true') {
@@ -160,8 +155,8 @@ watch(() => authStore.isAuthenticated, async (newVal) => {
   if (newVal) {
     await backlogStore.fetchBoards();
     await backlogStore.fetchItems();
-    backlogStore.initSignalR();
-    backlogStore.fetchSprints();
+    await backlogStore.initSignalR();
+    await backlogStore.fetchSprints();
   }
 });
 
@@ -243,7 +238,7 @@ onMounted(() => {
       <div class="max-w-400 mx-auto w-full px-4 lg:px-6 py-3 flex justify-between items-center">
         <div class="flex items-center gap-3">
         <div class="relative">
-          <img src="./assets/logo2.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
+          <img src="./assets/LogoZD.png" :alt="$t('common.backlog')" class="w-10 h-10 object-contain" />
           <div class="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm" v-if="backlogStore.loading">
             <div class="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
@@ -260,7 +255,7 @@ onMounted(() => {
             :placeholder="$t('common.search_placeholder')"
             class="bg-transparent border-none outline-none text-sm w-full text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
           />
-          <div v-if="!backlogStore.searchQuery" class="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[10px] font-bold text-slate-400 select-none">
+          <div v-if="!backlogStore.searchQuery" class="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xxs font-bold text-slate-400 select-none">
             /
           </div>
           <button v-if="backlogStore.searchQuery" @click="clearSearch" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
@@ -317,12 +312,12 @@ onMounted(() => {
               :class="{ 'bg-slate-100 dark:bg-slate-800 text-indigo-600': showNotificationsDropdown }"
             >
               <Bell :size="20" />
-              <span v-if="authStore.unreadNotificationsCount > 0" class="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900">
+              <span v-if="authStore.unreadNotificationsCount > 0" class="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-xxs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900">
                 {{ authStore.unreadNotificationsCount }}
               </span>
             </button>
             
-            <div v-if="showNotificationsDropdown" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 z-[100] overflow-hidden">
+            <div v-if="showNotificationsDropdown" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 z-100 overflow-hidden">
               <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                 <h3 class="font-bold text-sm">{{ $t('notifications.title') }}</h3>
                 <button 
@@ -349,7 +344,7 @@ onMounted(() => {
                     <span class="font-semibold text-sm" :class="{ 'text-indigo-600 dark:text-indigo-400': !notification.isRead }">
                       {{ notification.title }}
                     </span>
-                    <span class="text-[10px] text-slate-400 whitespace-nowrap">
+                    <span class="text-xxs text-slate-400 whitespace-nowrap">
                       {{ new Date(notification.createdAt).toLocaleDateString() }}
                     </span>
                   </div>
@@ -369,11 +364,11 @@ onMounted(() => {
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
           <div class="relative group/avatar">
             <div 
-              class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden flex-shrink-0 cursor-pointer"
+              class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center text-indigo-600 shadow-sm overflow-hidden shrink-0 cursor-pointer"
               :title="authStore.user?.username"
               @click="fileInput?.click()"
             >
-              <img v-if="authStore.user?.profilePicture" :src="authStore.user.profilePicture" class="w-full h-full object-cover" />
+              <img v-if="authStore.user?.profilePicture" :src="authStore.user.profilePicture" class="w-full h-full object-cover" alt="User Profile Picture" />
               <User v-else :size="16" />
               
               <div v-if="isUploading" class="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -444,7 +439,7 @@ onMounted(() => {
                   >
                   <div 
                     v-if="showBoardDropdown" 
-                    class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden z-[100]"
+                    class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden z-100"
                   >
                     <div class="p-2 space-y-1">
                       <button 
@@ -457,14 +452,14 @@ onMounted(() => {
                       >
                         <div class="flex items-center gap-3 min-w-0">
                           <div 
-                            class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
                             :class="backlogStore.selectedBoardId === -1 ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700 group-hover/item:bg-indigo-100 dark:group-hover/item:bg-indigo-900/50'"
                           >
                             <LayoutGrid :size="14" />
                           </div>
                           <span class="truncate">{{ $t('common.all_boards') }}</span>
                         </div>
-                        <Check v-if="backlogStore.selectedBoardId === -1" :size="16" class="flex-shrink-0" />
+                        <Check v-if="backlogStore.selectedBoardId === -1" :size="16" class="shrink-0" />
                       </button>
 
                       <div v-if="authStore.isAdmin" class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
@@ -481,14 +476,14 @@ onMounted(() => {
                       >
                         <div class="flex items-center gap-3 min-w-0">
                           <div 
-                            class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
                             :class="backlogStore.selectedBoardId === b.id ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700 group-hover/item:bg-indigo-100 dark:group-hover/item:bg-indigo-900/50'"
                           >
                             <Trello :size="14" />
                           </div>
                           <span class="truncate">{{ b.name }}</span>
                         </div>
-                        <Check v-if="backlogStore.selectedBoardId === b.id" :size="16" class="flex-shrink-0" />
+                        <Check v-if="backlogStore.selectedBoardId === b.id" :size="16" class="shrink-0" />
                       </button>
                     </div>
                   </div>
@@ -538,7 +533,7 @@ onMounted(() => {
                 <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700 flex-nowrap">
                   <button 
                     @click="uiStore.setViewMode('kanban')"
-                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold transition-all whitespace-nowrap"
+                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-xxs font-bold transition-all whitespace-nowrap"
                     :class="uiStore.viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
                     :title="$t('common.kanban_view')"
                   >
@@ -547,7 +542,7 @@ onMounted(() => {
                   </button>
                   <button 
                     @click="uiStore.setViewMode('table')"
-                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold transition-all whitespace-nowrap"
+                    class="flex items-center gap-1.5 px-2 py-1 rounded-md text-xxs font-bold transition-all whitespace-nowrap"
                     :class="uiStore.viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
                     :title="$t('common.table_view')"
                   >
@@ -560,7 +555,7 @@ onMounted(() => {
           </div>
 
           <div class="flex items-center gap-3 w-full lg:w-auto">
-            <div class="relative flex-1 lg:flex-initial min-w-[160px]" v-click-outside="() => showSprintDropdown = false">
+            <div class="relative flex-1 lg:flex-initial min-w-40" v-click-outside="() => showSprintDropdown = false">
               <button
                 type="button"
                 @click="showSprintDropdown = !showSprintDropdown"
@@ -599,10 +594,10 @@ onMounted(() => {
                     <li
                       @click="backlogStore.selectedSprintId = null; showSprintDropdown = false"
                       class="px-4 py-2.5 cursor-pointer flex items-center justify-between gap-2 transition-colors duration-100"
-                      :class="backlogStore.selectedSprintId === null ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'"
+                      :class="'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300'"
                     >
                       <span class="text-sm font-medium">{{ $t('common.allSprints') }}</span>
-                      <Check v-if="backlogStore.selectedSprintId === null" :size="16" class="text-indigo-600 dark:text-indigo-400" />
+                      <Check v-if="true" :size="16" class="text-indigo-600 dark:text-indigo-400" />
                     </li>
                     <li
                       v-for="s in backlogStore.sprints"
@@ -623,7 +618,7 @@ onMounted(() => {
 
             <button 
               @click="showAddModal = true"
-              class="btn-primary group !py-2 !px-4"
+              class="btn-primary group py-2! px-4!"
             >
               <Plus :size="16" class="mr-1.5 group-hover:rotate-90 transition-transform duration-300" />
               <span class="text-sm">{{ $t('common.new_task') }}</span>
@@ -633,7 +628,7 @@ onMounted(() => {
       </div>
 
       <div class="flex-1 overflow-auto custom-scrollbar">
-        <div class="h-full max-w-[1600px] mx-auto p-4 lg:p-6">
+        <div class="h-full max-w-400 mx-auto p-4 lg:p-6">
           <BacklogList :disabled="isAnyModalOpen" />
         </div>
       </div>
@@ -662,7 +657,7 @@ onMounted(() => {
         <div v-for="shortcut in shortcuts" :key="shortcut.key" class="flex items-center justify-between p-3 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
           <span class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ shortcut.label }}</span>
           <div class="flex items-center gap-1.5">
-            <div class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border-b-2 border-slate-200 dark:border-slate-900 text-xs font-black text-slate-700 dark:text-slate-200 shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50 min-w-[32px] flex items-center justify-center">
+            <div class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border-b-2 border-slate-200 dark:border-slate-900 text-xs font-black text-slate-700 dark:text-slate-200 shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50 min-w-8 flex items-center justify-center">
               <Command v-if="shortcut.key === 'Esc'" :size="10" class="mr-1 opacity-50" />
               {{ shortcut.key }}
             </div>
@@ -677,7 +672,7 @@ onMounted(() => {
     <!-- Toast -->
     <div 
       v-if="showToast" 
-      class="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300 border"
+      class="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-100 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300 border"
       :class="{
         'bg-slate-800 border-slate-700': toastType === 'info',
         'bg-rose-600 border-rose-500': toastType === 'error',

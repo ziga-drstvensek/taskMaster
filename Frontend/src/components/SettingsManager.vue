@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAuthStore } from '../store/auth';
+import { useAuthStore } from '@/store/auth';
 import { Settings, Users, Trello, ChevronRight, Palette, Mail, BellRing } from 'lucide-vue-next';
 import SprintManager from './SprintManager.vue';
 import UserManager from './UserManager.vue';
@@ -33,7 +33,7 @@ const tabs = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row h-full min-h-[500px]">
+  <div class="flex flex-col md:flex-row h-full min-h-125">
     <!-- Sidebar -->
     <div class="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 p-4 space-y-2">
       <button

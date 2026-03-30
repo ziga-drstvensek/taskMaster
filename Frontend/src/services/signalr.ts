@@ -1,5 +1,5 @@
 import * as signalR from '@microsoft/signalr';
-import type { Notification } from '../types';
+import type { Notification } from '@/types';
 
 class SignalRService {
     private connection: signalR.HubConnection | null = null;

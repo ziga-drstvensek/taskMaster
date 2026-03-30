@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import api from '../services/api';
-import type { BacklogItem, Board, Sprint } from '../types';
-import { signalRService } from '../services/signalr';
+import type { BacklogItem, Board, Sprint } from '@/types';
+import { signalRService } from '@/services/signalr';
 
 export const useBacklogStore = defineStore('backlog', {
     state: () => ({
@@ -98,7 +98,7 @@ export const useBacklogStore = defineStore('backlog', {
             }
         },
         async initSignalR() {
-            signalRService.start();
+            await signalRService.start();
             signalRService.onItemsUpdated(() => {
                 this.fetchItems();
             });
@@ -141,7 +141,7 @@ export const useBacklogStore = defineStore('backlog', {
         },
         async updateItem(id: number, item: any) {
             try {
-                const response = await api.put(`/backlog/${id}`, item);
+               await api.put(`/backlog/${id}`, item);
                 const index = this.items.findIndex(i => i.id === id);
                 if (index !== -1) {
                     await this.fetchItems();

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import i18n from '../i18n';
 
 const isElectron = !!(window && (window as any).electron);
 const baseURL = isElectron 

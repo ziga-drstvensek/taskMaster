@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { BacklogItem } from '../types';
-import { BacklogItemPriority, BacklogItemStatus } from '../types';
-import { useBacklogStore } from '../store/backlog';
-import { useAuthStore } from '../store/auth';
-import { useUIStore } from '../store/ui';
-import { MessageSquare, Trash2, Calendar, Edit2, ChevronDown, ChevronRight, PlusCircle, User, UserCheck, Paperclip, Clock, LayoutGrid } from 'lucide-vue-next';
+import type { BacklogItem } from '@/types';
+import { BacklogItemPriority } from '@/types';
+import { useBacklogStore } from '@/store/backlog';
+import { useAuthStore } from '@/store/auth';
+import { useUIStore } from '@/store/ui';
+import { MessageSquare, Trash2, Calendar, Edit2, ChevronDown, ChevronRight, PlusCircle, User, Paperclip, Clock, LayoutGrid } from 'lucide-vue-next';
 import CommentList from './CommentList.vue';
 import BacklogForm from './BacklogForm.vue';
 
@@ -149,7 +149,7 @@ const handleDelete = async () => {
             <LayoutGrid :size="14" class="md:w-3 md:h-3" /> {{ backlogStore.boards.find(b => b.id === item.boardId)?.name || '' }}
           </span>
           <div v-if="item.assignedTo" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800 shadow-sm" :title="$t('common.assignee')">
-            <div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold uppercase tracking-tighter">
+            <div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xxs font-bold uppercase tracking-tighter">
               {{ item.assignedTo.substring(0, 2) }}
             </div>
             <span class="text-xs font-semibold">{{ item.assignedTo }}</span>
@@ -209,7 +209,7 @@ const handleDelete = async () => {
                   <div class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-bold uppercase tracking-tighter">
                     {{ sub.assignedTo.substring(0, 2) }}
                   </div>
-                  <span class="text-[10px] font-semibold">{{ sub.assignedTo }}</span>
+                  <span class="text-xxs font-semibold">{{ sub.assignedTo }}</span>
                 </div>
               </div>
             </div>

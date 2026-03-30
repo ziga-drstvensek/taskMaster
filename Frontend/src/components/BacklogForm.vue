@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { BacklogItem, Sprint, BoardColumn, Attachment, HistoryEntry } from '../types';
-import { BacklogItemPriority, BacklogItemStatus } from '../types';
-import { useBacklogStore } from '../store/backlog';
-import { useColumnStore } from '../store/column';
-import { useUIStore } from '../store/ui';
-import api from '../services/api';
-import { X, Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock, ChevronDown, ChevronRight } from 'lucide-vue-next';
+import type { BacklogItem, Attachment } from '@/types';
+import { BacklogItemPriority } from '@/types';
+import { useBacklogStore } from '@/store/backlog';
+import { useColumnStore } from '@/store/column';
+import { useUIStore } from '@/store/ui';
+import api from '@/services/api';
+import { Trash2, User, UserCheck, PlusCircle, Paperclip, Download, Maximize2, Minimize2, History, Clock, ChevronDown, ChevronRight } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import BaseDatePicker from './common/BaseDatePicker.vue';
 import BaseSelect from './common/BaseSelect.vue';
@@ -50,7 +50,6 @@ watch(boardId, (newBoardId) => {
   const boardColumns = columnStore.columns.filter(c => c.boardId === currentBoardId);
   
   if (boardColumns.length > 0) {
-    // If current column is not in the new board, reset it
     const currentColumnId = parseInt(columnId.value.toString());
     const isColumnValid = boardColumns.some(c => c.id === currentColumnId);
     
@@ -252,7 +251,7 @@ const handleSubmit = async () => {
             <!-- Attachments Section -->
             <div v-if="item" class="space-y-3 pt-2">
               <div class="flex justify-between items-center">
-                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider items-center gap-1.5">
                   <Paperclip :size="14" /> {{ $t('common.attachments') }} ({{ attachments.length }})
                 </label>
                 <label class="cursor-pointer text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg">
@@ -265,9 +264,9 @@ const handleSubmit = async () => {
               <div v-if="attachments.length > 0" class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 p-2 space-y-1">
                 <div v-for="att in attachments" :key="att.id" class="flex items-center justify-between p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-50 dark:border-slate-800 group shadow-sm transition-all hover:shadow-md">
                   <div class="flex items-center gap-2 overflow-hidden">
-                    <Paperclip :size="12" class="text-slate-400 dark:text-slate-500 flex-shrink-0" />
+                    <Paperclip :size="12" class="text-slate-400 dark:text-slate-500 shrink-0" />
                     <span class="text-xs text-slate-600 dark:text-slate-300 truncate font-medium" :title="att.fileName">{{ att.fileName }}</span>
-                    <span class="text-xxs text-slate-400 dark:text-slate-500 flex-shrink-0">({{ (att.size / 1024).toFixed(1) }} KB)</span>
+                    <span class="text-xxs text-slate-400 dark:text-slate-500 shrink-0">({{ (att.size / 1024).toFixed(1) }} KB)</span>
                   </div>
                   <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button type="button" @click="downloadAttachment(att)" class="p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg" :title="$t('common.download')">
@@ -347,14 +346,14 @@ const handleSubmit = async () => {
               </button>
             </div>
             
-          <div class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-[150px] max-h-[500px] overflow-y-auto p-3 space-y-3 custom-scrollbar flex-1">
+          <div class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-37.5 max-h-125 overflow-y-auto p-3 space-y-3 custom-scrollbar flex-1">
               <div v-if="subtasks.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-12">
                 <PlusCircle :size="32" class="mb-2 opacity-20" />
                 <p class="text-xxs font-bold uppercase tracking-widest">{{ $t('common.no_subtasks') }}</p>
               </div>
               <div v-for="sub in subtasks" :key="sub.id" class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-50 dark:border-slate-800 shadow-sm flex items-center justify-between group transition-all hover:shadow-md hover:border-indigo-100 dark:hover:border-indigo-900/40">
                 <div class="flex items-center gap-3 overflow-hidden">
-                  <div class="w-2 h-2 rounded-full flex-shrink-0" :class="priorityDotClass[sub.priority]"></div>
+                  <div class="w-2 h-2 rounded-full shrink-0" :class="priorityDotClass[sub.priority]"></div>
                   <div class="flex flex-col overflow-hidden min-w-0">
                     <span class="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors" @click="$emit('edit-subtask', { item: sub })">
                       {{ sub.title }}
@@ -369,7 +368,7 @@ const handleSubmit = async () => {
                     </div>
                   </div>
                 </div>
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-4">
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-4">
                   <button type="button" @click="backlogStore.deleteItem(sub.id)" class="p-1.5 text-slate-300 dark:text-slate-600 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all">
                     <Trash2 :size="14" />
                   </button>

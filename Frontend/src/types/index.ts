@@ -3,13 +3,6 @@ export enum BacklogItemPriority {
     Medium = 1,
     High = 2
 }
-
-export enum BacklogItemStatus {
-    Backlog = 0,
-    InProgress = 1,
-    Done = 2
-}
-
 export interface BacklogItem {
     id: number;
     title: string;
@@ -91,16 +84,6 @@ export interface User {
     profilePicture?: string;
     teamsWebhookUrl?: string;
 }
-
-export interface UserDetails {
-    username: string;
-    email: string;
-    role: string;
-    tags?: string;
-    profilePicture?: string;
-    teamsWebhookUrl?: string;
-}
-
 export interface Notification {
     id: number;
     title: string;

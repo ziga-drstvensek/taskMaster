@@ -1,31 +1,22 @@
 <script setup lang="ts">
 import { computed, onMounted, watch, ref } from 'vue';
-import { useBacklogStore } from '../store/backlog';
-import { useColumnStore } from '../store/column';
-import { useAuthStore } from '../store/auth';
-import { useUIStore } from '../store/ui';
+import { useBacklogStore } from '@/store/backlog';
+import { useColumnStore } from '@/store/column';
+import { useAuthStore } from '@/store/auth';
+import { useUIStore } from '@/store/ui';
 import { useI18n } from 'vue-i18n';
 import BacklogItemComponent from './BacklogItem.vue';
 import BacklogForm from './BacklogForm.vue';
 import draggable from 'vuedraggable';
 import { 
-  LayoutGrid, 
-  Trello, 
+  LayoutGrid,
   User, 
   UserCheck, 
-  Calendar, 
-  Paperclip, 
-  MessageSquare,
+  Calendar,
   Clock,
-  MoreVertical,
   Edit2,
   Trash2,
-  ChevronDown,
-  ChevronRight,
-  Columns,
-  List,
   Zap,
-  CheckCircle2,
   AlertCircle
 } from 'lucide-vue-next';
 
@@ -239,7 +230,7 @@ const deleteItem = async (id: number) => {
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex-1 flex flex-col">
       <div class="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
         <!-- Desktop Table View (visible on medium and larger screens) -->
-        <table class="hidden md:table w-full text-left border-collapse min-w-[1000px] relative z-0">
+        <table class="hidden md:table w-full text-left border-collapse min-w-250 relative z-0">
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30">
               <th class="table-header-cell">{{ t('common.title') }}</th>
@@ -265,7 +256,7 @@ const deleteItem = async (id: number) => {
                     <div class="font-bold text-slate-800 dark:text-slate-200 text-sm hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors" @click="itemToEdit = item">
                       {{ item.title }}
                     </div>
-                    <div class="text-xxs text-slate-400 dark:text-slate-500 font-medium truncate max-w-[200px]" v-if="item.description">
+                    <div class="text-xxs text-slate-400 dark:text-slate-500 font-medium truncate max-w-50" v-if="item.description">
                       {{ item.description }}
                     </div>
                   </div>
@@ -328,7 +319,7 @@ const deleteItem = async (id: number) => {
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-3 mb-2">
-                  <div class="w-2 h-2 rounded-full flex-shrink-0" :style="{ backgroundColor: (item as any).columnColor }"></div>
+                  <div class="w-2 h-2 rounded-full shrink-0" :style="{ backgroundColor: (item as any).columnColor }"></div>
                   <div class="font-bold text-slate-800 dark:text-slate-200 text-base md:text-sm hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors leading-tight" @click="itemToEdit = item">
                     {{ item.title }}
                   </div>
@@ -354,7 +345,7 @@ const deleteItem = async (id: number) => {
                 </div>
               </div>
 
-              <div class="flex items-center gap-1 flex-shrink-0">
+              <div class="flex items-center gap-1 shrink-0">
                 <button @click="itemToEdit = item" class="p-2.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all">
                   <Edit2 :size="18" />
                 </button>
@@ -373,7 +364,7 @@ const deleteItem = async (id: number) => {
 
   <div v-else class="h-full flex flex-col">
     <div class="flex flex-row gap-4 md:gap-6 overflow-x-auto pb-4 custom-scrollbar items-stretch min-h-[calc(100vh-250px)]">
-      <div v-for="column in columnStore.columns" :key="column.id" class="flex flex-col flex-shrink-0 w-[280px] md:w-[350px]">
+      <div v-for="column in columnStore.columns" :key="column.id" class="flex flex-col shrink-0 w-70 md:w-87.5">
         <div class="flex justify-between items-center mb-4 px-1">
           <div class="flex items-center gap-2">
             <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: column.color }"></div>
@@ -385,7 +376,7 @@ const deleteItem = async (id: number) => {
         </div>
         
         <div 
-          class="bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-2 md:p-3 rounded-2xl min-h-[200px] md:min-h-[600px] flex flex-col flex-1 transition-colors"
+          class="bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-2 md:p-3 rounded-2xl min-h-50 md:min-h-150 flex flex-col flex-1 transition-colors"
           :style="{ borderColor: column.color + '40' }"
         >
           <draggable 

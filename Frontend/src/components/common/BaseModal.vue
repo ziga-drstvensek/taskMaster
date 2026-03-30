@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch, computed } from 'vue';
 import { X } from 'lucide-vue-next';
-import { useUIStore } from '../../store/ui';
+import { useUIStore } from '@/store/ui';
 
 const props = defineProps<{
   show: boolean;
@@ -76,7 +76,7 @@ watch(() => props.show, (newVal, oldVal) => {
     leave-from-class="opacity-100"
     leave-to-class="opacity-0"
   >
-    <div v-if="show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6" aria-modal="true" role="dialog">
+    <div v-if="show" class="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6" aria-modal="true" role="dialog">
       <!-- Backdrop -->
       <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" @click="handleBackdropClick"></div>
 
@@ -96,7 +96,7 @@ watch(() => props.show, (newVal, oldVal) => {
           @click.stop
         >
           <!-- Header -->
-          <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/50 flex-shrink-0">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/50 shrink-0">
             <slot name="header">
               <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">{{ title }}</h3>
             </slot>
@@ -115,7 +115,7 @@ watch(() => props.show, (newVal, oldVal) => {
           </div>
 
           <!-- Footer -->
-          <div v-if="$slots.footer" class="px-6 py-4 border-t border-slate-100/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/50 flex justify-end gap-3 flex-shrink-0">
+          <div v-if="$slots.footer" class="px-6 py-4 border-t border-slate-100/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/50 flex justify-end gap-3 shrink-0">
             <slot name="footer"></slot>
           </div>
         </div>

@@ -13,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
@@ -45,12 +45,10 @@ const daysInMonth = computed(() => {
   const lastDay = new Date(year, month + 1, 0);
   
   const days = [];
-  
-  // Padding for start of month (get day of week, 0=Sun, 1=Mon... Adjust to Mon=0)
+
   let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 6 : startDay - 1; // Adjust to Monday start
-  
-  // Previous month days
+  startDay = startDay === 0 ? 6 : startDay - 1;
+
   const prevMonthLastDay = new Date(year, month, 0).getDate();
   for (let i = startDay - 1; i >= 0; i--) {
     days.push({
@@ -60,8 +58,7 @@ const daysInMonth = computed(() => {
       currentMonth: false
     });
   }
-  
-  // Current month days
+
   for (let i = 1; i <= lastDay.getDate(); i++) {
     days.push({
       day: i,
@@ -70,8 +67,7 @@ const daysInMonth = computed(() => {
       currentMonth: true
     });
   }
-  
-  // Next month days
+
   const remaining = 42 - days.length;
   for (let i = 1; i <= remaining; i++) {
     days.push({
@@ -217,7 +213,7 @@ watch(() => props.modelValue, (newVal) => {
       >
         <div 
           v-if="isOpen"
-          class="absolute z-[60] mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden p-4 min-w-[300px]"
+          class="absolute z-60 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden p-4 min-w-75"
         >
           <!-- Calendar Header -->
           <div class="flex items-center justify-between mb-4">

@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Sprint } from '../types';
+import type { Sprint } from '@/types';
 import api from '../services/api';
-import { useBacklogStore } from '../store/backlog';
-import { Plus, Edit2, Trash2, X, Check, Calendar, Search } from 'lucide-vue-next';
+import { useBacklogStore } from '@/store/backlog';
+import { Plus, Edit2, Trash2, Calendar, Search } from 'lucide-vue-next';
 import BaseDatePicker from './common/BaseDatePicker.vue';
 
 const { t } = useI18n();
 const backlogStore = useBacklogStore();
-const sprints = ref<Sprint[]>([]);
 const loading = ref(false);
 const showForm = ref(false);
 
@@ -123,7 +122,7 @@ onMounted(() => {
         <div class="flex items-center gap-3 px-2 py-2">
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="isActive" type="checkbox" class="sr-only peer">
-            <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 dark:after:border-slate-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 dark:after:border-slate-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
             <span class="ms-3 text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer">{{ $t('sprints.active_sprint') }}</span>
           </label>
         </div>

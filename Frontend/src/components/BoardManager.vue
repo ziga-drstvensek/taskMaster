@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Board } from '../types';
+import type { Board } from '@/types';
 import api from '../services/api';
-import { useBacklogStore } from '../store/backlog';
+import { useBacklogStore } from '@/store/backlog';
 import { Plus, Edit2, Trash2, Trello, Users, LayoutGrid, GripVertical, Search } from 'lucide-vue-next';
 import BaseInput from './common/BaseInput.vue';
 import draggable from 'vuedraggable';
@@ -126,7 +126,7 @@ const handleSubmit = async () => {
     if (editingId.value === backlogStore.selectedBoardId) {
       const { useColumnStore } = await import('../store/column');
       const columnStore = useColumnStore();
-      columnStore.fetchColumns(backlogStore.selectedBoardId);
+      await columnStore.fetchColumns(backlogStore.selectedBoardId);
     }
     resetForm();
   } catch (err) {
@@ -188,7 +188,7 @@ onMounted(() => {
                 
                 <div class="flex-1 flex items-center gap-3">
                   <div 
-                    class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
+                    class="w-3 h-3 rounded-full shrink-0 shadow-sm"
                     :style="{ backgroundColor: element.color }"
                   ></div>
                   <input 
@@ -234,7 +234,7 @@ onMounted(() => {
         <label class="label-caps">
           <Users :size="14" /> {{ $t('common.assignee') }}
         </label>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 bg-white/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-[120px]">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 bg-white/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 min-h-30">
           <button 
             v-for="user in allUsers" 
             :key="user"
@@ -246,7 +246,7 @@ onMounted(() => {
               : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'"
           >
             <div 
-              class="w-6 h-6 rounded-lg flex items-center justify-center text-xxs font-black uppercase flex-shrink-0 transition-colors"
+              class="w-6 h-6 rounded-lg flex items-center justify-center text-xxs font-black uppercase shrink-0 transition-colors"
               :class="selectedUsernames.includes(user) ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700 group-hover/u:bg-indigo-100 dark:group-hover/u:bg-indigo-900/50'"
             >
               {{ user.substring(0, 2) }}

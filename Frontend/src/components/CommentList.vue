@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Comment } from '../types';
+import type { Comment } from '@/types';
 import api from '../services/api';
 import { Send, Edit2, Trash2, Check, X } from 'lucide-vue-next';
-import { useAuthStore } from '../store/auth';
+import { useAuthStore } from '@/store/auth';
 import BaseInput from './common/BaseInput.vue';
 import BaseTextarea from './common/BaseTextarea.vue';
 
@@ -132,7 +132,7 @@ const formatDate = (dateStr: string) => {
       <button 
         @click="addComment"
         :disabled="loading"
-        class="bg-indigo-600 text-white p-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition h-[42px] flex items-center justify-center shadow-sm"
+        class="bg-indigo-600 text-white p-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition h-10.5 flex items-center justify-center shadow-sm"
       >
         <Send :size="16" />
       </button>

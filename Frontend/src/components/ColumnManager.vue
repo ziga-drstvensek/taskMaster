@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import { useColumnStore } from '../store/column';
-import { useBacklogStore } from '../store/backlog';
+import { useColumnStore } from '@/store/column';
+import { useBacklogStore } from '@/store/backlog';
 import i18n from '../i18n';
-import { Plus, Trash2, Save, X, GripVertical, Check, LayoutGrid } from 'lucide-vue-next';
+import { Plus, Trash2, X, GripVertical, Check, LayoutGrid } from 'lucide-vue-next';
 
 const columnStore = useColumnStore();
 const backlogStore = useBacklogStore();
