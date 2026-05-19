@@ -3,6 +3,7 @@ using BacklogApi.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BacklogApi.Core.Interfaces;
 
 namespace BacklogApi.Controllers;
 
@@ -21,8 +22,15 @@ public class BacklogController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BacklogItemDto>>> GetAll([FromQuery] int? boardId)
+    public async Task<ActionResult<IEnumerable<BacklogItemDto>>> GetAll([FromQuery] int? boardId, [FromQuery] bool personal = false)
     {
+        var currentUser = User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue("unique_name");
+
+        if (personal)
+        {
+            return Ok(await _service.GetAllAsync(null, true, currentUser));
+        }
+
         if (!boardId.HasValue)
         {
             if (User.IsInRole("Admin"))
@@ -274,6 +282,60 @@ public class SprintsController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var success = await _service.DeleteAsync(id);
+        if (!success) return NotFound();
+        return NoContent();
+    }
+}
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class NotesController : ControllerBase
+{
+    private readonly INoteService _service;
+
+    public NotesController(INoteService service)
+    {
+        _service = service;
+    }
+
+    private string GetCurrentUser() =>
+        User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue("unique_name") ?? "Unknown";
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<NoteDto>>> GetAll()
+    {
+        return Ok(await _service.GetAllAsync(GetCurrentUser()));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<NoteDto>> GetById(int id)
+    {
+        var note = await _service.GetByIdAsync(id);
+        if (note == null) return NotFound();
+        if (note.Username != GetCurrentUser()) return Forbid();
+        return Ok(note);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<NoteDto>> Create(CreateNoteDto dto)
+    {
+        var note = await _service.CreateAsync(dto, GetCurrentUser());
+        return CreatedAtAction(nameof(GetById), new { id = note.Id }, note);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UpdateNoteDto dto)
+    {
+        var success = await _service.UpdateAsync(id, dto, GetCurrentUser());
+        if (!success) return NotFound();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var success = await _service.DeleteAsync(id, GetCurrentUser());
         if (!success) return NotFound();
         return NoContent();
     }

@@ -144,7 +144,8 @@ const messages = {
     },
     auth: {
       login_btn: 'Log In',
-      error_login: 'An error occurred during login.'
+      error_login: 'An error occurred during login.',
+      session_expired: 'Your session has expired. Please log in again.'
     },
     backlog: {
       delete_confirm: 'Are you sure you want to delete this task?',
@@ -221,7 +222,33 @@ const messages = {
       general: 'General',
       all: 'All Tasks',
       me: 'My Tasks',
-      unassigned: 'Unassigned'
+      unassigned: 'Unassigned',
+      notepad: 'Notepad'
+    },
+    notepad: {
+      title: 'Notepad',
+      new_note: 'New Note',
+      search: 'Search notes...',
+      empty: 'No notes yet.',
+      no_results: 'No matching notes.',
+      create_first: 'Create your first note',
+      untitled: 'Untitled',
+      no_content: 'No content',
+      select_or_create: 'Select a note or create a new one',
+      confirm_delete: 'Are you sure you want to delete this note?',
+      last_saved: 'Last saved',
+      autosave: 'Auto-save on',
+      saving: 'Saving...',
+      start_writing: 'Start writing...',
+      bold: 'Bold',
+      italic: 'Italic',
+      underline: 'Underline',
+      heading1: 'Heading 1',
+      heading2: 'Heading 2',
+      paragraph: 'Paragraph',
+      bullet_list: 'Bullet List',
+      ordered_list: 'Numbered List',
+      delete: 'Delete note'
     }
   },
   sl: {
@@ -367,7 +394,8 @@ const messages = {
     },
     auth: {
       login_btn: 'Prijavi se',
-      error_login: 'Prišlo je do napake pri prijavi.'
+      error_login: 'Prišlo je do napake pri prijavi.',
+      session_expired: 'Vaša seja je potekla. Prosimo, prijavite se znova.'
     },
     backlog: {
       delete_confirm: 'Ali ste prepričani, da želite izbrisati to opravilo?',
@@ -444,7 +472,33 @@ const messages = {
       general: 'Splošno',
       all: 'Vsa opravila',
       me: 'Moja opravila',
-      unassigned: 'Nedodeljena'
+      unassigned: 'Nedodeljena',
+      notepad: 'Beležnik'
+    },
+    notepad: {
+      title: 'Beležnik',
+      new_note: 'Nova beležka',
+      search: 'Išči beležke...',
+      empty: 'Še ni beležk.',
+      no_results: 'Ni zadetkov.',
+      create_first: 'Ustvari prvo beležko',
+      untitled: 'Brez naslova',
+      no_content: 'Brez vsebine',
+      select_or_create: 'Izberi beležko ali ustvari novo',
+      confirm_delete: 'Ali ste prepričani, da želite izbrisati to beležko?',
+      last_saved: 'Zadnjič shranjeno',
+      autosave: 'Samodejno shranjevanje',
+      saving: 'Shranjevanje...',
+      start_writing: 'Začnite pisati...',
+      bold: 'Krepko',
+      italic: 'Poševno',
+      underline: 'Podčrtano',
+      heading1: 'Naslov 1',
+      heading2: 'Naslov 2',
+      paragraph: 'Odstavek',
+      bullet_list: 'Seznam z alinejami',
+      ordered_list: 'Oštevilčen seznam',
+      delete: 'Izbriši beležko'
     }
   }
 };

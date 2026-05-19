@@ -8,7 +8,7 @@ public class BacklogItem
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     
-    public int ColumnId { get; set; }
+    public int? ColumnId { get; set; }
     public BoardColumn? Column { get; set; }
 
     public int? BoardId { get; set; }
@@ -131,4 +131,15 @@ public class Notification
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string? Type { get; set; } // "TaskAssigned", "TaskRemoved", "CommentAdded", etc.
+}
+
+public class Note
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public int Order { get; set; }
 }

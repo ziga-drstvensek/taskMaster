@@ -174,7 +174,7 @@ const deleteItem = async (id: number) => {
 </script>
 
 <template>
-  <div v-if="backlogStore.selectedBoardId === -1 || uiStore.viewMode === 'table'" class="h-full flex flex-col">
+  <div v-if="backlogStore.selectedBoardId === -1 || uiStore.viewMode === 'table' || backlogStore.selectedDashboardId === 'personal'" class="h-full flex flex-col">
     <!-- View Mode Switcher and Quick Filters -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <div class="flex flex-wrap items-center gap-2">

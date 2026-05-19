@@ -47,6 +47,7 @@ builder.Services.AddScoped<ISprintRepository, SprintRepository>();
 builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
 builder.Services.AddScoped<IBacklogService, BacklogService>();
 builder.Services.AddScoped<ISprintService, SprintService>();
@@ -56,6 +57,7 @@ builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<ISmtpSettingsService, SmtpSettingsService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddHostedService<DatabaseBackupService>();
 

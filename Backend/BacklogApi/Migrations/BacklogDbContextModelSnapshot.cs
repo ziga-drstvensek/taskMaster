@@ -157,7 +157,7 @@ namespace BacklogApi.Migrations
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ColumnId")
+                    b.Property<int?>("ColumnId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -389,6 +389,40 @@ namespace BacklogApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SmtpSettings");
+                });
+
+            modelBuilder.Entity("BacklogApi.Core.Entities.Note", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -8,8 +8,9 @@ import BacklogList from './components/BacklogList.vue';
 import BacklogForm from './components/BacklogForm.vue';
 import SettingsManager from './components/SettingsManager.vue';
 import LoginView from './views/LoginView.vue';
+import NotepadView from './views/NotepadView.vue';
 import BaseModal from './components/common/BaseModal.vue';
-import { LogOut, Plus, Settings, LayoutGrid, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell, Camera } from 'lucide-vue-next';
+import { LogOut, Plus, Settings, LayoutGrid, Filter, User, UserPlus, Trello, ChevronDown, Check, Sun, Moon, Search, X, Keyboard, Command, Bell, Camera, BookOpen, NotebookPen } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const backlogStore = useBacklogStore();
@@ -139,7 +140,9 @@ const dashboards = computed<{id: string, name: string, icon: any}[]>(() => [
 ]);
 
 const personalDashboards = computed<{id: string, name: string, icon: any}[]>(() => [
-  { id: 'me', name: t('dashboard.me'), icon: User }
+  { id: 'me', name: t('dashboard.me'), icon: User },
+  { id: 'personal', name: t('dashboard.personal'), icon: BookOpen },
+  { id: 'notepad', name: t('dashboard.notepad'), icon: NotebookPen }
 ]);
 
 onMounted(async () => {
@@ -646,7 +649,8 @@ onMounted(() => {
 
       <div class="flex-1 overflow-auto custom-scrollbar">
         <div class="h-full max-w-400 mx-auto p-4 lg:p-6">
-          <BacklogList :disabled="isAnyModalOpen" />
+          <NotepadView v-if="backlogStore.selectedDashboardId === 'notepad'" />
+          <BacklogList v-else :disabled="isAnyModalOpen" />
         </div>
       </div>
     </main>

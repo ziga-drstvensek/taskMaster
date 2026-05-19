@@ -14,7 +14,7 @@ public class BacklogRepository : IBacklogRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<BacklogItem>> GetAllAsync(int? boardId = null)
+    public async Task<IEnumerable<BacklogItem>> GetAllAsync(int? boardId = null, bool personal = false, string? username = null)
     {
         var query = _context.BacklogItems
             .Include(b => b.Sprint)
@@ -26,7 +26,11 @@ public class BacklogRepository : IBacklogRepository
             .Include(b => b.History)
             .AsQueryable();
 
-        if (boardId == 0)
+        if (personal && !string.IsNullOrEmpty(username))
+        {
+            query = query.Where(b => b.BoardId == null && b.CreatedBy == username);
+        }
+        else if (boardId == 0)
         {
             query = query.Where(b => b.BoardId == 0);
         }
@@ -292,5 +296,50 @@ public class BoardRepository : IBoardRepository
     public void AddColumn(BoardColumn column)
     {
         _context.Columns.Add(column);
+    }
+}
+
+public class NoteRepository : INoteRepository
+{
+    private readonly BacklogDbContext _context;
+
+    public NoteRepository(BacklogDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Note>> GetAllByUsernameAsync(string username)
+    {
+        return await _context.Notes
+            .Where(n => n.Username == username)
+            .OrderBy(n => n.Order)
+            .ThenByDescending(n => n.UpdatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<Note?> GetByIdAsync(int id)
+    {
+        return await _context.Notes.FindAsync(id);
+    }
+
+    public async Task AddAsync(Note note)
+    {
+        await _context.Notes.AddAsync(note);
+    }
+
+    public void Update(Note note)
+    {
+        note.UpdatedAt = DateTime.UtcNow;
+        _context.Notes.Update(note);
+    }
+
+    public void Delete(Note note)
+    {
+        _context.Notes.Remove(note);
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }

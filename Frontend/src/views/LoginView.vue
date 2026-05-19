@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/store/auth';
 import api from '../services/api';
 import BaseInput from '../components/common/BaseInput.vue';
-
 const authStore = useAuthStore();
 const { t } = useI18n();
 const username = ref('');
 const password = ref('');
 const error = ref('');
+const sessionExpired = ref(false);
+onMounted(() => {
+  if (localStorage.getItem('session_expired')) {
+    sessionExpired.value = true;
+    localStorage.removeItem('session_expired');
+  }
+});
 
 const handleSubmit = async () => {
   error.value = '';
@@ -63,6 +69,10 @@ const seedAdmin = async () => {
             placeholder="••••••••"
           />
 
+          <div v-if="sessionExpired" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-100 dark:border-amber-800 text-amber-600 dark:text-amber-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ $t('auth.session_expired') }}
+          </div>
           <div v-if="error" class="bg-rose-50 dark:bg-rose-900/30 border border-rose-100 dark:border-rose-800 text-rose-600 dark:text-rose-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             {{ error }}

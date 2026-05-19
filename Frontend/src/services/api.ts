@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from '../store/auth';
 
 const isElectron = !!(window && (window as any).electron);
 const baseURL = isElectron 
@@ -24,11 +25,10 @@ api.interceptors.response.use(
     response => response,
     error => {
         if (error.response && error.response.status === 401) {
-            const currentPath = window.location.pathname;
-            if (currentPath !== '/' && currentPath !== '/login') {
-                localStorage.removeItem('user');
+            const authStore = useAuthStore();
+            if (authStore.isAuthenticated) {
                 localStorage.setItem('session_expired', 'true');
-                window.location.href = '/';
+                authStore.logout();
             }
         }
         return Promise.reject(error);

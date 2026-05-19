@@ -6,7 +6,7 @@ public record BacklogItemDto(
     int Id,
     string Title,
     string? Description,
-    int ColumnId,
+    int? ColumnId,
     int? BoardId,
     BacklogItemPriority Priority,
     int Order,
@@ -61,7 +61,7 @@ public record CreateBoardDto(
 public record CreateBacklogItemDto(
     string Title,
     string? Description,
-    int ColumnId,
+    int? ColumnId,
     int? BoardId,
     BacklogItemPriority Priority,
     int? SprintId,
@@ -73,7 +73,7 @@ public record CreateBacklogItemDto(
 public record UpdateBacklogItemDto(
     string Title,
     string? Description,
-    int ColumnId,
+    int? ColumnId,
     int? BoardId,
     BacklogItemPriority Priority,
     int? SprintId,
@@ -170,4 +170,24 @@ public record UpdateSmtpSettingsDto(
     bool EnableSsl,
     string FromEmail,
     string FromName
+);
+
+public record NoteDto(
+    int Id,
+    string Title,
+    string Content,
+    string Username,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    int Order
+);
+
+public record CreateNoteDto(
+    string Title,
+    string Content
+);
+
+public record UpdateNoteDto(
+    string Title,
+    string Content
 );

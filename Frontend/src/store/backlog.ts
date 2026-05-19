@@ -22,6 +22,9 @@ export const useBacklogStore = defineStore('backlog', {
         setSelectedDashboardId(id: string) {
             this.selectedDashboardId = id;
             localStorage.setItem('selectedDashboardId', id);
+            if (id === 'personal') {
+                this.fetchItems();
+            }
         },
         async fetchSprints() {
             try {
@@ -72,7 +75,9 @@ export const useBacklogStore = defineStore('backlog', {
             this.loading = true;
             try {
                 const params: any = {};
-                if (this.selectedBoardId !== null && this.selectedBoardId !== -1) {
+                if (this.selectedDashboardId === 'personal') {
+                    params.personal = true;
+                } else if (this.selectedBoardId !== null && this.selectedBoardId !== -1) {
                     params.boardId = this.selectedBoardId;
                 }
                 const response = await api.get('/backlog', { params });

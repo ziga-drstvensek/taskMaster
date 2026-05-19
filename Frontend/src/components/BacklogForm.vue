@@ -27,11 +27,21 @@ const backlogStore = useBacklogStore();
 const columnStore = useColumnStore();
 const uiStore = useUIStore();
 
+const isPersonal = computed(() => backlogStore.selectedDashboardId === 'personal' && !props.item?.boardId);
+
 const title = ref(props.item?.title || '');
 const description = ref(props.item?.description || '');
 const priority = ref(props.item?.priority ?? BacklogItemPriority.Medium);
 const columnId = ref<number | string>(props.item?.columnId ?? props.defaultColumnId ?? '');
-const boardId = ref<number | string>(props.item?.boardId ?? (backlogStore.selectedBoardId === -1 || backlogStore.selectedBoardId === null ? (backlogStore.boards.length > 0 ? backlogStore.boards[0].id : '') : backlogStore.selectedBoardId));
+const boardId = ref<number | string>(
+  props.item?.boardId
+    ? props.item.boardId
+    : (backlogStore.selectedDashboardId === 'personal'
+        ? ''
+        : (backlogStore.selectedBoardId === -1 || backlogStore.selectedBoardId === null
+            ? (backlogStore.boards.length > 0 ? backlogStore.boards[0].id : '')
+            : backlogStore.selectedBoardId))
+);
 
 const filteredColumns = computed(() => {
   const currentBoardId = boardId.value === '' ? null : parseInt(boardId.value.toString());
@@ -283,7 +293,7 @@ const handleSubmit = async () => {
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div v-if="!isPersonal" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <BaseSelect 
                 v-model="boardId"
                 :label="$t('common.boards')"
@@ -310,6 +320,7 @@ const handleSubmit = async () => {
                 ]"
               />
               <BaseSelect 
+                v-if="!isPersonal"
                 v-model="columnId"
                 :label="$t('common.column')"
                 :options="filteredColumns.map(c => ({ value: c.id, label: c.name }))"

@@ -4,7 +4,7 @@ namespace BacklogApi.Core.Interfaces;
 
 public interface IBacklogRepository
 {
-    Task<IEnumerable<BacklogItem>> GetAllAsync(int? boardId = null);
+    Task<IEnumerable<BacklogItem>> GetAllAsync(int? boardId = null, bool personal = false, string? username = null);
     Task<BacklogItem?> GetByIdAsync(int id);
     Task AddAsync(BacklogItem item);
     void Update(BacklogItem item);
@@ -54,4 +54,14 @@ public interface IBoardRepository
     void Delete(Board board);
     Task SaveChangesAsync();
     void AddColumn(BoardColumn column);
+}
+
+public interface INoteRepository
+{
+    Task<IEnumerable<Note>> GetAllByUsernameAsync(string username);
+    Task<Note?> GetByIdAsync(int id);
+    Task AddAsync(Note note);
+    void Update(Note note);
+    void Delete(Note note);
+    Task SaveChangesAsync();
 }

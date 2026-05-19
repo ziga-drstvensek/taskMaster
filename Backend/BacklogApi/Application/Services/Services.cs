@@ -16,7 +16,7 @@ namespace BacklogApi.Application.Services;
 
 public interface IBacklogService
 {
-    Task<IEnumerable<BacklogItemDto>> GetAllAsync(int? boardId = null);
+    Task<IEnumerable<BacklogItemDto>> GetAllAsync(int? boardId = null, bool personal = false, string? username = null);
     Task<BacklogItemDto?> GetByIdAsync(int id);
     Task<BacklogItemDto> CreateAsync(CreateBacklogItemDto dto, string createdBy);
     Task<bool> UpdateAsync(int id, UpdateBacklogItemDto dto, string updatedBy);
@@ -74,6 +74,15 @@ public interface ISmtpSettingsService
     Task<bool> SendEmailAsync(string to, string subject, string body);
 }
 
+public interface INoteService
+{
+    Task<IEnumerable<NoteDto>> GetAllAsync(string username);
+    Task<NoteDto?> GetByIdAsync(int id);
+    Task<NoteDto> CreateAsync(CreateNoteDto dto, string username);
+    Task<bool> UpdateAsync(int id, UpdateNoteDto dto, string username);
+    Task<bool> DeleteAsync(int id, string username);
+}
+
 public interface INotificationService
 {
     Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string username);
@@ -105,9 +114,9 @@ public class BacklogService : IBacklogService
         _notificationService = notificationService;
     }
 
-    public async Task<IEnumerable<BacklogItemDto>> GetAllAsync(int? boardId = null)
+    public async Task<IEnumerable<BacklogItemDto>> GetAllAsync(int? boardId = null, bool personal = false, string? username = null)
     {
-        var items = await _repository.GetAllAsync(boardId);
+        var items = await _repository.GetAllAsync(boardId, personal, username);
         return items.Select(MapToDto);
     }
 
@@ -120,14 +129,14 @@ public class BacklogService : IBacklogService
     public async Task<BacklogItemDto> CreateAsync(CreateBacklogItemDto dto, string createdBy)
     {
         var boardId = dto.BoardId == 0 ? null : dto.BoardId;
-        var columnId = dto.ColumnId;
+        int? columnId = dto.ColumnId;
         
-        // Safety check: validate column belongs to board
-        var column = await _columnRepository.GetByIdAsync(columnId);
-        if (column == null || (boardId.HasValue && column.BoardId != boardId))
+        // Za osebne naloge (brez plošče) stolpec ni zahtevan
+        if (boardId.HasValue)
         {
-            // Če je stolpec neveljaven za to ploščo, poskusimo dobiti prvi stolpec te plošče
-            if (boardId.HasValue)
+            // Safety check: validate column belongs to board
+            var column = columnId.HasValue ? await _columnRepository.GetByIdAsync(columnId.Value) : null;
+            if (column == null || column.BoardId != boardId)
             {
                 var boardColumns = await _columnRepository.GetAllAsync(boardId.Value);
                 var firstColumn = boardColumns.OrderBy(c => c.Order).FirstOrDefault();
@@ -140,12 +149,16 @@ public class BacklogService : IBacklogService
                     throw new Exception("Izbrana plošča nima definiranih stolpcev.");
                 }
             }
-            else
-            {
-                // Če ni plošče, morda pustimo trenutni stolpec ali pa vržemo napako?
-                // Vrnemo napako, ker brez plošče ne vemo kateri stolpec je pravilen (razen če so globalni)
-                if (column == null) throw new Exception("Neveljaven stolpec.");
-            }
+        }
+        else if (columnId.HasValue && columnId.Value > 0)
+        {
+            // Globalni stolpec (brez plošče) — preverimo samo da obstaja
+            var column = await _columnRepository.GetByIdAsync(columnId.Value);
+            if (column == null) columnId = null;
+        }
+        else
+        {
+            columnId = null;
         }
 
         // Safety check: validate sprint belongs to board
@@ -207,13 +220,13 @@ public class BacklogService : IBacklogService
         if (item == null) return false;
 
         var newBoardId = dto.BoardId == 0 ? null : dto.BoardId;
-        var newColumnId = dto.ColumnId;
+        int? newColumnId = dto.ColumnId;
 
         // Safety check: validate column belongs to board
-        var column = await _columnRepository.GetByIdAsync(newColumnId);
-        if (column == null || (newBoardId.HasValue && column.BoardId != newBoardId))
+        if (newBoardId.HasValue)
         {
-            if (newBoardId.HasValue)
+            var column = newColumnId.HasValue ? await _columnRepository.GetByIdAsync(newColumnId.Value) : null;
+            if (column == null || column.BoardId != newBoardId)
             {
                 var boardColumns = await _columnRepository.GetAllAsync(newBoardId.Value);
                 var firstColumn = boardColumns.OrderBy(c => c.Order).FirstOrDefault();
@@ -222,6 +235,10 @@ public class BacklogService : IBacklogService
                     newColumnId = firstColumn.Id;
                 }
             }
+        }
+        else if (!newColumnId.HasValue || newColumnId.Value == 0)
+        {
+            newColumnId = null;
         }
 
         // Safety check: validate sprint belongs to board
@@ -386,7 +403,7 @@ public class BacklogService : IBacklogService
                     });
                 }
                 item.Order = dto.Order;
-                item.ColumnId = dto.ColumnId; // Update column during reorder
+                item.ColumnId = dto.ColumnId > 0 ? dto.ColumnId : null; // Update column during reorder
                 updatedItems.Add(item);
             }
         }
@@ -401,7 +418,7 @@ public class BacklogService : IBacklogService
         item.Title,
         item.Description,
         item.ColumnId,
-        item.BoardId ?? 0,
+        item.BoardId,
         item.Priority,
         item.Order,
         item.CreatedAt,
@@ -1152,4 +1169,76 @@ public class SmtpSettingsService : ISmtpSettingsService
             return false;
         }
     }
+}
+
+public class NoteService : INoteService
+{
+    private readonly INoteRepository _repository;
+
+    public NoteService(INoteRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<IEnumerable<NoteDto>> GetAllAsync(string username)
+    {
+        var notes = await _repository.GetAllByUsernameAsync(username);
+        return notes.Select(MapToDto);
+    }
+
+    public async Task<NoteDto?> GetByIdAsync(int id)
+    {
+        var note = await _repository.GetByIdAsync(id);
+        return note == null ? null : MapToDto(note);
+    }
+
+    public async Task<NoteDto> CreateAsync(CreateNoteDto dto, string username)
+    {
+        var note = new Note
+        {
+            Title = dto.Title,
+            Content = dto.Content,
+            Username = username,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Order = 0
+        };
+        await _repository.AddAsync(note);
+        await _repository.SaveChangesAsync();
+        return MapToDto(note);
+    }
+
+    public async Task<bool> UpdateAsync(int id, UpdateNoteDto dto, string username)
+    {
+        var note = await _repository.GetByIdAsync(id);
+        if (note == null) return false;
+        if (note.Username != username) return false;
+
+        note.Title = dto.Title;
+        note.Content = dto.Content;
+        _repository.Update(note);
+        await _repository.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id, string username)
+    {
+        var note = await _repository.GetByIdAsync(id);
+        if (note == null) return false;
+        if (note.Username != username) return false;
+
+        _repository.Delete(note);
+        await _repository.SaveChangesAsync();
+        return true;
+    }
+
+    private static NoteDto MapToDto(Note note) => new NoteDto(
+        note.Id,
+        note.Title,
+        note.Content,
+        note.Username,
+        note.CreatedAt,
+        note.UpdatedAt,
+        note.Order
+    );
 }

@@ -20,6 +20,7 @@ public class BacklogDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<BacklogItemHistory> History { get; set; }
     public DbSet<SmtpSettings> SmtpSettings { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Note> Notes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
